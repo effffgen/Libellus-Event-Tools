@@ -39,7 +39,8 @@ namespace LibellusLibrary.Event.Types.Frame
 
 		public static PmdTargetType GetFrameType(PmdTargetTypeID Type) => Type switch
 		{
-			_=>new PmdTarget_Unknown()
+            PmdTargetTypeID.MESSAGE => new PmdTarget_Message(),
+            _ =>new PmdTarget_Unknown()
 		};
 
 		public enum PmdTargetTypeID
