@@ -5,28 +5,28 @@ namespace LibellusLibrary.Event.Types.Frame
 {
     internal class PmdTarget_Message : PmdTargetType
     {
-        [JsonPropertyOrder(-100)]
+        [JsonPropertyOrder(-92)]
         public byte MessageIndex { get; set; }
         
-        [JsonPropertyOrder(-99)]
+        [JsonPropertyOrder(-91)]
         public byte SetLocalFlag { get; set; }
 
-        [JsonPropertyOrder(-98)]
+        [JsonPropertyOrder(-90)]
         public ushort Field16 { get; set; }
 
-        [JsonPropertyOrder(-97)]
+        [JsonPropertyOrder(-89)]
         [JsonConverter(typeof(JsonStringEnumConverter))]
         public MessageModeEnum MessageMode { get; set; }
 
-        [JsonPropertyOrder(-96)]
+        [JsonPropertyOrder(-88)]
         [JsonConverter(typeof(JsonStringEnumConverter))]
         public AccessModeEnum MessageAccessMode { get; set; }
 
-        [JsonPropertyOrder(-95)]
+        [JsonPropertyOrder(-87)]
         [JsonConverter(typeof(JsonStringEnumConverter))]
         public DisplayModeEnum MessageDisplayMode { get; set; }
 
-        [JsonPropertyOrder(-94)]
+        [JsonPropertyOrder(-86)]
         [JsonConverter(typeof(ByteArrayToHexArray))]
         public byte[] Data2 { get; set; }
 

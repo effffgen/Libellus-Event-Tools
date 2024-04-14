@@ -2,7 +2,7 @@
 
 namespace LibellusLibrary.Event.Types.Frame
 {
-    internal class PmdFlags
+    public class PmdFlags
     {
         [JsonPropertyOrder(-100)]
         public ushort FlagNumber { get; set; }
@@ -35,14 +35,14 @@ namespace LibellusLibrary.Event.Types.Frame
             writer?.Write((ushort)GFlagType);
         }
 
-        internal enum UnitFlagType : short
+        public enum UnitFlagType : short
         {
             DISABLE = 0,
             LOCAL = 1,
             GLOBAL = 2,
         }
 
-        internal enum UnitGFlagType : short
+        public enum UnitGFlagType : short
         {
             EVT = 0,
             COMMU = 1,
