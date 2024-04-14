@@ -39,7 +39,7 @@ namespace LibellusLibrary.Event.Types.Frame
 
         public static PmdTargetType GetFrameType(PmdTargetTypeID Type) => Type switch
         {
-            // PmdTargetTypeID.UNIT => new PmdTarget_Unit(),
+            PmdTargetTypeID.UNIT => new PmdTarget_Unit(),
             PmdTargetTypeID.MESSAGE => new PmdTarget_Message(),
             PmdTargetTypeID.FADE => new PmdTarget_Fade(),
             PmdTargetTypeID.QUAKE => new PmdTarget_Quake(),
