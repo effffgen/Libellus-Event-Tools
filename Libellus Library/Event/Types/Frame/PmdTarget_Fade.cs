@@ -7,8 +7,8 @@ namespace LibellusLibrary.Event.Types.Frame
     {
         [JsonPropertyOrder(-92)]
         public ushort FadeType { get; set; }
-		
-		[JsonPropertyOrder(-91)]
+
+        [JsonPropertyOrder(-91)]
         public short FadeLength { get; set; }
 
         [JsonPropertyOrder(-90)]
