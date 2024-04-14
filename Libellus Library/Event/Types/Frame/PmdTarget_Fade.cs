@@ -6,26 +6,33 @@ namespace LibellusLibrary.Event.Types.Frame
     internal class PmdTarget_Fade : PmdTargetType
     {
         [JsonPropertyOrder(-92)]
-        public ushort FadeType { get; set; }
+        [JsonConverter(typeof(JsonStringEnumConverter))]
+        public FadeModeEnum FadeMode { get; set; }
 
         [JsonPropertyOrder(-91)]
-        public short FadeLength { get; set; }
+        public short FadeNumber { get; set; }
 
         [JsonPropertyOrder(-90)]
         [JsonConverter(typeof(ByteArrayToHexArray))]
         public byte[] Data { get; set; }
 
+        internal enum FadeModeEnum : ushort
+        {
+            FADE_IN = 0,
+            FADE_OUT = 1,
+        }
+
         protected override void ReadData(BinaryReader reader)
         {
-            FadeType = reader.ReadUInt16();
-            FadeLength = reader.ReadInt16();
+            FadeMode = (FadeModeEnum)reader.ReadUInt16();
+            FadeNumber = reader.ReadInt16();
             Data = reader.ReadBytes(36);
         }
 
         protected override void WriteData(BinaryWriter writer)
         {
-            writer?.Write((ushort)FadeType);
-            writer?.Write((short)FadeLength);
+            writer?.Write((ushort)FadeMode);
+            writer?.Write((short)FadeNumber);
             writer?.Write(Data);
         }
     }
