@@ -92,5 +92,6 @@ namespace LibellusLibrary.Event.Types
 			writer.Write(Flags);
 		}
 		internal override int GetCount() => 1;
+		internal override int GetSize() => 0x24;
 	}
 }
