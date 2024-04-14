@@ -21,7 +21,7 @@ namespace LibellusLibrary.Event.Types.Frame
             POS_CHANGE = 3,   // Change position by refrence
             ROT_CHANGE = 4,
             ICON_DISP = 5,
-            ROT_HEAD = 6,     // TODO: Use event editors actual name
+            KUBI = 6,
             MODEL_ATTACH = 7,
             ALPHA_CHANGE = 8,
             SHADOW_ONOFF = 9,
