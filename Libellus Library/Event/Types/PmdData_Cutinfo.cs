@@ -8,15 +8,12 @@ namespace LibellusLibrary.Event.Types
 {
 	internal class PmdData_Cutinfo : PmdDataType, ITypeCreator, IVersionable
 	{
-		
 		public PmdDataType CreateFromVersion(uint version, BinaryReader reader)
 		{
-			return version switch { 
+			return version switch {
 				12=> new PmdData_P3Cutinfo(reader),
 				_ => throw new NotImplementedException(),
 			};
-
-
 		}
 
 		public PmdDataType? CreateType(uint version)
