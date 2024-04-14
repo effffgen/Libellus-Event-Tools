@@ -14,6 +14,7 @@ namespace LibellusLibrary.Event.Types.Frame
         [JsonConverter(typeof(JsonStringEnumConverter))]
         public UnitFlagType FlagType { get; set; }
 
+        // GFlagType == GlobalFlagType
         [JsonPropertyOrder(-97)]
         [JsonConverter(typeof(JsonStringEnumConverter))]
         public UnitGFlagType GFlagType { get; set; }

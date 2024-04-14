@@ -20,14 +20,27 @@ namespace LibellusLibrary.Event.Types.Frame
 		[JsonPropertyOrder(-98)]
 		public ushort Length { get; set; }
 		[JsonPropertyOrder(-97)]
-		public ushort NameIndex { get; set; }
+		public short NameIndex { get; set; }
+		[JsonPropertyOrder(-96)]
+		public byte FBNResID { get; set; }
+		[JsonPropertyOrder(-95)]
+		public byte Field09 { get; set; }
+		[JsonPropertyOrder(-94)]
+		public short Field0A { get; set; }
+		[JsonPropertyOrder(-93)]
+		public PmdFlags Flags { get; set; }
 
 		public void ReadFrame(BinaryReader reader)
 		{
 			TargetType = (PmdTargetTypeID)reader.ReadUInt16();
 			StartFrame = reader.ReadUInt16();
 			Length = reader.ReadUInt16();
-			NameIndex = reader.ReadUInt16();
+			NameIndex = reader.ReadInt16();
+			FBNResID = reader.ReadByte();
+			Field09 = reader.ReadByte();
+			Field0A = reader.ReadInt16();
+			Flags = new PmdFlags();
+			Flags.ReadData(reader);
 			ReadData(reader);
 		}
 		public void WriteFrame(BinaryWriter writer)
@@ -35,7 +48,11 @@ namespace LibellusLibrary.Event.Types.Frame
 			writer.Write((ushort)TargetType);
 			writer.Write((ushort)StartFrame);
 			writer.Write((ushort)Length);
-			writer.Write((ushort)NameIndex);
+			writer.Write((short)NameIndex);
+			writer.Write((byte)FBNResID);
+			writer.Write((byte)Field09);
+			writer.Write((short)Field0A);
+			Flags.WriteData(writer);
 			WriteData(writer);
 		}
 		protected virtual void ReadData(BinaryReader reader) => throw new InvalidOperationException();
@@ -48,7 +65,7 @@ namespace LibellusLibrary.Event.Types.Frame
 		public byte[] Data { get; set; }
 		protected override void ReadData(BinaryReader reader)
 		{
-			Data = reader.ReadBytes(0x34);
+			Data = reader.ReadBytes(0x28);
 		}
 
 		protected override void WriteData(BinaryWriter writer)

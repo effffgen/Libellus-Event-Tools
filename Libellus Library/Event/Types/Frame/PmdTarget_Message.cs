@@ -9,17 +9,17 @@ namespace LibellusLibrary.Event.Types.Frame
         [JsonConverter(typeof(ByteArrayToHexArray))]
         public byte[] Data { get; set; }
 
-        [JsonPropertyOrder(-99)]
-        public PmdFlags Flags { get; set; }
+        // [JsonPropertyOrder(-99)]
+        // public PmdFlags Flags { get; set; }
 
-        [JsonPropertyOrder(-98)]
+        [JsonPropertyOrder(-99)]
         public uint MessageIndex { get; set; }
 
-        [JsonPropertyOrder(-97)]
+        [JsonPropertyOrder(-98)]
         [JsonConverter(typeof(JsonStringEnumConverter))]
         public MessageModeEnum MessageMode { get; set; }
 
-        [JsonPropertyOrder(-96)]
+        [JsonPropertyOrder(-97)]
         [JsonConverter(typeof(ByteArrayToHexArray))]
         public byte[] Data2 { get; set; }
 
@@ -32,8 +32,8 @@ namespace LibellusLibrary.Event.Types.Frame
         protected override void ReadData(BinaryReader reader)
         {
             Data = reader.ReadBytes(4);
-            Flags = new PmdFlags();
-            Flags.ReadData(reader);
+            //Flags = new PmdFlags();
+            //Flags.ReadData(reader);
             MessageIndex = reader.ReadUInt32();
             MessageMode = (MessageModeEnum)reader.ReadUInt32();
             Data2 = reader.ReadBytes(32);
@@ -42,7 +42,7 @@ namespace LibellusLibrary.Event.Types.Frame
         protected override void WriteData(BinaryWriter writer)
         {
             writer?.Write(Data);
-            Flags.WriteData(writer);
+            // Flags.WriteData(writer);
             writer?.Write(MessageIndex);
             writer?.Write((uint)MessageMode);
             writer?.Write(Data2);
