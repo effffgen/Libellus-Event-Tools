@@ -11,14 +11,14 @@ namespace LibellusLibrary.Event.Types.Frame
 {
     internal class PmdTarget_Script : PmdTargetType
     {
-        [JsonPropertyOrder(-91)]
+        [JsonPropertyOrder(-92)]
         [JsonConverter(typeof(ByteArrayToHexArray))]
         public byte[] Data2 { get; set; }
 
-        [JsonPropertyOrder(-90)]
+        [JsonPropertyOrder(-91)]
         public ushort ProcedureIndex { get; set; }
 
-        [JsonPropertyOrder(-89)]
+        [JsonPropertyOrder(-90)]
         [JsonConverter(typeof(ByteArrayToHexArray))]
         public byte[] Data3 { get; set; }
 
