@@ -35,6 +35,7 @@ namespace LibellusLibrary.Event.Types.Frame
                 UnitTypeEnum.POS_CHANGE_D => new SetPositionDirect(),
                 UnitTypeEnum.MOTION_CHANGE => new ChangeAnimation(),
                 UnitTypeEnum.ICON_DISP => new DisplayIcon(),
+                UnitTypeEnum.KUBI => new RotateHead(),
                 _ => new UnknownUnit()
             };
             UnitData.ReadData(reader);
@@ -51,6 +52,7 @@ namespace LibellusLibrary.Event.Types.Frame
     [JsonDerivedType(typeof(SetPositionDirect))]
     [JsonDerivedType(typeof(ChangeAnimation))]
     [JsonDerivedType(typeof(DisplayIcon))]
+    [JsonDerivedType(typeof(RotateHead))]
     public class Unit
     {
         public virtual void ReadData(BinaryReader reader) => throw new InvalidOperationException();
@@ -226,6 +228,62 @@ namespace LibellusLibrary.Event.Types.Frame
         public override void WriteData(BinaryWriter writer)
         {
             writer?.Write(IconID);
+            writer?.Write(Data);
+        }
+    }
+    
+    public class RotateHead : Unit
+    {
+        [JsonPropertyOrder(-90)]
+        [JsonConverter(typeof(JsonStringEnumConverter))]
+        public KubiModeEnum KubiMode { get; set; }
+        
+        [JsonPropertyOrder(-89)]
+        [JsonConverter(typeof(JsonStringEnumConverter))]
+        public KubiSpeedEnum KubiSpeed { get; set; }
+
+        [JsonPropertyOrder(-88)]
+        public ushort Field1A { get; set; }
+
+        [JsonPropertyOrder(-87)]
+        public float KubiPitch { get; set; }
+
+        [JsonPropertyOrder(-86)]
+        public float KubiYaw { get; set; }
+
+        [JsonPropertyOrder(-85)]
+        [JsonConverter(typeof(ByteArrayToHexArray))]
+        public byte[] Data { get; set; }
+
+        public enum KubiModeEnum : byte
+        {
+            MOVE = 0,
+            RESET = 1,
+        }
+
+        public enum KubiSpeedEnum : byte
+        {
+            NORMAL = 0,
+            FAST = 1,
+        }
+
+        public override void ReadData(BinaryReader reader)
+        {
+            KubiMode = (KubiModeEnum)reader.ReadByte();
+            KubiSpeed = (KubiSpeedEnum)reader.ReadByte();
+            Field1A = reader.ReadUInt16();
+            KubiPitch = reader.ReadSingle();
+            KubiYaw = reader.ReadSingle();
+            Data = reader.ReadBytes(24);
+        }
+
+        public override void WriteData(BinaryWriter writer)
+        {
+            writer?.Write((byte)KubiMode);
+            writer?.Write((byte)KubiSpeed);
+            writer?.Write(Field1A);
+            writer?.Write(KubiPitch);
+            writer?.Write(KubiYaw);
             writer?.Write(Data);
         }
     }
