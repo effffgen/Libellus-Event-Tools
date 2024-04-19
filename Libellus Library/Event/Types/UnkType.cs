@@ -29,7 +29,7 @@ namespace LibellusLibrary.Event.Types
 			}
 			reader.BaseStream.Position = OriginalPos;
 			
-			if (!PmdTypeFactory.IsSerialized((PmdTypeID)reader.ReadUInt32()))
+			if (!PmdTypeFactory.IsSerialized((PmdTypeID)reader.ReadUInt32()) && (typeIDs.Contains(PmdTypeID.Message) || typeIDs.Contains(PmdTypeID.Unit)))
 			{
 				reader.BaseStream.Position = OriginalPos;
 				return null;

@@ -48,11 +48,11 @@ namespace LibellusLibrary.Event.Types.Frame
         }
     }
 
-    [JsonDerivedType(typeof(UnknownUnit))]
-    [JsonDerivedType(typeof(SetPositionDirect))]
-    [JsonDerivedType(typeof(ChangeAnimation))]
-    [JsonDerivedType(typeof(DisplayIcon))]
-    [JsonDerivedType(typeof(RotateHead))]
+    [JsonDerivedType(typeof(UnknownUnit), typeDiscriminator: "unk")]
+    [JsonDerivedType(typeof(SetPositionDirect), typeDiscriminator: "spd")]
+    [JsonDerivedType(typeof(ChangeAnimation), typeDiscriminator: "ani")]
+    [JsonDerivedType(typeof(DisplayIcon), typeDiscriminator: "dip")]
+    [JsonDerivedType(typeof(RotateHead), typeDiscriminator: "kubi")]
     public class Unit
     {
         public virtual void ReadData(BinaryReader reader) => throw new InvalidOperationException();

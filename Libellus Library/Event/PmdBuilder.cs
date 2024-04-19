@@ -45,7 +45,7 @@ namespace LibellusLibrary.Event
 					reference.SetReferences(this);
 				}
 			}
-			writer.FSeek(0x20 + 0x10 * Pmd.PmdDataTypes.Count + 0x40);
+			writer.FSeek(0x20 + 0x10 * Pmd.PmdDataTypes.Count + 0x10);
 			foreach (var referenceType in ReferenceTables)
 			{
 				var dataType = new PmdData_RawData();
@@ -128,7 +128,7 @@ namespace LibellusLibrary.Event
 			if (ReferenceTables.ContainsKey(id))
 			{
 				ReferenceTables[id].Add(data);
-				return ReferenceTables.Count-1;
+				return ReferenceTables.Count - 1;
 			}
 			ReferenceTables.Add(id, new List<byte[]>());
 			ReferenceTables[id].Add(data);
