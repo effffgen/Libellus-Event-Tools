@@ -63,7 +63,7 @@ namespace LibellusLibrary.Event.Types.Frame
     {
         [JsonPropertyOrder(-90)]
         [JsonConverter(typeof(ByteArrayToHexArray))]
-        public byte[] Data { get; set; }
+        public byte[] Data { get; set; } = {};
 
         public override void ReadData(BinaryReader reader)
         {
@@ -109,7 +109,7 @@ namespace LibellusLibrary.Event.Types.Frame
 
         [JsonPropertyOrder(-81)]
         [JsonConverter(typeof(ByteArrayToHexArray))]
-        public byte[] Data { get; set; }
+        public byte[] Data { get; set; } = {};
 
         [JsonPropertyOrder(-80)]
         public byte PlaySound { get; set; }
@@ -189,7 +189,7 @@ namespace LibellusLibrary.Event.Types.Frame
 
         [JsonPropertyOrder(-86)]
         [JsonConverter(typeof(ByteArrayToHexArray))]
-        public byte[] Data { get; set; }
+        public byte[] Data { get; set; } = {};
 
         public override void ReadData(BinaryReader reader)
         {
@@ -217,7 +217,7 @@ namespace LibellusLibrary.Event.Types.Frame
 
         [JsonPropertyOrder(-89)]
         [JsonConverter(typeof(ByteArrayToHexArray))]
-        public byte[] Data { get; set; }
+        public byte[] Data { get; set; } = {};
 
         public override void ReadData(BinaryReader reader)
         {
@@ -253,7 +253,7 @@ namespace LibellusLibrary.Event.Types.Frame
 
         [JsonPropertyOrder(-85)]
         [JsonConverter(typeof(ByteArrayToHexArray))]
-        public byte[] Data { get; set; }
+        public byte[] Data { get; set; } = {};
 
         public enum KubiModeEnum : byte
         {
