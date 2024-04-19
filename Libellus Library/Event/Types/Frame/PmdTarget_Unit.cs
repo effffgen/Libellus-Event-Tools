@@ -33,6 +33,8 @@ namespace LibellusLibrary.Event.Types.Frame
             UnitData = UnitType switch
             {
                 UnitTypeEnum.POS_CHANGE_D => new SetPositionDirect(),
+                UnitTypeEnum.MOTION_CHANGE => new ChangeAnimation(),
+                UnitTypeEnum.ICON_DISP => new DisplayIcon(),
                 _ => new UnknownUnit()
             };
             UnitData.ReadData(reader);
@@ -47,6 +49,8 @@ namespace LibellusLibrary.Event.Types.Frame
 
     [JsonDerivedType(typeof(UnknownUnit))]
     [JsonDerivedType(typeof(SetPositionDirect))]
+    [JsonDerivedType(typeof(ChangeAnimation))]
+    [JsonDerivedType(typeof(DisplayIcon))]
     public class Unit
     {
         public virtual void ReadData(BinaryReader reader) => throw new InvalidOperationException();
@@ -164,6 +168,65 @@ namespace LibellusLibrary.Event.Types.Frame
             writer?.Write(ChannelNumber);
             writer?.Write(SoundInterval);
             writer?.Write(SoundWait);
+        }
+    }
+
+    public class ChangeAnimation : Unit
+    {
+        [JsonPropertyOrder(-90)]
+        public byte Field18 { get; set; }
+
+        [JsonPropertyOrder(-89)]
+        public byte AnimationIndex { get; set; }
+
+        [JsonPropertyOrder(-88)]
+        public byte Field1A { get; set; }
+
+        [JsonPropertyOrder(-87)]
+        public byte WaitFrames { get; set; }
+
+        [JsonPropertyOrder(-86)]
+        [JsonConverter(typeof(ByteArrayToHexArray))]
+        public byte[] Data { get; set; }
+
+        public override void ReadData(BinaryReader reader)
+        {
+            Field18 = reader.ReadByte();
+            AnimationIndex = reader.ReadByte();
+            Field1A = reader.ReadByte();
+            WaitFrames = reader.ReadByte();
+            Data = reader.ReadBytes(32);
+        }
+
+        public override void WriteData(BinaryWriter writer)
+        {
+            writer?.Write(Field18);
+            writer?.Write(AnimationIndex);
+            writer?.Write(Field1A);
+            writer?.Write(WaitFrames);
+            writer?.Write(Data);
+        }
+    }
+
+    public class DisplayIcon : Unit
+    {
+        [JsonPropertyOrder(-90)]
+        public ushort IconID { get; set; }
+
+        [JsonPropertyOrder(-89)]
+        [JsonConverter(typeof(ByteArrayToHexArray))]
+        public byte[] Data { get; set; }
+
+        public override void ReadData(BinaryReader reader)
+        {
+            IconID = reader.ReadUInt16();
+            Data = reader.ReadBytes(34);
+        }
+
+        public override void WriteData(BinaryWriter writer)
+        {
+            writer?.Write(IconID);
+            writer?.Write(Data);
         }
     }
 }
