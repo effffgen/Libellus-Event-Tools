@@ -45,6 +45,7 @@ namespace LibellusLibrary.Event.Types.Frame
             PmdTargetTypeID.QUAKE => new PmdTarget_Quake(),
             PmdTargetTypeID.BGM => new PmdTarget_Bgm(),
             PmdTargetTypeID.CTLCAM => new PmdTarget_Ctlcam(),
+            PmdTargetTypeID.JUMP => new PmdTarget_Jump(),
             PmdTargetTypeID.SCRIPT => new PmdTarget_Script(),
             _ =>new PmdTarget_Unknown()
         };

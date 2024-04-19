@@ -3,10 +3,10 @@ using System.Text.Json.Serialization;
 
 namespace LibellusLibrary.Event.Types.Frame
 {
-    internal class PmdTarget_Quake : PmdTargetType
+    internal class PmdTarget_Jump : PmdTargetType
     {
         [JsonPropertyOrder(-92)]
-        public short Range { get; set; }
+        public short ToFrame { get; set; }
 
         [JsonPropertyOrder(-91)]
         [JsonConverter(typeof(ByteArrayToHexArray))]
@@ -14,13 +14,13 @@ namespace LibellusLibrary.Event.Types.Frame
 
         protected override void ReadData(BinaryReader reader)
         {
-            Range = reader.ReadInt16();
+            ToFrame = reader.ReadInt16();
             Data = reader.ReadBytes(38);
         }
 
         protected override void WriteData(BinaryWriter writer)
         {
-            writer?.Write(Range);
+            writer?.Write(ToFrame);
             writer?.Write(Data);
         }
     }
