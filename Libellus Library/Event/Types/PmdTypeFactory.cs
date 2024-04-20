@@ -12,15 +12,14 @@ namespace LibellusLibrary.Event.Types
 		public List<PmdTypeID> typeIDs = new();
 
 		public List<PmdDataType> ReadDataTypes(BinaryReader reader, uint typeTableCount, uint version)
-		{ 
-			
+		{
 			_types = new List<PmdDataType>();
 			typeIDs = ReadTypes(reader, typeTableCount);
 			foreach(var type in typeIDs)
 			{
 				ITypeCreator typecreator = GetTypeCreator(type);
 
-				PmdDataType? dataType = typecreator.ReadType(reader, version, typeIDs,this);
+				PmdDataType? dataType = typecreator.ReadType(reader, version, typeIDs, this);
 				if(dataType != null) { 
 					dataType.Type = type;
 					_types.Add(dataType);
@@ -31,7 +30,7 @@ namespace LibellusLibrary.Event.Types
 			return _types;
 		}
 
-		public static ITypeCreator GetTypeCreator(PmdTypeID Type)=> Type switch
+		public static ITypeCreator GetTypeCreator(PmdTypeID Type) => Type switch
 		{
 			PmdTypeID.CutInfo => new PmdData_Cutinfo(),
 			PmdTypeID.Unit => new PmdData_Unit(),
@@ -44,7 +43,7 @@ namespace LibellusLibrary.Event.Types
 		{
 			PmdTypeID.UnitData => false,
 			PmdTypeID.Name => false,
-			_=>true
+			_ => true
 		};
 
 		private List<PmdTypeID> ReadTypes(BinaryReader reader, uint typeTableCount)
@@ -60,24 +59,24 @@ namespace LibellusLibrary.Event.Types
 			reader.BaseStream.Position = originalpos;
 			return types;
 		}
+
 		public List<string> GetNameTable(BinaryReader reader)
 		{
 			var originalpos = reader.BaseStream.Position;
 			var names = new List<string>();
-			for(int i =0;i< typeIDs.Count; i++)
+			for(int i = 0; i < typeIDs.Count; i++)
 			{
 				if(typeIDs[i] == PmdTypeID.Name)
 				{
-					reader.BaseStream.Position = 0x20 + (0x10 * i) +0x8;
+					reader.BaseStream.Position = 0x20 + (0x10 * i) + 0x8;
 					var nameCount = reader.ReadUInt32();
 					reader.BaseStream.Position = reader.ReadUInt32();
 
-					for(int j = 0;j < nameCount; j++)
+					for(int j = 0; j < nameCount; j++)
 					{
 						string data = new(reader.ReadChars(32));
 						names.Add(data.Replace("\0", string.Empty));
 					}
-
 				}
 			}
 			reader.BaseStream.Position = originalpos;
