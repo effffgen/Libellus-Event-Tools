@@ -14,7 +14,6 @@ namespace LibellusLibrary.Event.Types
 	{
 		public string FileName { get; set; }
 
-
 		public byte[] MessageData;
 
 		public PmdDataType? CreateType(uint version)
@@ -24,17 +23,13 @@ namespace LibellusLibrary.Event.Types
 
 		public PmdDataType? ReadType(BinaryReader reader, uint version, List<PmdTypeID> typeIDs, PmdTypeFactory typeFactory)
 		{
-			var OriginalPos = reader.BaseStream.Position;
+			long OriginalPos = reader.BaseStream.Position;
 
 			reader.BaseStream.Position = OriginalPos + 0x4;
-			var size = reader.ReadUInt32();
-
-			reader.BaseStream.Position = OriginalPos + 0x4;
-			var count = reader.ReadUInt32();
+			uint size = reader.ReadUInt32();
 
 			reader.BaseStream.Position = OriginalPos + 0xC;
 			reader.BaseStream.Position = (long)reader.ReadUInt32();
-
 
 			MessageData = reader.ReadBytes((int)size);
 			FileName = "";
@@ -56,7 +51,7 @@ namespace LibellusLibrary.Event.Types
 				FileName = "Message.bmd";
 			}
 
-			reader.BaseStream.Position = (long)OriginalPos;
+			reader.BaseStream.Position = OriginalPos;
 			return this;
 		}
 
@@ -67,7 +62,7 @@ namespace LibellusLibrary.Event.Types
 
 		public async Task LoadExternalFile(string directory)
 		{
-			MessageData = await File.ReadAllBytesAsync(directory + "\\" + FileName);
+			MessageData = await File.ReadAllBytesAsync(Path.Combine(directory, FileName));
 		}
 
 		internal override void SaveData(PmdBuilder builder, BinaryWriter writer)
@@ -75,6 +70,7 @@ namespace LibellusLibrary.Event.Types
 			writer.Write(MessageData);
 			return;
 		}
+		
 		internal override int GetSize() => MessageData.Length;
 		internal override int GetCount() => 1;
 
