@@ -1,13 +1,11 @@
 ﻿using LibellusLibrary.Event;
 
-
 namespace LibellusEventTool
 {
 	class Program
 	{
 		static async Task Main(string[] args)
 		{
-
 			System.Reflection.Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();
 			System.Diagnostics.FileVersionInfo fvi = System.Diagnostics.FileVersionInfo.GetVersionInfo(assembly.Location);
 			string version = fvi.FileVersion ?? "Null Version"; // Address CS8600 warning
@@ -26,7 +24,7 @@ namespace LibellusEventTool
 				if (ext == ".pm1" || ext == ".pm2" || ext == ".pm3")
 				{
 					Console.WriteLine("Coverting to Json: "+ file);;
-					PmdReader reader = new PmdReader();
+					PmdReader reader = new();
 					PolyMovieData pmd = await reader.ReadPmd(file);
 					// the "!" in Path.GetDirectoryName(file)! indicates null forgiveness
 					// Addresses CS8604 and should be safe considering that if this
@@ -38,7 +36,7 @@ namespace LibellusEventTool
 
 				if (ext == ".json")
 				{
-					Console.WriteLine("Coverting to PMD: "+ file);
+					Console.WriteLine("Coverting to PMD: " + file);
 					PolyMovieData pmd = await PolyMovieData.LoadPmd(Path.Combine(file));
 					string pmdext = "PM" + pmd.MagicCode[3];
 					pmd.SavePmd(file + "." + pmdext);
