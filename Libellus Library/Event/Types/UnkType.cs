@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
+﻿using System.Text.Json.Serialization;
 
 namespace LibellusLibrary.Event.Types
 {
@@ -16,14 +11,14 @@ namespace LibellusLibrary.Event.Types
 
 		public PmdDataType? ReadType(BinaryReader reader, uint version, List<PmdTypeID> typeIDs, PmdTypeFactory typeFactory)
 		{
-			var OriginalPos = reader.BaseStream.Position;
+			long OriginalPos = reader.BaseStream.Position;
 
 			reader.BaseStream.Position += 0x8;
-			var cnt = reader.ReadUInt32();
+			uint cnt = reader.ReadUInt32();
 			if (cnt== 0)
 			{
 				reader.BaseStream.Position = OriginalPos;
-				var empty = new PmdData_RawData();
+				PmdData_RawData empty = new();
 				empty.Data = new();
 				return empty;
 			}
@@ -35,9 +30,9 @@ namespace LibellusLibrary.Event.Types
 				return null;
 			}
 			
-			var type = new PmdData_RawData();
+			PmdData_RawData type = new();
 			reader.BaseStream.Position = OriginalPos + 0x4;
-			var size = reader.ReadUInt32();
+			uint size = reader.ReadUInt32();
 
 			reader.BaseStream.Position = OriginalPos + 0xC;
 			reader.BaseStream.Position = (long)reader.ReadUInt32();
@@ -45,7 +40,6 @@ namespace LibellusLibrary.Event.Types
 			{
 				type.Data.Add(reader.ReadBytes((int)size));
 			}
-
 
 			reader.BaseStream.Position = OriginalPos;
 			return type;
@@ -67,7 +61,6 @@ namespace LibellusLibrary.Event.Types
 			{
 				writer.Write(data);
 			}
-
 
 			return;
 		}

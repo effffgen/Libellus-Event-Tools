@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace LibellusLibrary.Event.Types
+﻿namespace LibellusLibrary.Event.Types
 {
 	public class PmdTypeFactory
 	{
@@ -49,7 +43,7 @@ namespace LibellusLibrary.Event.Types
 		private List<PmdTypeID> ReadTypes(BinaryReader reader, uint typeTableCount)
 		{
 			long originalpos = reader.BaseStream.Position;
-			List<PmdTypeID> types = new List<PmdTypeID>();
+			List<PmdTypeID> types = new();
 
 			for(int i = 0; i < typeTableCount; i++)
 			{

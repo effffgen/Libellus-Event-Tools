@@ -1,16 +1,10 @@
 ﻿using LibellusLibrary.Event.Types.Frame;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 
 namespace LibellusLibrary.Event.Types
 {
 	internal class PmdData_FrameTable : PmdDataType, ITypeCreator
 	{
-
 		[JsonConverter(typeof(PmdFrameReader))]
 		public List<PmdTargetType> Frames { get; set; }
 
@@ -25,13 +19,10 @@ namespace LibellusLibrary.Event.Types
 
 		public PmdDataType? ReadType(BinaryReader reader, uint version, List<PmdTypeID> typeIDs, PmdTypeFactory typeFactory)
 		{
-			var OriginalPos = reader.BaseStream.Position;
-
-			reader.BaseStream.Position = OriginalPos + 0x4;
-			var size = reader.ReadUInt32();
+			long OriginalPos = reader.BaseStream.Position;
 
 			reader.BaseStream.Position = OriginalPos + 0x8;
-			var count = reader.ReadUInt32();
+			uint count = reader.ReadUInt32();
 
 			reader.BaseStream.Position = OriginalPos + 0xC;
 			reader.BaseStream.Position = (long)reader.ReadUInt32();

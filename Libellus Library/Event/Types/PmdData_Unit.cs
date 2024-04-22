@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
+﻿using System.Text.Json.Serialization;
 using LibellusLibrary.Utils;
 using LibellusLibrary.Utils.IO;
 
@@ -12,7 +7,7 @@ namespace LibellusLibrary.Event.Types
 	internal class PmdData_Unit : PmdDataType, ITypeCreator, IExternalFile, IReferenceType
 	{
 		[JsonInclude]
-		public List<Pmd_UnitDef> Units {get; set;}
+		public List<Pmd_UnitDef> Units { get; set; }
 
 		public PmdDataType? CreateType(uint version)
 		{
@@ -38,15 +33,11 @@ namespace LibellusLibrary.Event.Types
 
 		public PmdDataType? ReadType(BinaryReader reader, uint version, List<PmdTypeID> typeIDs, PmdTypeFactory typeFactory)
 		{
-			if (Units == null)
-				Units = new();
-			var OriginalPos = reader.BaseStream.Position;
-
-			reader.BaseStream.Position = OriginalPos + 0x4;
-			var size = reader.ReadUInt32();
+			Units ??= new();
+			long OriginalPos = reader.BaseStream.Position;
 
 			reader.BaseStream.Position = OriginalPos + 0x8;
-			var count = reader.ReadUInt32();
+			uint count = reader.ReadUInt32();
 
 			reader.BaseStream.Position = OriginalPos + 0xC;
 			reader.BaseStream.Position = (long)reader.ReadUInt32();
@@ -59,7 +50,7 @@ namespace LibellusLibrary.Event.Types
 				Units.Add(unit);
 			}
 
-			reader.BaseStream.Position = (long)OriginalPos;
+			reader.BaseStream.Position = OriginalPos;
 			return this;
 
 		}
@@ -91,7 +82,7 @@ namespace LibellusLibrary.Event.Types
 	internal class Pmd_UnitDef: IReferenceType
 	{
 		public string FileName { get; set; }
-		public byte[] UnitData;
+		public byte[] UnitData = Array.Empty<byte>();
 
 		public int MajorID { get; set; }
 		public int MinorID { get; set; }
@@ -109,8 +100,7 @@ namespace LibellusLibrary.Event.Types
 			var offset = reader.ReadInt32();
 			var size = reader.ReadInt32();
 			ModelType = (ObjectType)reader.ReadInt32();
-			reader.ReadInt32();// reserve
-
+			reader.ReadInt32(); // reserve
 			var originalpos = reader.BaseStream.Position;
 			reader.FSeek(offset);
 			UnitData = reader.ReadBytes(size);
@@ -120,14 +110,12 @@ namespace LibellusLibrary.Event.Types
 		{
 			writer.Write(NameIndex);
 			writer.Write(NameIndex);
-
 			writer.Write(MajorID);
 			writer.Write(MinorID);
 			writer.Write((int)unitDataOffset);
-			writer.Write(((int)UnitData.Length));
+			writer.Write(UnitData.Length);
 			writer.Write((int)ModelType);
-			writer.Write((int)0); // Reserve
-
+			writer.Write(0); // Reserve
 			writer.FSeek(unitDataOffset);
 			writer.Write(UnitData);
 		}

@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Text.Json;
-using System.Text.Json.Serialization;
-using LibellusLibrary.JSON;
-using LibellusLibrary.Utils;
+﻿using LibellusLibrary.Utils;
 
 namespace LibellusLibrary.Event.Types
 {
@@ -14,7 +6,7 @@ namespace LibellusLibrary.Event.Types
 	{
 		public string FileName { get; set; }
 
-		public byte[] MessageData;
+		public byte[] MessageData = Array.Empty<byte>();
 
 		public PmdDataType? CreateType(uint version)
 		{
