@@ -1,10 +1,4 @@
 ﻿using LibellusLibrary.Event.Types;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using LibellusLibrary.Utils;
 using System.Collections.Concurrent;
 using LibellusLibrary.Utils.IO;
 
@@ -28,11 +22,12 @@ namespace LibellusLibrary.Event
 		}
 
 		// I sincerely apologize for the absolute hell that is the writing code
-		//I dont know what the fuck I was smoking but I know if I touch it, the whole thing will explode
+		// I dont know what the fuck I was smoking but I know if I touch it, the whole thing will explode
+		// TODO: Fix CS1998?
 		internal async Task<MemoryStream> CreatePmd(string path)
 		{
 			
-			MemoryStream pmdFile = new MemoryStream();
+			MemoryStream pmdFile = new();
 			using var writer = new BinaryWriter(pmdFile);
 
 			//await using DisposableDictionaryAsync<PmdDataType, long> dataTypes = new();
@@ -48,10 +43,10 @@ namespace LibellusLibrary.Event
 			writer.FSeek(0x20 + 0x10 * Pmd.PmdDataTypes.Count + 0x10);
 			foreach (var referenceType in ReferenceTables)
 			{
-				var dataType = new PmdData_RawData();
+				PmdData_RawData dataType = new();
 				dataType.Type = referenceType.Key;
 				dataType.Data = referenceType.Value;
-				var start = writer.FTell();
+				long start = writer.FTell();
 				dataType.SaveData(this, writer);
 				dataTypes.Add(dataType, start);
 				//writer.Write(dataTypes[dataType].Item1.ToArray());
@@ -60,7 +55,7 @@ namespace LibellusLibrary.Event
 			List<Task<MemoryStream>> writeDataTasks = new();
 			foreach (PmdDataType pmdData in Pmd.PmdDataTypes)
 			{
-				var start = writer.FTell();
+				long start = writer.FTell();
 				pmdData.SaveData(this, writer);
 				dataTypes.Add(pmdData, start);
 				//writer.Write(dataTypes[pmdData].Item1.ToArray());
@@ -90,14 +85,14 @@ namespace LibellusLibrary.Event
 
 
 			writer.Seek(0, SeekOrigin.Begin);
-			writer.Write((int)0); // Filetype/format/userid
+			writer.Write(0); // Filetype/format/userid
 			writer.Write((int)pmdFile.Length);
 			writer.Write(Pmd.MagicCode.ToCharArray());
-			writer.Write((int)0); // Expand Size
+			writer.Write(0); // Expand Size
 			writer.Write(dataTypes.Count);
 			writer.Write(Pmd.Version);
-			writer.Write((int)0); //Reserve
-			writer.Write((int)0);
+			writer.Write(0); //Reserve
+			writer.Write(0);
 
 
 			// Create Type table
@@ -111,7 +106,6 @@ namespace LibellusLibrary.Event
 				writer.Write((int)dataType.Key.GetCount());
 				writer.Write((int)dataType.Value); // Offset
 			}
-
 
 			return pmdFile;
 		}

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Text.Json;
+﻿using System.Text.Json;
 using System.Text.Json.Serialization;
 using LibellusLibrary.Event.Types;
 
@@ -15,11 +10,9 @@ namespace LibellusLibrary.Event
 		public string MagicCode { get; set; }
 		public uint Version { get; set; }
 
-
 		public List<PmdDataType> PmdDataTypes { get; set; }
 
 		//internal Dictionary<PmdTypeID,List<>>
-
 
 		//Returns TypeTable Count
 		public uint ReadHeader(BinaryReader reader)
@@ -36,8 +29,6 @@ namespace LibellusLibrary.Event
 			return TypeTableCount;
 		}
 
-
-
 		/// <summary>
 		/// Serialize PMD
 		/// </summary>
@@ -51,9 +42,9 @@ namespace LibellusLibrary.Event
 			var json = JsonSerializer.Serialize<PolyMovieData>(this, options);
 			json = JSON.Utilities.BeautifyJson(json);
 			Directory.CreateDirectory(directoryToExtract);
-			var tasks = new List<Task>();
+			List<Task> tasks = new();
 			tasks.Add(Task.Run(() => File.WriteAllTextAsync(Path.Combine(directoryToExtract, filename + ".json"), json)));
-			foreach (var dataType in PmdDataTypes)
+			foreach (PmdDataType dataType in PmdDataTypes)
 			{
 				if (dataType is Types.IExternalFile fileType)
 				{
@@ -70,16 +61,16 @@ namespace LibellusLibrary.Event
 			{
 				throw new ArgumentException("Error while opening file.\nFile does not exist!\nFile: " + path);
 			}
-			using (MemoryStream stream = new MemoryStream(await File.ReadAllBytesAsync(path)))
+			using (MemoryStream stream = new(await File.ReadAllBytesAsync(path)))
 			{
-				var pmd = JsonSerializer.Deserialize<PolyMovieData>(stream);
+				PolyMovieData pmd = JsonSerializer.Deserialize<PolyMovieData>(stream)!;
 				List<Task> tasks = new();
 				// This the final step, the last battle!
 				foreach (PmdDataType data in pmd.PmdDataTypes)
 				{
 					if (data is IExternalFile externalData)
 					{
-						tasks.Add(externalData.LoadExternalFile(Directory.GetParent(path).FullName));
+						tasks.Add(externalData.LoadExternalFile(Directory.GetParent(path)!.FullName));
 					}
 				}
 				await Task.WhenAll(tasks);
@@ -89,13 +80,11 @@ namespace LibellusLibrary.Event
 
 		public async void SavePmd(string path)
 		{
-
 			PmdBuilder builder = new(this);
 			//File.Create(path);
 			var stream = await builder.CreatePmd(path);
-			File.WriteAllBytes(path,stream.ToArray());
+			File.WriteAllBytes(path, stream.ToArray());
 			stream.Close();
-
 		}
 	}
 }
