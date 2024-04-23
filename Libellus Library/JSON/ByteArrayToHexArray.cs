@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.Json;
+﻿using System.Text.Json;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 
 namespace LibellusLibrary.JSON
 {
@@ -19,7 +14,7 @@ namespace LibellusLibrary.JSON
 		{
 			if (reader.TokenType == JsonTokenType.String)
 			{
-				var hex = reader.GetString();
+				string? hex = reader.GetString();
 				if (!string.IsNullOrEmpty(hex))
 				{
 					hex = hex.Replace(" ", string.Empty);
@@ -34,8 +29,8 @@ namespace LibellusLibrary.JSON
 
 		public override void Write(Utf8JsonWriter writer, byte[] value, JsonSerializerOptions options)
 		{
-			var bytes = value as byte[];
-			var @string = BitConverter.ToString(bytes).Replace("-", " ");
+			byte[] bytes = value;
+			string? @string = BitConverter.ToString(bytes).Replace("-", " ");
 			writer.WriteStringValue(@string);
 
 		}
