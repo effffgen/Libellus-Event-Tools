@@ -23,7 +23,7 @@ namespace LibellusEventTool
 				string ext = Path.GetExtension(file).ToLower();
 				if (ext == ".pm1" || ext == ".pm2" || ext == ".pm3")
 				{
-					Console.WriteLine("Coverting to Json: "+ file);;
+					Console.WriteLine("Coverting to Json: "+ file);
 					PmdReader reader = new();
 					PolyMovieData pmd = await reader.ReadPmd(file);
 					// the "!" in Path.GetDirectoryName(file)! indicates null forgiveness

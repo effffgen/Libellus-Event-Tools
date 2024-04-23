@@ -26,7 +26,6 @@ namespace LibellusLibrary.Event
 		// TODO: Fix CS1998?
 		internal async Task<MemoryStream> CreatePmd(string path)
 		{
-			
 			MemoryStream pmdFile = new();
 			using var writer = new BinaryWriter(pmdFile);
 

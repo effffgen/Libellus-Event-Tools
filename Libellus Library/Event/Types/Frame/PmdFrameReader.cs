@@ -23,7 +23,7 @@ namespace LibellusLibrary.Event.Types.Frame
 
 			while (abstractReader.TokenType != JsonTokenType.EndArray)
 			{
-				var abstractType = JsonSerializer.Deserialize<PmdTargetType>(ref abstractReader, options);
+				PmdTargetType abstractType = JsonSerializer.Deserialize<PmdTargetType>(ref abstractReader, options)!;
 				abstractTypes.Add(abstractType);
 				abstractReader.Read();
 
@@ -32,10 +32,7 @@ namespace LibellusLibrary.Event.Types.Frame
 			foreach (PmdTargetType abstractType in abstractTypes)
 			{
 				Type trueDataType = PmdFrameFactory.GetFrameType(abstractType.TargetType).GetType();
-
-
-
-				frames.Add((PmdTargetType)JsonSerializer.Deserialize(ref reader, trueDataType, options));
+				frames.Add((PmdTargetType)JsonSerializer.Deserialize(ref reader, trueDataType, options)!);
 				reader.Read();
 			}
 			//reader.Read();
