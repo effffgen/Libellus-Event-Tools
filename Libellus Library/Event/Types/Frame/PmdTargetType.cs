@@ -9,7 +9,6 @@ using static LibellusLibrary.Event.Types.Frame.PmdFrameFactory;
 
 namespace LibellusLibrary.Event.Types.Frame
 {
-
 	public class PmdTargetType
 	{
 		[JsonPropertyOrder(-100)]
