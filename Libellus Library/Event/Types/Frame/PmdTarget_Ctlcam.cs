@@ -44,7 +44,7 @@ namespace LibellusLibrary.Event.Types.Frame
 
         [JsonPropertyOrder(-81)]
         [JsonConverter(typeof(ByteArrayToHexArray))]
-        public byte[] Data { get; set; }
+        public byte[] Data { get; set; } = Array.Empty<byte>();
 
         internal enum CameraModeEnum : ushort
         {

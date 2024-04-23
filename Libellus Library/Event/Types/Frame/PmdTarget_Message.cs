@@ -28,7 +28,7 @@ namespace LibellusLibrary.Event.Types.Frame
 
         [JsonPropertyOrder(-86)]
         [JsonConverter(typeof(ByteArrayToHexArray))]
-        public byte[] Data2 { get; set; }
+        public byte[] Data2 { get; set; } = Array.Empty<byte>();
 
         internal enum MessageModeEnum : byte
         {

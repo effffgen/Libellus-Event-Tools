@@ -20,7 +20,7 @@ namespace LibellusLibrary.Event.Types.Frame
 
         [JsonPropertyOrder(-90)]
         [JsonConverter(typeof(ByteArrayToHexArray))]
-        public byte[] Data3 { get; set; }
+        public byte[] Data3 { get; set; } = Array.Empty<byte>();
 
         protected override void ReadData(BinaryReader reader)
         {

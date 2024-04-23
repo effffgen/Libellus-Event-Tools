@@ -12,8 +12,8 @@ namespace LibellusLibrary.Event.Types.Frame
 
         [JsonPropertyOrder(-91)]
         [JsonConverter(typeof(ByteArrayToHexArray))]
-        public byte[] Data { get; set; }
-        
+        public byte[] Data { get; set; } = Array.Empty<byte>();
+
         // PERU == Persona?
         internal enum EventModeEnum : uint
         {

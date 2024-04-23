@@ -14,7 +14,7 @@ namespace LibellusLibrary.Event.Types.Frame
 
 		[JsonPropertyOrder(-90)]
 		[JsonConverter(typeof(ByteArrayToHexArray))]
-		public byte[] Data { get; set; }
+		public byte[] Data { get; set; } = Array.Empty<byte>();
 
 		// This is only accurate for P3; P4(G) removes some of these from the Event Editor menu
 		// TODO: Figure out a way to address that discrepancy
