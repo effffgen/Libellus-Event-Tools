@@ -37,7 +37,7 @@ namespace LibellusEventTool
 				if (ext == ".json")
 				{
 					Console.WriteLine("Coverting to PMD: " + file);
-					PolyMovieData pmd = await PolyMovieData.LoadPmd(Path.Combine(file));
+					PolyMovieData pmd = await PolyMovieData.LoadPmd(file);
 					string pmdext = "PM" + pmd.MagicCode[3];
 					pmd.SavePmd(file + "." + pmdext);
 				}
