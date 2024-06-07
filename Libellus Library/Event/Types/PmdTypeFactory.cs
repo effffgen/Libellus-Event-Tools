@@ -30,6 +30,7 @@
 			PmdTypeID.Unit => new PmdData_Unit(),
 			PmdTypeID.FrameTable => new PmdData_FrameTable(),
 			PmdTypeID.Message => new PmdData_Message(),
+			PmdTypeID.ObjectTable => new PmdData_ObjectTable(),
 			_ => new UnkType()
 		};
 
