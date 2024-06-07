@@ -10,10 +10,10 @@ namespace LibellusLibrary.Event.Types.Frame
 	{
 		public List<PmdTargetType> ReadDataTypes(BinaryReader reader, uint typeTableCount)
 		{
-			
-			var typeIDs = ReadTypes(reader, typeTableCount);
+			List<PmdTargetTypeID> typeIDs = ReadTypes(reader, typeTableCount);
 			List<PmdTargetType> frames = new();
-			foreach (var type in typeIDs)
+
+			foreach (PmdTargetTypeID type in typeIDs)
 			{
 				PmdTargetType? dataType = GetFrameType(type);
 				dataType.ReadFrame(reader);
@@ -48,7 +48,7 @@ namespace LibellusLibrary.Event.Types.Frame
 			PmdTargetTypeID.JUMP => new PmdTarget_Jump(),
 			PmdTargetTypeID.CUSTOMEVENT => new PmdTarget_CustomEvent(),
 			PmdTargetTypeID.SCRIPT => new PmdTarget_Script(),
-			_ =>new PmdTarget_Unknown()
+			_ => new PmdTarget_Unknown()
 		};
 
 		public enum PmdTargetTypeID
@@ -77,7 +77,6 @@ namespace LibellusLibrary.Event.Types.Frame
 			MG2 = 21,
 			FB = 22,
 			RBLUR = 23,
-
 			TMX = 24,
 
 			EPL = 26,
