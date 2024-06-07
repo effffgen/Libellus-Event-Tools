@@ -42,7 +42,7 @@ namespace LibellusLibrary.Event.Types
 			}
 		}
 		internal override int GetCount() => Frames.Count;
-		internal override int GetSize() => 0x3c; // Data size doesnt matter for certain types
+		internal override int GetSize() => 0x3C; // Data size doesnt matter for certain types
 
 	}
 
