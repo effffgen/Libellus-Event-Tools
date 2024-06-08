@@ -21,15 +21,20 @@ namespace LibellusLibrary.Event.Types
 		public PmdDataType? ReadType(BinaryReader reader, uint version, List<PmdTypeID> typeIDs, PmdTypeFactory typeFactory)
 		{
 			long OriginalPos = reader.BaseStream.Position;
-			
+
 			reader.BaseStream.Position = OriginalPos + 0x8;
 			uint count = reader.ReadUInt32();
-			
+
 			reader.BaseStream.Position = OriginalPos + 0xC;
 			reader.BaseStream.Position = (long)reader.ReadUInt32();
-			
-			PmdBezierFactory factory = new();
-			Beziers = factory.ReadBeziers(reader, count);
+
+			Beziers = new();
+			for (int i = 0; i < count; i++)
+			{
+				PmdBezier currentBezier = new PmdBezier();
+				currentBezier.ReadBezier(reader);
+				Beziers.Add(currentBezier);
+			}
 
 			reader.BaseStream.Position = OriginalPos;
 			return this;
