@@ -21,12 +21,12 @@
 
 		public PmdDataType? ReadType(BinaryReader reader, uint version, List<PmdTypeID> typeIDs, PmdTypeFactory typeFactory)
 		{
-			var OriginalPos = reader.BaseStream.Position;
+			long OriginalPos = reader.BaseStream.Position;
 
 			reader.BaseStream.Position = OriginalPos + 0xC;
 			reader.BaseStream.Position = (long)reader.ReadUInt32();
 
-			var cut = CreateFromVersion(version, reader);
+			PmdDataType cut = CreateFromVersion(version, reader);
 			reader.BaseStream.Position = OriginalPos;
 			return cut;
 		}
