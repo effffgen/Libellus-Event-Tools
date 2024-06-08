@@ -8,7 +8,7 @@ namespace LibellusLibrary.Event.Types
 	{
 		[JsonConverter(typeof(PmdObjectReader))]
 		public List<PmdObject> Objects { get; set; }
-		
+
 		public PmdDataType? CreateType(uint version)
 		{
 			return version switch
@@ -21,20 +21,25 @@ namespace LibellusLibrary.Event.Types
 		public PmdDataType? ReadType(BinaryReader reader, uint version, List<PmdTypeID> typeIDs, PmdTypeFactory typeFactory)
 		{
 			long OriginalPos = reader.BaseStream.Position;
-			
+
 			reader.BaseStream.Position = OriginalPos + 0x8;
 			uint count = reader.ReadUInt32();
-			
+
 			reader.BaseStream.Position = OriginalPos + 0xC;
 			reader.BaseStream.Position = (long)reader.ReadUInt32();
-			
-			PmdObjectFactory factory = new();
-			Objects = factory.ReadObjects(reader, count);
+
+			Objects = new();
+			for (int i = 0; i < count; i++)
+			{
+				PmdObject currentObject = new PmdObject();
+				currentObject.ReadObject(reader);
+				Objects.Add(currentObject);
+			}
 
 			reader.BaseStream.Position = OriginalPos;
 			return this;
 		}
-		
+
 		internal override void SaveData(PmdBuilder builder, BinaryWriter writer)
 		{
 			foreach(PmdObject obj in Objects)
