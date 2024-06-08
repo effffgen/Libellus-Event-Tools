@@ -31,6 +31,7 @@
 			PmdTypeID.FrameTable => new PmdData_FrameTable(),
 			PmdTypeID.Message => new PmdData_Message(),
 			PmdTypeID.ObjectTable => new PmdData_ObjectTable(),
+			PmdTypeID.BezierTable => new PmdData_BezierTable(),
 			_ => new UnkType()
 		};
 
