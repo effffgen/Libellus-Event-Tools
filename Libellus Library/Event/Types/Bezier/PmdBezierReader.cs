@@ -25,7 +25,6 @@ namespace LibellusLibrary.Event.Types.Bezier
 				PmdBezier abstractType = JsonSerializer.Deserialize<PmdBezier>(ref abstractReader, options)!;
 				abstractTypes.Add(abstractType);
 				abstractReader.Read();
-
 			}
 
 			foreach (PmdBezier abstractType in abstractTypes)
@@ -34,7 +33,7 @@ namespace LibellusLibrary.Event.Types.Bezier
 				Beziers.Add((PmdBezier)JsonSerializer.Deserialize(ref reader, trueDataType, options)!);
 				reader.Read();
 			}
-			//reader.Read();
+
 			return Beziers;
 		}
 
