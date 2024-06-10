@@ -3,13 +3,14 @@
 	public class PmdTypeFactory
 	{
 		private List<PmdDataType> _types = new();
+		private List<string> _names = new();
 		public List<PmdTypeID> typeIDs = new();
 
 		public List<PmdDataType> ReadDataTypes(BinaryReader reader, uint typeTableCount, uint version)
 		{
 			_types = new List<PmdDataType>();
 			typeIDs = ReadTypes(reader, typeTableCount);
-			foreach(var type in typeIDs)
+			foreach(PmdTypeID type in typeIDs)
 			{
 				ITypeCreator typecreator = GetTypeCreator(type);
 
@@ -50,7 +51,7 @@
 			for(int i = 0; i < typeTableCount; i++)
 			{
 				types.Add((PmdTypeID)reader.ReadUInt32());
-				reader.BaseStream.Position += 0x0c;
+				reader.BaseStream.Position += 0x0C;
 			}
 			reader.BaseStream.Position = originalpos;
 			return types;
@@ -58,25 +59,30 @@
 
 		public List<string> GetNameTable(BinaryReader reader)
 		{
-			var originalpos = reader.BaseStream.Position;
-			var names = new List<string>();
+			// Return list early if we already have it, else create and return it
+			if (_names.Any())
+			{
+				return _names;
+			}
+			
+			long originalpos = reader.BaseStream.Position;
 			for(int i = 0; i < typeIDs.Count; i++)
 			{
 				if(typeIDs[i] == PmdTypeID.Name)
 				{
 					reader.BaseStream.Position = 0x20 + (0x10 * i) + 0x8;
-					var nameCount = reader.ReadUInt32();
+					uint nameCount = reader.ReadUInt32();
 					reader.BaseStream.Position = reader.ReadUInt32();
 
 					for(int j = 0; j < nameCount; j++)
 					{
 						string data = new(reader.ReadChars(32));
-						names.Add(data.Replace("\0", string.Empty));
+						_names.Add(data.Replace("\0", string.Empty));
 					}
 				}
 			}
 			reader.BaseStream.Position = originalpos;
-			return names;
+			return _names;
 		}
 	}
 }
