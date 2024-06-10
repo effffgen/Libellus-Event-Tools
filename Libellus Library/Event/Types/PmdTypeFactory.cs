@@ -4,6 +4,7 @@
 	{
 		private List<PmdDataType> _types = new();
 		private List<string> _names = new();
+		private int _effectsLength = -1;
 		public List<PmdTypeID> typeIDs = new();
 
 		public List<PmdDataType> ReadDataTypes(BinaryReader reader, uint typeTableCount, uint version)
@@ -31,6 +32,7 @@
 			PmdTypeID.Unit => new PmdData_Unit(),
 			PmdTypeID.FrameTable => new PmdData_FrameTable(),
 			PmdTypeID.Message => new PmdData_Message(),
+			PmdTypeID.Effect => new PmdData_Effect(),
 			PmdTypeID.ObjectTable => new PmdData_ObjectTable(),
 			PmdTypeID.BezierTable => new PmdData_BezierTable(),
 			_ => new UnkType()
@@ -38,6 +40,7 @@
 
 		public static bool IsSerialized(PmdTypeID type) => type switch
 		{
+			PmdTypeID.EffectData => false,
 			PmdTypeID.UnitData => false,
 			PmdTypeID.Name => false,
 			_ => true
@@ -83,6 +86,26 @@
 			}
 			reader.BaseStream.Position = originalpos;
 			return _names;
+		}
+		
+		public int GetEffectsLength(BinaryReader reader)
+		{
+			// If we already know the length, return it
+			if (_effectsLength != -1)
+			{
+				return _effectsLength;
+			}
+			long originalpos = reader.BaseStream.Position;
+			int effDataID = typeIDs.IndexOf(PmdTypeID.EffectData);
+			if (effDataID == -1)
+			{
+				return effDataID; // return -1
+			}
+			reader.BaseStream.Position = 0x20 + (0x10 * effDataID) + 0x4;
+			// We only get the size property since count is always `1` for EffectData table
+			_effectsLength = reader.ReadInt32();
+			reader.BaseStream.Position = originalpos;
+			return _effectsLength;
 		}
 	}
 }
