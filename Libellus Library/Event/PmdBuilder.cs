@@ -30,7 +30,7 @@ namespace LibellusLibrary.Event
 			using var writer = new BinaryWriter(pmdFile);
 
 			//await using DisposableDictionaryAsync<PmdDataType, long> dataTypes = new();
-			Dictionary<PmdDataType,long> dataTypes = new();
+			Dictionary<PmdDataType, long> dataTypes = new();
 			// Type, offset
 			foreach (PmdDataType pmdData in Pmd.PmdDataTypes)
 			{

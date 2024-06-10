@@ -68,7 +68,7 @@ namespace LibellusLibrary.Event.Types
 			return this;
 		}
 
-		internal override void SaveData(PmdBuilder builder,BinaryWriter writer)
+		internal override void SaveData(PmdBuilder builder, BinaryWriter writer)
 		{
 			long start = writer.FTell();
 			long dataOffset = writer.FTell() + 0x10 * Effects.Count;
