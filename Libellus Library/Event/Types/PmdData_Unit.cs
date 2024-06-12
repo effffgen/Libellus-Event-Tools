@@ -16,16 +16,16 @@ namespace LibellusLibrary.Event.Types
 
 		public async Task LoadExternalFile(string directory)
 		{
-			foreach(var unit in Units)
+			foreach(Pmd_UnitDef unit in Units)
 			{
-				unit.UnitData = await File.ReadAllBytesAsync(directory + "\\" + unit.FileName);
+				unit.UnitData = await File.ReadAllBytesAsync(Path.Combine(directory, unit.FileName));
 			}
 			
 		}
 
 		public async Task SaveExternalFile(string directory)
 		{
-			foreach (var unit in Units)
+			foreach (Pmd_UnitDef unit in Units)
 			{
 				await File.WriteAllBytesAsync(Path.Combine(directory, unit.FileName), unit.UnitData);
 			}
@@ -41,11 +41,11 @@ namespace LibellusLibrary.Event.Types
 
 			reader.BaseStream.Position = OriginalPos + 0xC;
 			reader.BaseStream.Position = (long)reader.ReadUInt32();
-			var unitStart = reader.FTell();
+			long unitStart = reader.FTell();
 			for(int i = 0; i < count; i++)
 			{
 				reader.FSeek(unitStart + i * 0x20);
-				var unit = new Pmd_UnitDef();
+				Pmd_UnitDef unit = new();
 				unit.ReadUnit(reader, typeFactory);
 				Units.Add(unit);
 			}
@@ -57,8 +57,8 @@ namespace LibellusLibrary.Event.Types
 
 		internal override void SaveData(PmdBuilder builder,BinaryWriter writer)
 		{
-			var start = writer.FTell();
-			var dataOffset = writer.FTell()+0x20*Units.Count;
+			long start = writer.FTell();
+			long dataOffset = writer.FTell()+0x20*Units.Count;
 
 			for(int i=0; i < Units.Count;i++)
 			{
@@ -97,16 +97,16 @@ namespace LibellusLibrary.Event.Types
 			reader.ReadInt32(); // FileIndex, should be the same as above
 			MajorID = reader.ReadInt32();
 			MinorID = reader.ReadInt32();
-			var offset = reader.ReadInt32();
-			var size = reader.ReadInt32();
+			int offset = reader.ReadInt32();
+			int size = reader.ReadInt32();
 			ModelType = (ObjectType)reader.ReadInt32();
 			reader.ReadInt32(); // reserve
-			var originalpos = reader.BaseStream.Position;
+			long originalpos = reader.BaseStream.Position;
 			reader.FSeek(offset);
 			UnitData = reader.ReadBytes(size);
 			reader.BaseStream.Position = originalpos;
 		}
-		public void WriteUnit(BinaryWriter writer,long unitDataOffset)
+		public void WriteUnit(BinaryWriter writer, long unitDataOffset)
 		{
 			writer.Write(NameIndex);
 			writer.Write(NameIndex);

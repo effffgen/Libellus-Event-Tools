@@ -16,15 +16,15 @@ namespace LibellusLibrary.Event.Types
 
 		public async Task LoadExternalFile(string directory)
 		{
-			foreach(var Effect in Effects)
+			foreach(Pmd_EffectDef Effect in Effects)
 			{
-				Effect.EffectData = await File.ReadAllBytesAsync(directory + "\\" + Effect.FileName);
+				Effect.EffectData = await File.ReadAllBytesAsync(Path.Combine(directory, Effect.FileName));
 			}
 		}
 
 		public async Task SaveExternalFile(string directory)
 		{
-			foreach (var Effect in Effects)
+			foreach (Pmd_EffectDef Effect in Effects)
 			{
 				await File.WriteAllBytesAsync(Path.Combine(directory, Effect.FileName), Effect.EffectData);
 			}
