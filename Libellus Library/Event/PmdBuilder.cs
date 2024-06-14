@@ -59,8 +59,7 @@ namespace LibellusLibrary.Event
 				dataTypes.Add(pmdData, start);
 				//writer.Write(dataTypes[pmdData].Item1.ToArray());
 			}
-			
-			
+
 			/*
 			// I know this is incredibly cursed and I have no idea why this was neccessary
 			var reversed = dataStreams.ToDictionary(x => x.Value, x => x.Key);
@@ -80,9 +79,8 @@ namespace LibellusLibrary.Event
 			
 			await Task.WhenAll(writeFileTasks);
 			*/
+
 			// Write Header
-
-
 			writer.Seek(0, SeekOrigin.Begin);
 			writer.Write(0); // Filetype/format/userid
 			writer.Write((int)pmdFile.Length);
@@ -93,7 +91,6 @@ namespace LibellusLibrary.Event
 			writer.Write(0); //Reserve
 			writer.Write(0);
 
-
 			// Create Type table
 			writer.FSeek(0x20);
 			// Write the type table in the correct order
@@ -101,8 +98,8 @@ namespace LibellusLibrary.Event
 			foreach (KeyValuePair<PmdDataType, long> dataType in dataTypes)
 			{
 				writer.Write((int)dataType.Key.Type);
-				writer.Write((int)dataType.Key.GetSize());// Size
-				writer.Write((int)dataType.Key.GetCount());
+				writer.Write(dataType.Key.GetSize()); // Size
+				writer.Write(dataType.Key.GetCount());
 				writer.Write((int)dataType.Value); // Offset
 			}
 
