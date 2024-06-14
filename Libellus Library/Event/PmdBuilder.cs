@@ -28,8 +28,6 @@ namespace LibellusLibrary.Event
 		{
 			MemoryStream pmdFile = new();
 			using var writer = new BinaryWriter(pmdFile);
-
-			//await using DisposableDictionaryAsync<PmdDataType, long> dataTypes = new();
 			Dictionary<PmdDataType, long> dataTypes = new();
 			// Type, offset
 			foreach (PmdDataType pmdData in Pmd.PmdDataTypes)
@@ -39,7 +37,7 @@ namespace LibellusLibrary.Event
 					reference.SetReferences(this);
 				}
 			}
-			writer.FSeek(0x20 + 0x10 * Pmd.PmdDataTypes.Count + 0x10);
+			writer.FSeek(0x20 + 0x10 * (Pmd.PmdDataTypes.Count + ReferenceTables.Count));
 			foreach (var referenceType in ReferenceTables)
 			{
 				PmdData_RawData dataType = new();
@@ -48,37 +46,14 @@ namespace LibellusLibrary.Event
 				long start = writer.FTell();
 				dataType.SaveData(this, writer);
 				dataTypes.Add(dataType, start);
-				//writer.Write(dataTypes[dataType].Item1.ToArray());
 			}
 
-			// List<Task<MemoryStream>> writeDataTasks = new();
 			foreach (PmdDataType pmdData in Pmd.PmdDataTypes)
 			{
 				long start = writer.FTell();
 				pmdData.SaveData(this, writer);
 				dataTypes.Add(pmdData, start);
-				//writer.Write(dataTypes[pmdData].Item1.ToArray());
 			}
-
-			/*
-			// I know this is incredibly cursed and I have no idea why this was neccessary
-			var reversed = dataStreams.ToDictionary(x => x.Value, x => x.Key);
-			//reversed.Reverse();
-			
-			// Gives us plenty of space to write
-			pmdFile.Seek(0x20 + 0x10 * Pmd.PmdDataTypes.Count + 0x40, SeekOrigin.Begin);
-			List<Task> writeFileTasks = new();
-			foreach (var bucket in Async.Interleaved<MemoryStream>(writeDataTasks))
-			{   // Process tasks as they finish ie. write to file as soon as memory buffer is done
-				var t = await bucket;
-				var result = await t;
-				long offset = pmdFile.Position;
-				offsets.Add(reversed[result], offset);
-				writeFileTasks.Add(pmdFile.WriteAsync(result.GetBuffer()).AsTask());
-			}
-			
-			await Task.WhenAll(writeFileTasks);
-			*/
 
 			// Write Header
 			writer.Seek(0, SeekOrigin.Begin);
@@ -94,7 +69,6 @@ namespace LibellusLibrary.Event
 			// Create Type table
 			writer.FSeek(0x20);
 			// Write the type table in the correct order
-			//IEnumerable<KeyValuePair<PmdDataType, long>> dataTypes = offsets.Reverse();
 			foreach (KeyValuePair<PmdDataType, long> dataType in dataTypes)
 			{
 				writer.Write((int)dataType.Key.Type);
