@@ -68,6 +68,10 @@ namespace LibellusLibrary.Event.Types
 
 		public void SetReferences(PmdBuilder pmdBuilder)
 		{
+			if (FileName.EndsWith(".bmd"))
+			{
+				FileName = FileName.Substring(0, FileName.LastIndexOf('.')) + ".msg";
+			}
 			byte[] temp = Text.StringtoASCII8(FileName);
 			System.Array.Resize(ref temp, 32);
 			pmdBuilder.AddReference(PmdTypeID.Name, temp);
