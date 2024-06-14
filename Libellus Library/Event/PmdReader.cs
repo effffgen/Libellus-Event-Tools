@@ -45,7 +45,7 @@ namespace LibellusLibrary.Event
 		// TODO: We do null forgiveness on a lot of vars here to address CS warnings, but we should probably actually account for the rare chance of them being null for real
 		public override PolyMovieData? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
 		{
-			var pmd = new PolyMovieData();
+			PolyMovieData pmd = new();
 			//	var data = reader.ReadJSONTokens();
 			reader.Read(); // startobject
 			reader.Read(); // MagicCode:
