@@ -3,3 +3,7 @@ A set of tools meant to help with the conversion and editing of the PM1/PM2/PM3 
 
 ## Current Features
 - Conversion of PMD to and from JSON
+
+## Supported PMD Versions
+- 12
+  - Used in Persona 3 (Original and FES), Persona 4 and Persona 4 Golden
