@@ -1,11 +1,11 @@
 ﻿namespace LibellusLibrary.Event.Types
 {
-	internal class PmdData_Cutinfo : PmdDataType, ITypeCreator, IVersionable
+	internal class PmdData_CutInfo : PmdDataType, ITypeCreator, IVersionable
 	{
 		public PmdDataType CreateFromVersion(uint version, BinaryReader reader)
 		{
 			return version switch {
-				12=> new PmdData_P3Cutinfo(reader),
+				12=> new PmdData_P3CutInfo(reader),
 				_ => throw new NotImplementedException(),
 			};
 		}
@@ -14,7 +14,7 @@
 		{
 			return version switch
 			{
-				12 => new PmdData_P3Cutinfo(),
+				12 => new PmdData_P3CutInfo(),
 				_ => throw new NotImplementedException(),
 			};
 		}
@@ -32,7 +32,7 @@
 		}
 	}
 
-	public class PmdData_P3Cutinfo : PmdDataType
+	public class PmdData_P3CutInfo : PmdDataType
 	{
 		public int FirstFrame { get; set; }
 		public int LastFrame { get; set; }
@@ -51,11 +51,11 @@
 
 		public int Flags { get; set; }
 
-		public PmdData_P3Cutinfo()
+		public PmdData_P3CutInfo()
 		{
 			return;
 		}
-		public PmdData_P3Cutinfo(BinaryReader reader)
+		public PmdData_P3CutInfo(BinaryReader reader)
 		{
 			FirstFrame = reader.ReadInt32();
 			LastFrame = reader.ReadInt32();

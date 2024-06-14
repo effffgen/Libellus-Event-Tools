@@ -28,7 +28,7 @@
 
 		public static ITypeCreator GetTypeCreator(PmdTypeID Type) => Type switch
 		{
-			PmdTypeID.CutInfo => new PmdData_Cutinfo(),
+			PmdTypeID.CutInfo => new PmdData_CutInfo(),
 			PmdTypeID.Unit => new PmdData_Unit(),
 			PmdTypeID.FrameTable => new PmdData_FrameTable(),
 			PmdTypeID.Message => new PmdData_Message(),
