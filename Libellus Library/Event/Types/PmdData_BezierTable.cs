@@ -1,4 +1,3 @@
-using LibellusLibrary.Event.Types.Bezier;
 using LibellusLibrary.JSON;
 using System.Text.Json.Serialization;
 
@@ -6,8 +5,8 @@ namespace LibellusLibrary.Event.Types
 {
 	internal class PmdData_BezierTable : PmdDataType, ITypeCreator
 	{
-		[JsonConverter(typeof(PmdBezierReader))]
-		public List<PmdBezier> Beziers { get; set; }
+		[JsonInclude]
+		public List<Pmd_BezierDef> Beziers { get; set; }
 		
 		public PmdDataType? CreateType(uint version)
 		{
@@ -31,7 +30,7 @@ namespace LibellusLibrary.Event.Types
 			Beziers = new();
 			for (int i = 0; i < count; i++)
 			{
-				PmdBezier currentBezier = new PmdBezier();
+				Pmd_BezierDef currentBezier = new Pmd_BezierDef();
 				currentBezier.ReadBezier(reader);
 				Beziers.Add(currentBezier);
 			}
@@ -42,12 +41,38 @@ namespace LibellusLibrary.Event.Types
 		
 		internal override void SaveData(PmdBuilder builder, BinaryWriter writer)
 		{
-			foreach(PmdBezier bez in Beziers)
+			foreach(Pmd_BezierDef bez in Beziers)
 			{
 				bez.WriteBezier(writer);
 			}
 		}
 		internal override int GetCount() => Beziers.Count;
 		internal override int GetSize() => 0x130;
+	}
+	
+	internal class Pmd_BezierDef
+	{
+		[JsonPropertyOrder(-100)]
+		public uint Field00 { get; set; }
+		[JsonPropertyOrder(-99)]
+		public float[] Data { get; set; } = new float[75];
+		
+		public void ReadBezier(BinaryReader reader)
+		{
+			Field00 = reader.ReadUInt32();
+			for (int i = 0; i < 75; i++)
+			{
+				Data[i] = reader.ReadSingle();
+			}
+		}
+
+		public void WriteBezier(BinaryWriter writer)
+		{ 
+			writer.Write(Field00);
+			for (int i = 0; i < 75; i++)
+			{
+				writer.Write(Data[i]);
+			}
+		}
 	}
 }
