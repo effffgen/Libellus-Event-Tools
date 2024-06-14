@@ -46,7 +46,6 @@ namespace LibellusLibrary.Event
 		public override PolyMovieData? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
 		{
 			PolyMovieData pmd = new();
-			//	var data = reader.ReadJSONTokens();
 			reader.Read(); // startobject
 			reader.Read(); // MagicCode:
 			pmd.MagicCode = reader.GetString()!;
