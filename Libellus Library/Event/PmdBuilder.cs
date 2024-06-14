@@ -51,7 +51,7 @@ namespace LibellusLibrary.Event
 				//writer.Write(dataTypes[dataType].Item1.ToArray());
 			}
 
-			List<Task<MemoryStream>> writeDataTasks = new();
+			// List<Task<MemoryStream>> writeDataTasks = new();
 			foreach (PmdDataType pmdData in Pmd.PmdDataTypes)
 			{
 				long start = writer.FTell();
