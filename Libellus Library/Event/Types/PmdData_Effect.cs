@@ -48,20 +48,20 @@ namespace LibellusLibrary.Event.Types
 				Effect.ReadEffect(reader, typeFactory);
 				Effects.Add(Effect);
 			}
-			for (int i = (int)count - 1; i >= 0; i--)
+			int effSizeRemainder = typeFactory.GetEffectsLength(reader);
+			for (int i = 0; i < count; i++)
 			{
-				if (i == (int)count - 1)
-				{
-					reader.FSeek(EffectStart + (i * 0x10) + 4);
-					Effects[i].ReadData(reader, typeFactory.GetEffectsLength(reader));
-				}
-				else
+				reader.FSeek(EffectStart + (i * 0x10) + 4);
+				int offset = reader.ReadInt32();
+				int eplSize = effSizeRemainder;
+				if (i < (int)count - 1)
 				{
 					reader.FSeek(EffectStart + ((i + 1) * 0x10) + 4);
-					int nextFileOffset = reader.ReadInt32();
-					reader.FSeek(EffectStart + (i * 0x10) + 4);
-					Effects[i].ReadData(reader, nextFileOffset);
+					eplSize = reader.ReadInt32() - offset;
+					effSizeRemainder -= eplSize;
 				}
+				reader.FSeek(offset);
+				Effects[i].EffectData = reader.ReadBytes(eplSize);
 			}
 
 			reader.BaseStream.Position = OriginalPos;
