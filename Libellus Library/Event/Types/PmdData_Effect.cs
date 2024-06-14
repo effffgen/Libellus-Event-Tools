@@ -97,8 +97,8 @@ namespace LibellusLibrary.Event.Types
 		public string FileName { get; set; }
 		public byte[] EffectData = Array.Empty<byte>();
 
-		public uint UNK08 { get; set; }
-		public uint UNK0C { get; set; }
+		public uint Field08 { get; set; }
+		public uint Field0C { get; set; }
 
 		public int NameIndex;
 
@@ -106,8 +106,8 @@ namespace LibellusLibrary.Event.Types
 		{
 			FileName = typeFactory.GetNameTable(reader)[reader.ReadInt32()]; // FileName == NameIndex
 			reader.BaseStream.Position += 4; // skip offset for now
-			UNK08 = reader.ReadUInt32();
-			UNK0C = reader.ReadUInt32();
+			Field08 = reader.ReadUInt32();
+			Field0C = reader.ReadUInt32();
 		}
 		public void ReadData(BinaryReader reader, int nextOffset)
 		{
@@ -119,8 +119,8 @@ namespace LibellusLibrary.Event.Types
 		{
 			writer.Write(NameIndex);
 			writer.Write((int)EffectDataOffset);
-			writer.Write(UNK08);
-			writer.Write(UNK0C);
+			writer.Write(Field08);
+			writer.Write(Field0C);
 			writer.FSeek(EffectDataOffset);
 			writer.Write(EffectData);
 		}
