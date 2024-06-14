@@ -89,13 +89,15 @@ namespace LibellusLibrary.Event
 		/// <returns></returns>
 		internal int AddReference(PmdTypeID id, byte[] data)
 		{
-			if (ReferenceTables.ContainsKey(id))
+			if (!ReferenceTables.ContainsKey(id))
 			{
-				ReferenceTables[id].Add(data);
-				return ReferenceTables.Count - 1;
+				ReferenceTables.Add(id, new List<byte[]>());
 			}
-			ReferenceTables.Add(id, new List<byte[]>());
-			ReferenceTables[id].Add(data);
+			ReferenceTables[id].Add(data);				
+			if (id == PmdTypeID.Name)
+			{
+				return ReferenceTables[id].Count - 1;
+			}
 			return ReferenceTables.Count - 1;
 		}
 
