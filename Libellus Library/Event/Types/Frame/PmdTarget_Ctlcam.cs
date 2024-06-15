@@ -6,7 +6,7 @@ namespace LibellusLibrary.Event.Types.Frame
     internal class PmdTarget_Ctlcam : PmdTargetType
     {
         [JsonPropertyOrder(-92)]
-        public ushort Field14 { get; set; }
+        public ushort Field14 { get; set; } // Possibly used to define UNIT to parent to (even in MOVE_DIRECT)?
         
         [JsonPropertyOrder(-91)]
         [JsonConverter(typeof(JsonStringEnumConverter))]
