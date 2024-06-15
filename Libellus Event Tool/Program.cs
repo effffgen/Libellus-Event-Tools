@@ -13,7 +13,10 @@ namespace LibellusEventTool
 
 			if (args.Length < 1)
 			{
-				Console.WriteLine("Not enough args!\nPress any button to exit.");
+				Console.ForegroundColor = ConsoleColor.Yellow;
+				Console.WriteLine("Not enough args!");
+				Console.ResetColor();
+				Console.WriteLine("Press any button to exit.");
 				Console.ReadKey();
 				return;
 			}
