@@ -61,7 +61,6 @@ namespace LibellusLibrary.Event.Types
 				}
 				reader.FSeek(offset);
 				Effect.EffectData = reader.ReadBytes(eplSize);
-				// Effect.ReadEffect(reader, typeFactory);
 				Effects.Add(Effect);
 			}
 
