@@ -29,10 +29,8 @@ namespace LibellusLibrary.JSON
 
 		public override void Write(Utf8JsonWriter writer, byte[] value, JsonSerializerOptions options)
 		{
-			byte[] bytes = value;
-			string? @string = BitConverter.ToString(bytes).Replace("-", " ");
+			string? @string = BitConverter.ToString(value).Replace("-", " ");
 			writer.WriteStringValue(@string);
-
 		}
 	}
 	class ListByteArrayToHexArray : JsonConverter<List<byte[]>>
