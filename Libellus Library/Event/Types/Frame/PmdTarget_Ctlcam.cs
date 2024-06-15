@@ -18,9 +18,6 @@ namespace LibellusLibrary.Event.Types.Frame
         [JsonPropertyOrder(-89)]
         public short ActiveViewLength { get; set; } // limited to 200 - 3000 by editor
 
-        // [JsonPropertyOrder(-90)]
-        // public uint Field18 { get; set; }
-        
         [JsonPropertyOrder(-88)]
         public float CameraX { get; set; }
         
@@ -40,7 +37,7 @@ namespace LibellusLibrary.Event.Types.Frame
         public float CameraFOV { get; set; }
         
         [JsonPropertyOrder(-82)]
-        public sbyte CurveID { get; set; }
+        public sbyte CurveID { get; set; } // only exposed in editor when CameraMode is MOVE_DIRECT
 
         [JsonPropertyOrder(-81)]
         [JsonConverter(typeof(ByteArrayToHexArray))]
