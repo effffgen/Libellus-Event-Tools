@@ -13,8 +13,7 @@ namespace LibellusEventTool
 
 			if (args.Length < 1)
 			{
-				Console.WriteLine("Not Enough args!");
-				Console.WriteLine("Press Any Button To Exit.");
+				Console.WriteLine("Not enough args!\nPress any button to exit.");
 				Console.ReadKey();
 				return;
 			}
