@@ -10,10 +10,10 @@ namespace LibellusLibrary.Event.Types.Frame
 		public CutinModeEnum CutinMode { get; set; }
 		
 		[JsonPropertyOrder(-91)]
-		public byte Field01 { get; set; } // Character/unit id? Group (as in which KOMA entry is it listed under in editor) id?
+		public byte Field15 { get; set; } // Character/unit id? Group (as in which KOMA entry is it listed under in editor) id?
 		
 		[JsonPropertyOrder(-90)]
-		public ushort Field02 { get; set; }
+		public ushort Field16 { get; set; }
 		
 		[JsonPropertyOrder(-89)]
 		public short CHARA { get; set; }
@@ -62,8 +62,8 @@ namespace LibellusLibrary.Event.Types.Frame
 		protected override void ReadData(BinaryReader reader)
 		{
 			CutinMode = (CutinModeEnum)reader.ReadByte();
-			Field01 = reader.ReadByte();
-			Field02 = reader.ReadUInt16();
+			Field15 = reader.ReadByte();
+			Field16 = reader.ReadUInt16();
 			CHARA = reader.ReadInt16();
 			FACE = reader.ReadInt16();
 			FUKU = reader.ReadUInt16();
@@ -79,8 +79,8 @@ namespace LibellusLibrary.Event.Types.Frame
 		protected override void WriteData(BinaryWriter writer)
 		{
 			writer?.Write((byte)CutinMode);
-			writer?.Write(Field01);
-			writer?.Write(Field02);
+			writer?.Write(Field15);
+			writer?.Write(Field16);
 			writer?.Write(CHARA);
 			writer?.Write(FACE);
 			writer?.Write(FUKU);

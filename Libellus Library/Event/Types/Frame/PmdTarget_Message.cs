@@ -28,7 +28,7 @@ namespace LibellusLibrary.Event.Types.Frame
 
         [JsonPropertyOrder(-86)]
         [JsonConverter(typeof(ByteArrayToHexArray))]
-        public byte[] Data2 { get; set; } = Array.Empty<byte>();
+        public byte[] Data { get; set; } = Array.Empty<byte>();
 
         internal enum MessageModeEnum : byte
         {
@@ -61,7 +61,7 @@ namespace LibellusLibrary.Event.Types.Frame
             MessageMode = (MessageModeEnum)reader.ReadByte();
             MessageAccessMode = (AccessModeEnum)reader.ReadByte();
             MessageDisplayMode = (DisplayModeEnum)reader.ReadByte();
-            Data2 = reader.ReadBytes(33);
+            Data = reader.ReadBytes(33);
         }
 
         protected override void WriteData(BinaryWriter writer)
@@ -72,7 +72,7 @@ namespace LibellusLibrary.Event.Types.Frame
             writer?.Write((byte)MessageMode);
             writer?.Write((byte)MessageAccessMode);
             writer?.Write((byte)MessageDisplayMode);
-            writer?.Write(Data2);
+            writer?.Write(Data);
         }
 
     }
