@@ -18,7 +18,7 @@ namespace LibellusLibrary.Event.Types.Frame
 
 		// This is only accurate for P3; P4(G) removes some of these from the Event Editor menu
 		// TODO: Figure out a way to address that discrepancy
-		internal enum MusicFadeEnum : byte
+		internal enum MusicFadeEnum : ushort
 		{
 			PLAY = 0,
 			FADEIN = 1,
