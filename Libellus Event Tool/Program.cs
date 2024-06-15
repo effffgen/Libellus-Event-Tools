@@ -9,7 +9,7 @@ namespace LibellusEventTool
 			System.Reflection.Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();
 			System.Diagnostics.FileVersionInfo fvi = System.Diagnostics.FileVersionInfo.GetVersionInfo(assembly.Location);
 			string version = fvi.FileVersion ?? "Null Version"; // Address CS8600 warning
-			Console.WriteLine("Welcome to LEET!\nLibellus Event Editing Tool: v" + version + " \nNow with better syntax!\n");
+			Console.WriteLine($"Welcome to LEET!\nLibellus Event Editing Tool: v{version}\nNow with better syntax!\n");
 
 			if (args.Length < 1)
 			{
@@ -23,7 +23,7 @@ namespace LibellusEventTool
 				string ext = Path.GetExtension(file).ToLower();
 				if (ext == ".pm1" || ext == ".pm2" || ext == ".pm3")
 				{
-					Console.WriteLine("Coverting to Json: "+ file);
+					Console.WriteLine($"Coverting to Json: {file}");
 					PmdReader reader = new();
 					PolyMovieData pmd = await reader.ReadPmd(file);
 					// the "!" in Path.GetDirectoryName(file)! indicates null forgiveness
@@ -36,9 +36,9 @@ namespace LibellusEventTool
 
 				if (ext == ".json")
 				{
-					Console.WriteLine("Coverting to PMD: " + file);
+					Console.WriteLine($"Coverting to PMD: {file}");
 					PolyMovieData pmd = await PolyMovieData.LoadPmd(file);
-					string pmdext = "PM" + pmd.MagicCode[3];
+					string pmdext = $"PM{pmd.MagicCode[3]}";
 					pmd.SavePmd(file + "." + pmdext);
 				}
 			}
