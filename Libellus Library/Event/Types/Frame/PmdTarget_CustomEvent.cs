@@ -11,8 +11,7 @@ namespace LibellusLibrary.Event.Types.Frame
         public EventModeEnum EventMode { get; set; }
 
         [JsonPropertyOrder(-91)]
-        [JsonConverter(typeof(ByteArrayToHexArray))]
-        public byte[] Data { get; set; } = Array.Empty<byte>();
+        public EventParam EventData { get; set; }
 
         // PERU == Persona?
         internal enum EventModeEnum : uint
@@ -36,13 +35,43 @@ namespace LibellusLibrary.Event.Types.Frame
         protected override void ReadData(BinaryReader reader)
         {
             EventMode = (EventModeEnum)reader.ReadUInt32();
-            Data = reader.ReadBytes(36);
+            EventData = EventMode switch
+            {
+                // EventModeEnum.GAMEOVER => new GameOver(),
+                _ => new UnknownEvent()
+            };
+            EventData.ReadData(reader);
         }
 
         protected override void WriteData(BinaryWriter writer)
         {
             writer?.Write((uint)EventMode);
-            writer?.Write(Data);
+            EventData.WriteData(writer!);
+        }
+    }
+    
+    [JsonDerivedType(typeof(UnknownEvent), typeDiscriminator: "unkev")]
+    // [JsonDerivedType(typeof(GameOver), typeDiscriminator: "gamov")]
+    public class EventParam
+    {
+        public virtual void ReadData(BinaryReader reader) => throw new InvalidOperationException();
+        public virtual void WriteData(BinaryWriter writer) => throw new InvalidOperationException();
+    }
+    
+    public class UnknownEvent : EventParam
+    {
+        [JsonPropertyOrder(-90)]
+        [JsonConverter(typeof(ByteArrayToHexArray))]
+        public byte[] Data { get; set; } = {};
+
+        public override void ReadData(BinaryReader reader)
+        {
+            Data = reader.ReadBytes(36);
+        }
+
+        public override void WriteData(BinaryWriter writer)
+        {
+            writer.Write(Data);
         }
     }
 }
