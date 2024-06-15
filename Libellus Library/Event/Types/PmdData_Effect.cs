@@ -41,18 +41,17 @@ namespace LibellusLibrary.Event.Types
 			reader.BaseStream.Position = OriginalPos + 0xC;
 			reader.BaseStream.Position = (long)reader.ReadUInt32();
 			long EffectStart = reader.FTell();
+			int effSizeRemainder = typeFactory.GetEffectsLength(reader);
 			for(int i = 0; i < count; i++)
 			{
+				// Initialize Pmd_EffectDef object
 				reader.FSeek(EffectStart + i * 0x10);
 				Pmd_EffectDef Effect = new();
-				Effect.ReadEffect(reader, typeFactory);
-				Effects.Add(Effect);
-			}
-			int effSizeRemainder = typeFactory.GetEffectsLength(reader);
-			for (int i = 0; i < count; i++)
-			{
-				reader.FSeek(EffectStart + (i * 0x10) + 4);
+				Effect.FileName = typeFactory.GetNameTable(reader)[reader.ReadInt32()];
 				int offset = reader.ReadInt32();
+				Effect.Field08 = reader.ReadUInt32();
+				Effect.Field0C = reader.ReadUInt32();
+				// Calculate Effect.EffectData size
 				int eplSize = effSizeRemainder;
 				if (i < (int)count - 1)
 				{
@@ -61,7 +60,9 @@ namespace LibellusLibrary.Event.Types
 					effSizeRemainder -= eplSize;
 				}
 				reader.FSeek(offset);
-				Effects[i].EffectData = reader.ReadBytes(eplSize);
+				Effect.EffectData = reader.ReadBytes(eplSize);
+				// Effect.ReadEffect(reader, typeFactory);
+				Effects.Add(Effect);
 			}
 
 			reader.BaseStream.Position = OriginalPos;
@@ -92,7 +93,8 @@ namespace LibellusLibrary.Event.Types
 		internal override int GetCount() => Effects.Count;
 		internal override int GetSize() => 0x10;
 	}
-	internal class Pmd_EffectDef: IReferenceType
+
+	internal class Pmd_EffectDef : IReferenceType
 	{
 		public string FileName { get; set; }
 		public byte[] EffectData = Array.Empty<byte>();
@@ -102,19 +104,6 @@ namespace LibellusLibrary.Event.Types
 
 		public int NameIndex;
 
-		public void ReadEffect(BinaryReader reader, PmdTypeFactory typeFactory)
-		{
-			FileName = typeFactory.GetNameTable(reader)[reader.ReadInt32()]; // FileName == NameIndex
-			reader.BaseStream.Position += 4; // skip offset for now
-			Field08 = reader.ReadUInt32();
-			Field0C = reader.ReadUInt32();
-		}
-		public void ReadData(BinaryReader reader, int nextOffset)
-		{
-			int offset = reader.ReadInt32();
-			reader.FSeek(offset);
-			EffectData = reader.ReadBytes(nextOffset - offset);
-		}
 		public void WriteEffect(BinaryWriter writer, long EffectDataOffset)
 		{
 			writer.Write(NameIndex);
