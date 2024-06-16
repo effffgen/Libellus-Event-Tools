@@ -11,29 +11,26 @@
 		{
 			reader.BaseStream.Position = position;
 		}
-
-		public static void FSeek(this BinaryWriter writer, long position)
-		{
-			writer.BaseStream.Position = position;
-		}
-
 		public static long FTell(this BinaryReader reader)
 		{
 			return reader.BaseStream.Position;
-		}
-
-		public static long FTell(this BinaryWriter writer)
-		{
-			return writer.BaseStream.Position;
 		}
 		public static void FSkip(this BinaryReader reader, long position)
 		{
 			reader.BaseStream.Position += position;
 		}
+
+		public static void FSeek(this BinaryWriter writer, long position)
+		{
+			writer.BaseStream.Position = position;
+		}
+		public static long FTell(this BinaryWriter writer)
+		{
+			return writer.BaseStream.Position;
+		}
 		public static void FSkip(this BinaryWriter writer, long position)
 		{
 			writer.BaseStream.Position += position;
 		}
-
 	}
 }
