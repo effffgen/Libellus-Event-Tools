@@ -76,8 +76,20 @@ namespace LibellusLibrary.Event.Types
 				unit.SetReferences(pmdBuilder);
 			}
 		}
+		
+		// Get total size of all Unit files
+		public int GetDataSize()
+		{
+			int size = 0;
+			foreach (Pmd_UnitDef unit in Units)
+			{
+				size += unit.UnitData.Length;
+			}
+			return size;
+		}
 
 		internal override int GetCount() => Units.Count;
+		internal override int GetSize() => 0x20;
 	}
 	internal class Pmd_UnitDef: IReferenceType
 	{
