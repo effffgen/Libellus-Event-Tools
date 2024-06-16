@@ -30,14 +30,23 @@ namespace LibellusLibrary.Event
 			using var writer = new BinaryWriter(pmdFile);
 			Dictionary<PmdDataType, long> dataTypes = new();
 			// Type, offset
+			int pmdHeaderLength = 0x20;
+			int pmdTypesCount = 0;
 			foreach (PmdDataType pmdData in Pmd.PmdDataTypes)
 			{
 				if(pmdData is IReferenceType reference)
 				{
 					reference.SetReferences(this);
 				}
+				if (pmdData.Type == PmdTypeID.Effect)
+				{
+					pmdHeaderLength += 0x10;
+					pmdTypesCount += 1;
+				}
 			}
-			writer.FSeek(0x20 + 0x10 * (Pmd.PmdDataTypes.Count + ReferenceTables.Count));
+			pmdHeaderLength += 0x10 * (Pmd.PmdDataTypes.Count + ReferenceTables.Count);
+			// writer.FSeek(0x20 + 0x10 * (Pmd.PmdDataTypes.Count + ReferenceTables.Count));
+			writer.FSeek(pmdHeaderLength);
 			foreach (var referenceType in ReferenceTables)
 			{
 				PmdData_RawData dataType = new();
@@ -54,6 +63,7 @@ namespace LibellusLibrary.Event
 				pmdData.SaveData(this, writer);
 				dataTypes.Add(pmdData, start);
 			}
+			pmdTypesCount += dataTypes.Count;
 
 			// Write Header
 			writer.Seek(0, SeekOrigin.Begin);
@@ -61,13 +71,11 @@ namespace LibellusLibrary.Event
 			writer.Write((int)pmdFile.Length);
 			writer.Write(Pmd.MagicCode.ToCharArray());
 			writer.Write(0); // Expand Size
-			writer.Write(dataTypes.Count);
+			writer.Write(pmdTypesCount);
 			writer.Write(Pmd.Version);
 			writer.Write(0); //Reserve
 			writer.Write(0);
 
-			// Create Type table
-			writer.FSeek(0x20);
 			// Write the type table in the correct order
 			foreach (KeyValuePair<PmdDataType, long> dataType in dataTypes)
 			{
@@ -75,6 +83,14 @@ namespace LibellusLibrary.Event
 				writer.Write(dataType.Key.GetSize()); // Size
 				writer.Write(dataType.Key.GetCount());
 				writer.Write((int)dataType.Value); // Offset
+				// Insert EffectData header after Effect
+				if (dataType.Key.Type == PmdTypeID.Effect)
+				{
+					writer.Write((int)PmdTypeID.EffectData);
+					writer.Write(((PmdData_Effect)dataType.Key).GetDataSize());
+					writer.Write(1);
+					writer.Write((int)dataType.Value + dataType.Key.GetSize() * dataType.Key.GetCount());
+				}
 			}
 
 			return pmdFile;

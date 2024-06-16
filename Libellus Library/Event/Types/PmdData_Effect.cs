@@ -88,6 +88,17 @@ namespace LibellusLibrary.Event.Types
 				Effect.SetReferences(pmdBuilder);
 			}
 		}
+		
+		// Get total size of all EPL files
+		public int GetDataSize()
+		{
+			int size = 0;
+			foreach (Pmd_EffectDef Effect in Effects)
+			{
+				size += Effect.EffectData.Length;
+			}
+			return size;
+		}
 
 		internal override int GetCount() => Effects.Count;
 		internal override int GetSize() => 0x10;
