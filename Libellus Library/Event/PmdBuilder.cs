@@ -24,6 +24,8 @@ namespace LibellusLibrary.Event
 		// I sincerely apologize for the absolute hell that is the writing code
 		// I dont know what the fuck I was smoking but I know if I touch it, the whole thing will explode
 		// TODO: Fix CS1998?
+		/*TODO: Attempt to recreate odd file-storing priority PM1's seem to have
+			Unit (headers only) -> MSG file -> EPL (headers & files) -> Unit (files)*/
 		internal async Task<MemoryStream> CreatePmd(string path)
 		{
 			MemoryStream pmdFile = new();
@@ -45,7 +47,6 @@ namespace LibellusLibrary.Event
 				}
 			}
 			pmdHeaderLength += 0x10 * (Pmd.PmdDataTypes.Count + ReferenceTables.Count);
-			// writer.FSeek(0x20 + 0x10 * (Pmd.PmdDataTypes.Count + ReferenceTables.Count));
 			writer.FSeek(pmdHeaderLength);
 			foreach (var referenceType in ReferenceTables)
 			{
