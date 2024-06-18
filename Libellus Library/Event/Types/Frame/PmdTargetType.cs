@@ -1,10 +1,5 @@
 ﻿using LibellusLibrary.JSON;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 using static LibellusLibrary.Event.Types.Frame.PmdFrameFactory;
 
 namespace LibellusLibrary.Event.Types.Frame
@@ -26,8 +21,10 @@ namespace LibellusLibrary.Event.Types.Frame
 		public byte Field09 { get; set; }
 		[JsonPropertyOrder(-94)]
 		public short Field0A { get; set; }
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 		[JsonPropertyOrder(-93)]
 		public PmdFlags Flags { get; set; }
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
 		public void ReadFrame(BinaryReader reader)
 		{
@@ -45,12 +42,12 @@ namespace LibellusLibrary.Event.Types.Frame
 		public void WriteFrame(BinaryWriter writer)
 		{
 			writer.Write((ushort)TargetType);
-			writer.Write((ushort)StartFrame);
-			writer.Write((ushort)Length);
-			writer.Write((short)NameIndex);
-			writer.Write((byte)FBNResID);
-			writer.Write((byte)Field09);
-			writer.Write((short)Field0A);
+			writer.Write(StartFrame);
+			writer.Write(Length);
+			writer.Write(NameIndex);
+			writer.Write(FBNResID);
+			writer.Write(Field09);
+			writer.Write(Field0A);
 			Flags.WriteData(writer);
 			WriteData(writer);
 		}
@@ -61,7 +58,7 @@ namespace LibellusLibrary.Event.Types.Frame
 	internal class PmdTarget_Unknown : PmdTargetType
 	{
 		[JsonConverter(typeof(ByteArrayToHexArray))]
-		public byte[] Data { get; set; }
+		public byte[] Data { get; set; } = Array.Empty<byte>();
 		protected override void ReadData(BinaryReader reader)
 		{
 			Data = reader.ReadBytes(0x28);
@@ -69,7 +66,7 @@ namespace LibellusLibrary.Event.Types.Frame
 
 		protected override void WriteData(BinaryWriter writer)
 		{
-			writer?.Write(Data);
+			writer.Write(Data);
 		}
 	}
 }

@@ -29,8 +29,8 @@ namespace LibellusLibrary.Event.Types.Frame
 
         internal void WriteData(BinaryWriter writer)
         {
-            writer?.Write((ushort)FlagNumber);
-            writer?.Write((ushort)CmpValue);
+            writer?.Write(FlagNumber);
+            writer?.Write(CmpValue);
             writer?.Write((ushort)FlagType);
             writer?.Write((ushort)GFlagType);
         }
