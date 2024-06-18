@@ -6,8 +6,10 @@ namespace LibellusLibrary.Event.Types
 {
 	internal class PmdData_ObjectTable : PmdDataType, ITypeCreator
 	{
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 		[JsonInclude]
 		public List<Pmd_ObjectDef> Objects { get; set; }
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
 		public PmdDataType? CreateType(uint version)
 		{

@@ -6,8 +6,10 @@ namespace LibellusLibrary.Event.Types
 {
 	internal class PmdData_Effect : PmdDataType, ITypeCreator, IExternalFile, IReferenceType
 	{
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 		[JsonInclude]
 		public List<Pmd_EffectDef> Effects { get; set; }
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
 		public PmdDataType? CreateType(uint version)
 		{
@@ -106,7 +108,7 @@ namespace LibellusLibrary.Event.Types
 
 	internal class Pmd_EffectDef : IReferenceType
 	{
-		public string FileName { get; set; }
+		public string FileName { get; set; } = String.Empty;
 		public byte[] EffectData = Array.Empty<byte>();
 
 		public uint Field08 { get; set; }

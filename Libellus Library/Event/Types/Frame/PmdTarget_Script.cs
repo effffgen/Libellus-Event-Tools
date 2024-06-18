@@ -8,7 +8,7 @@ namespace LibellusLibrary.Event.Types.Frame
     {
         [JsonPropertyOrder(-92)]
         [JsonConverter(typeof(ByteArrayToHexArray))]
-        public byte[] Data { get; set; }
+        public byte[] Data { get; set; } = Array.Empty<byte>();
 
         [JsonPropertyOrder(-91)]
         public ushort ProcedureIndex { get; set; }
