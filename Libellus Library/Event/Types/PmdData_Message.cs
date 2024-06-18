@@ -4,7 +4,7 @@ namespace LibellusLibrary.Event.Types
 {
 	internal class PmdData_Message : PmdDataType, ITypeCreator, IExternalFile, IReferenceType
 	{
-		public string FileName { get; set; }
+		public string FileName { get; set; } = String.Empty;
 
 		public byte[] MessageData = Array.Empty<byte>();
 
@@ -17,14 +17,13 @@ namespace LibellusLibrary.Event.Types
 		{
 			long OriginalPos = reader.BaseStream.Position;
 
-			reader.BaseStream.Position = OriginalPos + 0x4;
-			uint size = reader.ReadUInt32();
+			reader.BaseStream.Position += 0x4;
+			int size = reader.ReadInt32();
 
 			reader.BaseStream.Position = OriginalPos + 0xC;
 			reader.BaseStream.Position = (long)reader.ReadUInt32();
 
-			MessageData = reader.ReadBytes((int)size);
-			FileName = "";
+			MessageData = reader.ReadBytes(size);
 			foreach (string name in typeFactory.GetNameTable(reader))
 			{
 				if (name.EndsWith(".msg"))
@@ -38,8 +37,11 @@ namespace LibellusLibrary.Event.Types
 					break;
 				}
 			}
-			if (FileName == "")
+			if (FileName == String.Empty)
 			{
+				Console.ForegroundColor = ConsoleColor.Yellow;
+				Console.WriteLine("Could not locate BMD filename! Saving as Message.bmd!");
+				Console.ResetColor();
 				FileName = "Message.bmd";
 			}
 
@@ -73,7 +75,7 @@ namespace LibellusLibrary.Event.Types
 				FileName = FileName.Substring(0, FileName.LastIndexOf('.')) + ".msg";
 			}
 			byte[] temp = Text.StringtoASCII8(FileName);
-			System.Array.Resize(ref temp, 32);
+			Array.Resize(ref temp, 32);
 			pmdBuilder.AddReference(PmdTypeID.Name, temp);
 		}
 	}

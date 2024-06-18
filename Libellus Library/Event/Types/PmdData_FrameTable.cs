@@ -5,8 +5,10 @@ namespace LibellusLibrary.Event.Types
 {
 	internal class PmdData_FrameTable : PmdDataType, ITypeCreator
 	{
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 		[JsonConverter(typeof(PmdFrameReader))]
 		public List<PmdTargetType> Frames { get; set; }
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
 		public PmdDataType? CreateType(uint version)
 		{
@@ -21,10 +23,8 @@ namespace LibellusLibrary.Event.Types
 		{
 			long OriginalPos = reader.BaseStream.Position;
 
-			reader.BaseStream.Position = OriginalPos + 0x8;
+			reader.BaseStream.Position += 0x8;
 			uint count = reader.ReadUInt32();
-
-			reader.BaseStream.Position = OriginalPos + 0xC;
 			reader.BaseStream.Position = (long)reader.ReadUInt32();
 
 			PmdFrameFactory factory = new();
