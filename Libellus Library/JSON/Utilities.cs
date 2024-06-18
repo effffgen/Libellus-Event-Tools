@@ -24,9 +24,9 @@ namespace LibellusLibrary.JSON
 
 			while (reader.TokenType!=JsonTokenType.EndObject)
 			{
-				var tokenName = reader.GetString();
+				string? tokenName = reader.GetString();
 				reader.Read();
-				object value = null;
+				object? value = null;
 				switch (reader.TokenType)
 				{
 					case JsonTokenType.String:
