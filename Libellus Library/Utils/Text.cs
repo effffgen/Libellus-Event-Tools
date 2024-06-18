@@ -4,18 +4,20 @@ namespace LibellusLibrary.Utils
 {
 	public static class Text
 	{
-		public static string ASCII8ToString(byte[] ASCIIData)
+		public static Encoding GetStringEncoder()
 		{
 			Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-			var e = Encoding.GetEncoding("437");
-			return e.GetString(ASCIIData);
+			return Encoding.GetEncoding("437");
+		}
+
+		public static string ASCII8ToString(byte[] ASCIIData)
+		{
+			return GetStringEncoder().GetString(ASCIIData);
 		}
 
 		public static byte[] StringtoASCII8(string text)
 		{
-			Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-			var e = Encoding.GetEncoding("437");
-			return e.GetBytes(text);
+			return GetStringEncoder().GetBytes(text);
 		}
 	}
 }

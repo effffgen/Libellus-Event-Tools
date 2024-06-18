@@ -42,11 +42,11 @@ namespace LibellusLibrary.JSON
 
 		public override List<byte[]>? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
 		{
-			List<byte[]> result = new List<byte[]>();
+			List<byte[]> result = new();
 			reader.Read();
 			while (reader.TokenType != JsonTokenType.EndArray)
 			{
-				var hex = reader.GetString();
+				string? hex = reader.GetString();
 				if (!string.IsNullOrEmpty(hex))
 				{
 					hex = hex.Replace(" ", string.Empty);
@@ -63,8 +63,8 @@ namespace LibellusLibrary.JSON
 		public override void Write(Utf8JsonWriter writer, List<byte[]> value, JsonSerializerOptions options)
 		{
 			writer.WriteStartArray();
-			var converter = new ByteArrayToHexArray();
-			foreach (var item in value)
+			ByteArrayToHexArray converter = new();
+			foreach (byte[] item in value)
 			{
 				converter.Write(writer, item, options);
 			}
