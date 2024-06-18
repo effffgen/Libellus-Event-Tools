@@ -16,7 +16,7 @@ namespace LibellusLibrary.Event.Types.Frame
 		[JsonPropertyOrder(-97)]
 		public short NameIndex { get; set; }
 		[JsonPropertyOrder(-96)]
-		public byte FBNResID { get; set; }
+		public byte FBNResourceID { get; set; }
 		[JsonPropertyOrder(-95)]
 		public byte Field09 { get; set; }
 		[JsonPropertyOrder(-94)]
@@ -32,7 +32,7 @@ namespace LibellusLibrary.Event.Types.Frame
 			StartFrame = reader.ReadUInt16();
 			Length = reader.ReadUInt16();
 			NameIndex = reader.ReadInt16();
-			FBNResID = reader.ReadByte();
+			FBNResourceID = reader.ReadByte();
 			Field09 = reader.ReadByte();
 			Field0A = reader.ReadInt16();
 			Flags = new PmdFlags();
@@ -45,7 +45,7 @@ namespace LibellusLibrary.Event.Types.Frame
 			writer.Write(StartFrame);
 			writer.Write(Length);
 			writer.Write(NameIndex);
-			writer.Write(FBNResID);
+			writer.Write(FBNResourceID);
 			writer.Write(Field09);
 			writer.Write(Field0A);
 			Flags.WriteData(writer);
