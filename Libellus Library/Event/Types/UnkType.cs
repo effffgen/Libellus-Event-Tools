@@ -15,7 +15,7 @@ namespace LibellusLibrary.Event.Types
 
 			reader.BaseStream.Position += 0x8;
 			uint cnt = reader.ReadUInt32();
-			if (cnt== 0)
+			if (cnt == 0)
 			{
 				reader.BaseStream.Position = OriginalPos;
 				PmdData_RawData empty = new();
@@ -32,13 +32,13 @@ namespace LibellusLibrary.Event.Types
 			
 			PmdData_RawData type = new();
 			reader.BaseStream.Position = OriginalPos + 0x4;
-			uint size = reader.ReadUInt32();
+			int size = reader.ReadInt32();
 
 			reader.BaseStream.Position = OriginalPos + 0xC;
 			reader.BaseStream.Position = (long)reader.ReadUInt32();
 			for(int i = 0; i < cnt; i++)
 			{
-				type.Data.Add(reader.ReadBytes((int)size));
+				type.Data.Add(reader.ReadBytes(size));
 			}
 
 			reader.BaseStream.Position = OriginalPos;
