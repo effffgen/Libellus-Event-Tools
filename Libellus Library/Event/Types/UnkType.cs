@@ -64,19 +64,9 @@ namespace LibellusLibrary.Event.Types
 
 			return;
 		}
-		internal override int GetCount()
-		{
-			return Data.Count;
-		}
-		internal override int GetSize()
-		{
-			if(Data.Count == 0)
-			{
-				return 0;
-			}
-			// Here we assume that all the data has the same length
-			return Data[0].Length;
-		}
+		internal override int GetCount() => Data.Count;
+		// Return 0 if count is zero, else assume all data is same length as first
+		internal override int GetSize() => Data.Count == 0 ? 0 : Data[0].Length;
 	}
 	// Workaround for json to not die
 	internal class PmdRawData
