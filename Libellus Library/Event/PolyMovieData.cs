@@ -7,12 +7,10 @@ namespace LibellusLibrary.Event
 	[JsonConverter(typeof(PmdJsonReader))]
 	public class PolyMovieData
 	{
-		public string MagicCode { get; set; }
+		public string MagicCode { get; set; } = String.Empty;
 		public uint Version { get; set; }
 
 		public List<PmdDataType> PmdDataTypes { get; set; }
-
-		//internal Dictionary<PmdTypeID,List<>>
 
 		//Returns TypeTable Count
 		public uint ReadHeader(BinaryReader reader)
@@ -39,7 +37,7 @@ namespace LibellusLibrary.Event
 		{
 			JsonSerializerOptions options = new();
 			options.WriteIndented = true;
-			var json = JsonSerializer.Serialize<PolyMovieData>(this, options);
+			string json = JsonSerializer.Serialize<PolyMovieData>(this, options);
 			json = JSON.Utilities.BeautifyJson(json);
 			Directory.CreateDirectory(directoryToExtract);
 			List<Task> tasks = new();
@@ -59,7 +57,7 @@ namespace LibellusLibrary.Event
 		{
 			if (!File.Exists(path))
 			{
-				throw new ArgumentException("Error while opening file.\nFile does not exist!\nFile: " + path);
+				throw new ArgumentException($"Error while opening file.\nFile does not exist!\nFile: {path}");
 			}
 			using (MemoryStream stream = new(await File.ReadAllBytesAsync(path)))
 			{
@@ -81,8 +79,7 @@ namespace LibellusLibrary.Event
 		public async void SavePmd(string path)
 		{
 			PmdBuilder builder = new(this);
-			//File.Create(path);
-			var stream = await builder.CreatePmd(path);
+			MemoryStream stream = await builder.CreatePmd(path);
 			File.WriteAllBytes(path, stream.ToArray());
 			stream.Close();
 		}
