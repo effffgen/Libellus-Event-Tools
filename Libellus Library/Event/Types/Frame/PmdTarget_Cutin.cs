@@ -8,37 +8,37 @@ namespace LibellusLibrary.Event.Types.Frame
 		[JsonPropertyOrder(-92)]
 		[JsonConverter(typeof(JsonStringEnumConverter))]
 		public CutinModeEnum CutinMode { get; set; }
-		
+
 		[JsonPropertyOrder(-91)]
 		public byte Field15 { get; set; } // Character/unit id? Group (as in which KOMA entry is it listed under in editor) id?
-		
+
 		[JsonPropertyOrder(-90)]
 		public ushort Field16 { get; set; }
-		
+
 		[JsonPropertyOrder(-89)]
 		public short CHARA { get; set; }
-		
+
 		[JsonPropertyOrder(-88)]
 		public short FACE { get; set; }
-		
+
 		[JsonPropertyOrder(-87)]
 		public ushort FUKU { get; set; }
-		
+
 		[JsonPropertyOrder(-86)]
 		public short SYURUI { get; set; }
-		
+
 		[JsonPropertyOrder(-85)]
 		public short X { get; set; }
-		
+
 		[JsonPropertyOrder(-84)]
 		public short Y { get; set; }
-		
+
 		[JsonPropertyOrder(-83)]
 		public CutinTypeEnum TYPE { get; set; }
-		
+
 		[JsonPropertyOrder(-82)]
 		public byte Field0E { get; set; } // unused?
-		
+
 		[JsonPropertyOrder(-81)]
 		public byte REFNO { get; set; } // always shown as x in editor, always editable however; limited to 0-9
 
@@ -52,7 +52,7 @@ namespace LibellusLibrary.Event.Types.Frame
 			START = 1,
 			RELEASE = 2,
 		}
-		
+
 		internal enum CutinTypeEnum : byte
 		{
 			DIRECT = 0,
