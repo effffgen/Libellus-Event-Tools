@@ -38,9 +38,9 @@ namespace LibellusLibrary.Event.Types.Frame
 
 		protected override void WriteData(BinaryWriter writer)
 		{
-			writer?.Write((ushort)MusicFade);
-			writer?.Write((ushort)MusicIndex);
-			writer?.Write(Data);
+			writer.Write((ushort)MusicFade);
+			writer.Write(MusicIndex);
+			writer.Write(Data);
 		}
 	}
 }

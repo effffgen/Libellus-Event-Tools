@@ -26,9 +26,9 @@ namespace LibellusLibrary.Event.Types.Frame
 
         protected override void WriteData(BinaryWriter writer)
         {
-            writer?.Write(Data);
-            writer?.Write(ProcedureIndex);
-            writer?.Write(Data2);
+            writer.Write(Data);
+            writer.Write(ProcedureIndex);
+            writer.Write(Data2);
         }
     }
 }

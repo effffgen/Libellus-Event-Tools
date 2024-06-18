@@ -20,8 +20,8 @@ namespace LibellusLibrary.Event.Types.Frame
 
 		protected override void WriteData(BinaryWriter writer)
 		{
-			writer?.Write(ToFrame);
-			writer?.Write(Data);
+			writer.Write(ToFrame);
+			writer.Write(Data);
 		}
 	}
 }

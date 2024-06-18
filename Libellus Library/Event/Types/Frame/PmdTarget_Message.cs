@@ -67,13 +67,13 @@ namespace LibellusLibrary.Event.Types.Frame
 
         protected override void WriteData(BinaryWriter writer)
         {
-            writer?.Write((byte)MessageIndex);
-            writer?.Write((byte)SetLocalFlag);
-            writer?.Write((ushort)Field16);
-            writer?.Write((byte)MessageMode);
-            writer?.Write((byte)MessageAccessMode);
-            writer?.Write((byte)MessageDisplayMode);
-            writer?.Write(Data);
+            writer.Write(MessageIndex);
+            writer.Write(SetLocalFlag);
+            writer.Write(Field16);
+            writer.Write((byte)MessageMode);
+            writer.Write((byte)MessageAccessMode);
+            writer.Write((byte)MessageDisplayMode);
+            writer.Write(Data);
         }
 
     }

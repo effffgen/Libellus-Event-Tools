@@ -9,31 +9,30 @@ namespace LibellusLibrary.Event.Types.Frame
         public ushort FlagNumber { get; set; }
 
         [JsonPropertyOrder(-99)]
-        public ushort CmpValue { get; set; }
+        public ushort CompareValue { get; set; }
 
         [JsonPropertyOrder(-98)]
         [JsonConverter(typeof(JsonStringEnumConverter))]
         public UnitFlagType FlagType { get; set; }
 
-        // GFlagType == GlobalFlagType
         [JsonPropertyOrder(-97)]
         [JsonConverter(typeof(JsonStringEnumConverter))]
-        public UnitGFlagType GFlagType { get; set; }
+        public UnitGFlagType GlobalFlagType { get; set; }
 
         internal void ReadData(BinaryReader reader)
         {
             FlagNumber = reader.ReadUInt16();
-            CmpValue = reader.ReadUInt16();
+            CompareValue = reader.ReadUInt16();
             FlagType = (UnitFlagType)reader.ReadUInt16();
-            GFlagType = (UnitGFlagType)reader.ReadUInt16();
+            GlobalFlagType = (UnitGFlagType)reader.ReadUInt16();
         }
 
         internal void WriteData(BinaryWriter writer)
         {
-            writer?.Write(FlagNumber);
-            writer?.Write(CmpValue);
-            writer?.Write((ushort)FlagType);
-            writer?.Write((ushort)GFlagType);
+            writer.Write(FlagNumber);
+            writer.Write(CompareValue);
+            writer.Write((ushort)FlagType);
+            writer.Write((ushort)GlobalFlagType);
         }
 
         public enum UnitFlagType : short
@@ -43,6 +42,7 @@ namespace LibellusLibrary.Event.Types.Frame
             GLOBAL = 2,
         }
 
+        // GFlagType == GlobalFlagType
         public enum UnitGFlagType : short
         {
             EVT = 0,

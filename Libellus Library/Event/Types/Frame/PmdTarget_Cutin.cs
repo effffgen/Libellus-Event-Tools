@@ -78,19 +78,19 @@ namespace LibellusLibrary.Event.Types.Frame
 
 		protected override void WriteData(BinaryWriter writer)
 		{
-			writer?.Write((byte)CutinMode);
-			writer?.Write(Field15);
-			writer?.Write(Field16);
-			writer?.Write(CHARA);
-			writer?.Write(FACE);
-			writer?.Write(FUKU);
-			writer?.Write(SYURUI);
-			writer?.Write(X);
-			writer?.Write(Y);
-			writer?.Write((byte)TYPE);
-			writer?.Write(Field0E);
-			writer?.Write(REFNO);
-			writer?.Write(Data);
+			writer.Write((byte)CutinMode);
+			writer.Write(Field15);
+			writer.Write(Field16);
+			writer.Write(CHARA);
+			writer.Write(FACE);
+			writer.Write(FUKU);
+			writer.Write(SYURUI);
+			writer.Write(X);
+			writer.Write(Y);
+			writer.Write((byte)TYPE);
+			writer.Write(Field0E);
+			writer.Write(REFNO);
+			writer.Write(Data);
 		}
 	}
 }

@@ -45,8 +45,8 @@ namespace LibellusLibrary.Event.Types.Frame
 
 		protected override void WriteData(BinaryWriter writer)
 		{
-			writer?.Write((uint)EventMode);
-			EventData.WriteData(writer!);
+			writer.Write((uint)EventMode);
+			EventData.WriteData(writer);
 		}
 	}
 	

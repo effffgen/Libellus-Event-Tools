@@ -67,18 +67,18 @@ namespace LibellusLibrary.Event.Types.Frame
 
 		protected override void WriteData(BinaryWriter writer)
 		{
-			writer?.Write(Field14);
-			writer?.Write((ushort)CameraMode);
-			writer?.Write(ActiveSelUnit);
-			writer?.Write(ActiveViewLength);
-			writer?.Write(CameraX);
-			writer?.Write(CameraY);
-			writer?.Write(CameraZ);
-			writer?.Write(CameraPitch);
-			writer?.Write(CameraYaw);
-			writer?.Write(CameraFOV);
-			writer?.Write(CurveID);
-			writer?.Write(Data);
+			writer.Write(Field14);
+			writer.Write((ushort)CameraMode);
+			writer.Write(ActiveSelUnit);
+			writer.Write(ActiveViewLength);
+			writer.Write(CameraX);
+			writer.Write(CameraY);
+			writer.Write(CameraZ);
+			writer.Write(CameraPitch);
+			writer.Write(CameraYaw);
+			writer.Write(CameraFOV);
+			writer.Write(CurveID);
+			writer.Write(Data);
 		}
 	}
 }
