@@ -9,8 +9,10 @@ namespace LibellusLibrary.Event.Types.Frame
         [JsonConverter(typeof(JsonStringEnumConverter))]
         public UnitTypeEnum UnitType { get; set; }
 
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable
         [JsonPropertyOrder(-91)]
         public Unit UnitData { get; set; }
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
         internal enum UnitTypeEnum : uint
         {
@@ -43,8 +45,8 @@ namespace LibellusLibrary.Event.Types.Frame
 
         protected override void WriteData(BinaryWriter writer)
         {
-            writer?.Write((uint)UnitType);
-            UnitData.WriteData(writer!);
+            writer.Write((uint)UnitType);
+            UnitData.WriteData(writer);
         }
     }
 
@@ -72,7 +74,7 @@ namespace LibellusLibrary.Event.Types.Frame
 
         public override void WriteData(BinaryWriter writer)
         {
-            writer?.Write(Data);
+            writer.Write(Data);
         }
     }
 
@@ -156,20 +158,20 @@ namespace LibellusLibrary.Event.Types.Frame
 
         public override void WriteData(BinaryWriter writer)
         {
-            writer?.Write((byte)HOKANTYPE);
-            writer?.Write((byte)MOVETYPE);
-            writer?.Write(SPEED);
-            writer?.Write(PosX);
-            writer?.Write(PosY);
-            writer?.Write(PosZ);
-            writer?.Write(LOOP);
-            writer?.Write(MUSI_STOP);
-            writer?.Write(AUTO_ROT);
-            writer?.Write(Data);
-            writer?.Write(PlaySound);
-            writer?.Write(ChannelNumber);
-            writer?.Write(SoundInterval);
-            writer?.Write(SoundWait);
+            writer.Write((byte)HOKANTYPE);
+            writer.Write((byte)MOVETYPE);
+            writer.Write(SPEED);
+            writer.Write(PosX);
+            writer.Write(PosY);
+            writer.Write(PosZ);
+            writer.Write(LOOP);
+            writer.Write(MUSI_STOP);
+            writer.Write(AUTO_ROT);
+            writer.Write(Data);
+            writer.Write(PlaySound);
+            writer.Write(ChannelNumber);
+            writer.Write(SoundInterval);
+            writer.Write(SoundWait);
         }
     }
 
@@ -202,11 +204,11 @@ namespace LibellusLibrary.Event.Types.Frame
 
         public override void WriteData(BinaryWriter writer)
         {
-            writer?.Write(Field18);
-            writer?.Write(AnimationIndex);
-            writer?.Write(Field1A);
-            writer?.Write(WaitFrames);
-            writer?.Write(Data);
+            writer.Write(Field18);
+            writer.Write(AnimationIndex);
+            writer.Write(Field1A);
+            writer.Write(WaitFrames);
+            writer.Write(Data);
         }
     }
 
@@ -227,8 +229,8 @@ namespace LibellusLibrary.Event.Types.Frame
 
         public override void WriteData(BinaryWriter writer)
         {
-            writer?.Write(IconID);
-            writer?.Write(Data);
+            writer.Write(IconID);
+            writer.Write(Data);
         }
     }
     
@@ -279,12 +281,12 @@ namespace LibellusLibrary.Event.Types.Frame
 
         public override void WriteData(BinaryWriter writer)
         {
-            writer?.Write((byte)KubiMode);
-            writer?.Write((byte)KubiSpeed);
-            writer?.Write(Field1A);
-            writer?.Write(KubiPitch);
-            writer?.Write(KubiYaw);
-            writer?.Write(Data);
+            writer.Write((byte)KubiMode);
+            writer.Write((byte)KubiSpeed);
+            writer.Write(Field1A);
+            writer.Write(KubiPitch);
+            writer.Write(KubiYaw);
+            writer.Write(Data);
         }
     }
 }
