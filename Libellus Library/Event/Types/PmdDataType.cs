@@ -9,7 +9,7 @@ namespace LibellusLibrary.Event.Types
 		[JsonConverter(typeof(JsonStringEnumConverter))]
 		public PmdTypeID Type { get; set; }
 
-		internal virtual void SaveData(PmdBuilder builder, BinaryWriter writer)=> throw new NotImplementedException(this.Type.ToString());
+		internal virtual void SaveData(PmdBuilder builder, BinaryWriter writer) => throw new NotImplementedException(this.Type.ToString());
 		internal virtual int GetCount() => throw new NotImplementedException(this.Type.ToString());
 		internal virtual int GetSize() => 0; // Data size doesnt matter for certain types
 	}

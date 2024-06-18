@@ -57,9 +57,9 @@ namespace LibellusLibrary.Event.Types
 		}
 		internal override void SaveData(PmdBuilder builder, BinaryWriter writer)
 		{
-			foreach (var data in Data)
+			foreach (byte[] rawData in Data)
 			{
-				writer.Write(data);
+				writer.Write(rawData);
 			}
 
 			return;
