@@ -6,8 +6,10 @@ namespace LibellusLibrary.Event.Types
 {
 	internal class PmdData_Unit : PmdDataType, ITypeCreator, IExternalFile, IReferenceType
 	{
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 		[JsonInclude]
 		public List<Pmd_UnitDef> Units { get; set; }
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
 		public PmdDataType? CreateType(uint version)
 		{
@@ -58,9 +60,9 @@ namespace LibellusLibrary.Event.Types
 		internal override void SaveData(PmdBuilder builder, BinaryWriter writer)
 		{
 			long start = writer.FTell();
-			long dataOffset = writer.FTell()+0x20*Units.Count;
+			long dataOffset = writer.FTell() + 0x20 * Units.Count;
 
-			for(int i=0; i < Units.Count;i++)
+			for(int i = 0; i < Units.Count; i++)
 			{
 				writer.FSeek(start + i * 0x20);
 				Units[i].WriteUnit(writer, dataOffset);
@@ -93,7 +95,7 @@ namespace LibellusLibrary.Event.Types
 	}
 	internal class Pmd_UnitDef: IReferenceType
 	{
-		public string FileName { get; set; }
+		public string FileName { get; set; } = String.Empty;
 		public byte[] UnitData = Array.Empty<byte>();
 
 		public int MajorID { get; set; }
@@ -135,7 +137,7 @@ namespace LibellusLibrary.Event.Types
 		public void SetReferences(PmdBuilder pmdBuilder)
 		{
 			byte[] temp = Text.StringtoASCII8(FileName);
-			System.Array.Resize(ref temp, 32);
+			Array.Resize(ref temp, 32);
 			NameIndex = pmdBuilder.AddReference(PmdTypeID.Name, temp);
 		}
 
