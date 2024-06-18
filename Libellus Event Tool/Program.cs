@@ -28,9 +28,7 @@ namespace LibellusEventTool
 					Console.WriteLine($"Coverting to Json: {file}");
 					PmdReader reader = new();
 					PolyMovieData pmd = await reader.ReadPmd(file);
-					// the "!" in Path.GetDirectoryName(file)! indicates null forgiveness
-					// Addresses CS8604 and should be safe considering that if this
-					// code path is running, `file` PROBABLY isn't null anyways
+					// the "!" in Path.GetDirectoryName(file)! indicates null forgiveness; should be safe & addresses CS8604
 					string folder = Path.Combine(Path.GetDirectoryName(file)!, Path.GetFileNameWithoutExtension(file));
 					await pmd.ExtractPmd(folder, Path.GetFileName(file));
 					continue;
