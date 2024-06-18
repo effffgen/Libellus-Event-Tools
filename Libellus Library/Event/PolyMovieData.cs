@@ -79,7 +79,7 @@ namespace LibellusLibrary.Event
 		public async void SavePmd(string path)
 		{
 			PmdBuilder builder = new(this);
-			MemoryStream stream = await builder.CreatePmd(path);
+			MemoryStream stream = await builder.CreatePmd();
 			File.WriteAllBytes(path, stream.ToArray());
 			stream.Close();
 		}

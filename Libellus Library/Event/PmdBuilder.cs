@@ -26,10 +26,10 @@ namespace LibellusLibrary.Event
 		// TODO: Fix CS1998?
 		/*TODO: Attempt to recreate odd file-storing priority PM1's seem to have
 			Unit (headers only) -> MSG file -> EPL (headers & files) -> Unit (files)*/
-		internal async Task<MemoryStream> CreatePmd(string path)
+		internal async Task<MemoryStream> CreatePmd()
 		{
 			MemoryStream pmdFile = new();
-			using var writer = new BinaryWriter(pmdFile);
+			using BinaryWriter writer = new(pmdFile);
 			Dictionary<PmdDataType, long> dataTypes = new();
 			// Type, offset
 			int pmdHeaderLength = 0x20;
