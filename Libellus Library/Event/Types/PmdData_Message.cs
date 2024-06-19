@@ -59,6 +59,8 @@ namespace LibellusLibrary.Event.Types
 			MessageData = await File.ReadAllBytesAsync(Path.Combine(directory, FileName));
 		}
 
+		public int GetTotalFileSize() => GetSize();
+
 		internal override void SaveData(PmdBuilder builder, BinaryWriter writer)
 		{
 			writer.Write(MessageData);

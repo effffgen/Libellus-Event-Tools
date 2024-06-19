@@ -24,8 +24,6 @@ namespace LibellusLibrary.Event
 		// I sincerely apologize for the absolute hell that is the writing code
 		// I dont know what the fuck I was smoking but I know if I touch it, the whole thing will explode
 		// TODO: Fix CS1998?
-		/*TODO: Attempt to recreate odd file-storing priority PM1's seem to have
-			Unit (headers only) -> MSG file -> EPL (headers & files) -> Unit (files)*/
 		internal async Task<MemoryStream> CreatePmd()
 		{
 			MemoryStream pmdFile = new();
@@ -34,16 +32,30 @@ namespace LibellusLibrary.Event
 			// Type, offset
 			int pmdHeaderLength = 0x20;
 			int pmdTypesCount = 0;
+			long unitDataOffset = 0;
 			foreach (PmdDataType pmdData in Pmd.PmdDataTypes)
 			{
 				if(pmdData is IReferenceType reference)
 				{
 					reference.SetReferences(this);
 				}
-				if (pmdData.Type == PmdTypeID.Effect)
+				if (pmdData.Type == PmdTypeID.Effect || pmdData.Type == PmdTypeID.Unit || pmdData.Type == PmdTypeID.Message)
 				{
-					pmdHeaderLength += 0x10;
-					pmdTypesCount += 1;
+					if (pmdData.Type == PmdTypeID.Effect)
+					{
+						unitDataOffset += ((IExternalFile)pmdData).GetTotalFileSize();
+					}
+					unitDataOffset += pmdData.GetSize() * pmdData.GetCount();
+					if (pmdData.Type == PmdTypeID.Message)
+					{
+						continue;
+					}
+					// Only add extra "headers" when we need to write additional ones to the PMD Type table
+					if (pmdData.GetCount() > 0)
+					{
+						pmdHeaderLength += 0x10;
+						pmdTypesCount += 1;
+					}
 				}
 			}
 			pmdHeaderLength += 0x10 * (Pmd.PmdDataTypes.Count + ReferenceTables.Count);
@@ -57,10 +69,18 @@ namespace LibellusLibrary.Event
 				dataType.SaveData(this, writer);
 				dataTypes.Add(dataType, start);
 			}
-
+			bool hasUnit = false;
+			int unitTotalSize = 0;
 			foreach (PmdDataType pmdData in Pmd.PmdDataTypes)
 			{
 				long start = writer.FTell();
+				if (pmdData is PmdData_Unit unit)
+				{
+					unitDataOffset += start; // Get exact offset to Unit file data
+					hasUnit = true;
+					unitTotalSize = unit.GetTotalFileSize();
+					unit.storeFileOverride = unitDataOffset;
+				}
 				pmdData.SaveData(this, writer);
 				dataTypes.Add(pmdData, start);
 			}
@@ -74,24 +94,33 @@ namespace LibellusLibrary.Event
 			writer.Write(0); // Expand Size
 			writer.Write(pmdTypesCount);
 			writer.Write(Pmd.Version);
-			writer.Write(0); //Reserve
+			writer.Write(0); // Reserve
 			writer.Write(0);
 
+			int lastPmdType = -1;
 			// Write the type table in the correct order
 			foreach (KeyValuePair<PmdDataType, long> dataType in dataTypes)
 			{
+				if (hasUnit && lastPmdType < (int)PmdTypeID.F1 && dataType.Key.Type > PmdTypeID.UnitData)
+				{
+					writer.Write((int)PmdTypeID.UnitData);
+					writer.Write(unitTotalSize);
+					writer.Write(1);
+					writer.Write((int)unitDataOffset);
+				}
 				writer.Write((int)dataType.Key.Type);
 				writer.Write(dataType.Key.GetSize()); // Size
 				writer.Write(dataType.Key.GetCount());
 				writer.Write((int)dataType.Value); // Offset
-				// Insert EffectData header after Effect
-				if (dataType.Key.Type == PmdTypeID.Effect)
+				// Insert EffectData header after Effect if we have any
+				if (dataType.Key.Type == PmdTypeID.Effect && dataType.Key.GetCount() > 0)
 				{
 					writer.Write((int)PmdTypeID.EffectData);
-					writer.Write(((PmdData_Effect)dataType.Key).GetDataSize());
+					writer.Write(((IExternalFile)dataType.Key).GetTotalFileSize());
 					writer.Write(1);
 					writer.Write((int)dataType.Value + dataType.Key.GetSize() * dataType.Key.GetCount());
 				}
+				lastPmdType = (int)dataType.Key.Type;
 			}
 
 			return pmdFile;

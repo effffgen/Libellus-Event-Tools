@@ -32,6 +32,17 @@ namespace LibellusLibrary.Event.Types
 			}
 		}
 
+		// Get total size of all EPL files
+		public int GetTotalFileSize()
+		{
+			int size = 0;
+			foreach (Pmd_EffectDef Effect in Effects)
+			{
+				size += Effect.EffectData.Length;
+			}
+			return size;
+		}
+
 		public PmdDataType? ReadType(BinaryReader reader, uint version, List<PmdTypeID> typeIDs, PmdTypeFactory typeFactory)
 		{
 			Effects ??= new();
@@ -89,17 +100,6 @@ namespace LibellusLibrary.Event.Types
 			{
 				Effect.SetReferences(pmdBuilder);
 			}
-		}
-		
-		// Get total size of all EPL files
-		public int GetDataSize()
-		{
-			int size = 0;
-			foreach (Pmd_EffectDef Effect in Effects)
-			{
-				size += Effect.EffectData.Length;
-			}
-			return size;
 		}
 
 		internal override int GetCount() => Effects.Count;

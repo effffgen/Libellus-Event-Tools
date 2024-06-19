@@ -10,6 +10,8 @@ namespace LibellusLibrary.Event.Types
 		[JsonInclude]
 		public List<Pmd_UnitDef> Units { get; set; }
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+		[JsonIgnore]
+		public long storeFileOverride = -1;
 
 		public PmdDataType? CreateType(uint version)
 		{
@@ -22,7 +24,6 @@ namespace LibellusLibrary.Event.Types
 			{
 				unit.UnitData = await File.ReadAllBytesAsync(Path.Combine(directory, unit.FileName));
 			}
-			
 		}
 
 		public async Task SaveExternalFile(string directory)
@@ -31,6 +32,17 @@ namespace LibellusLibrary.Event.Types
 			{
 				await File.WriteAllBytesAsync(Path.Combine(directory, unit.FileName), unit.UnitData);
 			}
+		}
+
+		// Get total size of all Unit files
+		public int GetTotalFileSize()
+		{
+			int size = 0;
+			foreach (Pmd_UnitDef unit in Units)
+			{
+				size += unit.UnitData.Length - (unit.UnitData.Length % 0x10) + 0x10;
+			}
+			return size;
 		}
 
 		public PmdDataType? ReadType(BinaryReader reader, uint version, List<PmdTypeID> typeIDs, PmdTypeFactory typeFactory)
@@ -60,15 +72,24 @@ namespace LibellusLibrary.Event.Types
 		internal override void SaveData(PmdBuilder builder, BinaryWriter writer)
 		{
 			long start = writer.FTell();
-			long dataOffset = writer.FTell() + 0x20 * Units.Count;
+			long dataOffset = storeFileOverride == -1 ? start + 0x20 * Units.Count : storeFileOverride;
 
 			for(int i = 0; i < Units.Count; i++)
 			{
 				writer.FSeek(start + i * 0x20);
 				Units[i].WriteUnit(writer, dataOffset);
 				dataOffset += Units[i].UnitData.Length;
+				// Align dataOffset to 0x10 increment as is needed for RMD files
+				long alignedOffset = dataOffset - (dataOffset % 0x10) + 0x10;
+				writer.Write(new byte[alignedOffset - dataOffset]);
+				dataOffset = alignedOffset;
 			}
-
+			// if we overrode the offset to write RMD's to, seek to the end of the Unit headers
+			// so that the other tables/files can be stored into the PMD correctly still
+			if (storeFileOverride != -1)
+			{
+				writer.FSeek(start + Units.Count * 0x20);
+			}
 		}
 
 		public void SetReferences(PmdBuilder pmdBuilder)
@@ -77,17 +98,6 @@ namespace LibellusLibrary.Event.Types
 			{
 				unit.SetReferences(pmdBuilder);
 			}
-		}
-		
-		// Get total size of all Unit files
-		public int GetDataSize()
-		{
-			int size = 0;
-			foreach (Pmd_UnitDef unit in Units)
-			{
-				size += unit.UnitData.Length;
-			}
-			return size;
 		}
 
 		internal override int GetCount() => Units.Count;

@@ -4,5 +4,6 @@
 	{
 		public Task SaveExternalFile(string directory);
 		public Task LoadExternalFile(string directory);
+		public int GetTotalFileSize();
 	}
 }
