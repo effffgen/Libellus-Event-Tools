@@ -38,8 +38,7 @@ namespace LibellusEventTool
 				{
 					Console.WriteLine($"Coverting to PMD: {file}");
 					PolyMovieData pmd = await PolyMovieData.LoadPmd(file);
-					string pmdext = $"PM{pmd.MagicCode[3]}";
-					pmd.SavePmd($"{file}.{pmdext}");
+					pmd.SavePmd($"{file}.PM{pmd.MagicCode[3]}");
 				}
 			}
 			Console.WriteLine("Press Any Button To Exit.");
