@@ -69,7 +69,7 @@ namespace LibellusLibrary.Event
 				dataType.SaveData(this, writer);
 				dataTypes.Add(dataType, start);
 			}
-			bool hasUnit = false;
+			bool hasUnit = false; // only false if unit isn't present or is empty
 			int unitTotalSize = 0;
 			foreach (PmdDataType pmdData in Pmd.PmdDataTypes)
 			{
@@ -77,7 +77,7 @@ namespace LibellusLibrary.Event
 				if (pmdData is PmdData_Unit unit)
 				{
 					unitDataOffset += start; // Get exact offset to Unit file data
-					hasUnit = true;
+					hasUnit = unit.GetCount() > 0;
 					unitTotalSize = unit.GetTotalFileSize();
 					unit.storeFileOverride = unitDataOffset;
 				}
