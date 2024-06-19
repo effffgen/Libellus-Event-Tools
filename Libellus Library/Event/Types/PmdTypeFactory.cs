@@ -71,17 +71,18 @@
 			long originalpos = reader.BaseStream.Position;
 			for(int i = 0; i < typeIDs.Count; i++)
 			{
-				if(typeIDs[i] == PmdTypeID.Name)
+				if (typeIDs[i] != PmdTypeID.Name)
 				{
-					reader.BaseStream.Position = 0x20 + (0x10 * i) + 0x8;
-					uint nameCount = reader.ReadUInt32();
-					reader.BaseStream.Position = reader.ReadUInt32();
+					continue;
+				}
+				reader.BaseStream.Position = 0x20 + (0x10 * i) + 0x8;
+				uint nameCount = reader.ReadUInt32();
+				reader.BaseStream.Position = reader.ReadUInt32();
 
-					for(int j = 0; j < nameCount; j++)
-					{
-						string data = new(reader.ReadChars(32));
-						_names.Add(data.Replace("\0", string.Empty));
-					}
+				for (int j = 0; j < nameCount; j++)
+				{
+					string data = new(reader.ReadChars(32));
+					_names.Add(data.Replace("\0", string.Empty));
 				}
 			}
 			reader.BaseStream.Position = originalpos;

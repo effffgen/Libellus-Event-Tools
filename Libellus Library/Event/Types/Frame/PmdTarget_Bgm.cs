@@ -16,8 +16,8 @@ namespace LibellusLibrary.Event.Types.Frame
 		[JsonConverter(typeof(ByteArrayToHexArray))]
 		public byte[] Data { get; set; } = Array.Empty<byte>();
 
-		// This is only accurate for P3; P4(G) removes some of these from the Event Editor menu
-		// TODO: Figure out a way to address that discrepancy
+		// This is only for certain accurate in P3; P4G removes these from the event editor menu,
+		// however the corresponding values still seem to be used? TODO: Figure that out
 		internal enum MusicFadeEnum : ushort
 		{
 			PLAY = 0,
