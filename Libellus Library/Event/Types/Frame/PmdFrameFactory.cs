@@ -4,31 +4,17 @@
 	{
 		public List<PmdTargetType> ReadDataTypes(BinaryReader reader, uint typeTableCount)
 		{
-			List<PmdTargetTypeID> typeIDs = ReadTypes(reader, typeTableCount);
 			List<PmdTargetType> frames = new();
-
-			foreach (PmdTargetTypeID type in typeIDs)
-			{
-				PmdTargetType? dataType = GetFrameType(type);
-				dataType.ReadFrame(reader);
-				frames.Add(dataType);
-			}
-
-			return frames;
-		}
-
-		private List<PmdTargetTypeID> ReadTypes(BinaryReader reader, uint typeTableCount)
-		{
-			long originalpos = reader.BaseStream.Position;
-			List<PmdTargetTypeID> types = new List<PmdTargetTypeID>();
 
 			for (int i = 0; i < typeTableCount; i++)
 			{
-				types.Add((PmdTargetTypeID)reader.ReadUInt16());
-				reader.BaseStream.Position += 0x3A;
+				long start = reader.BaseStream.Position;
+				PmdTargetType dataType = GetFrameType((PmdTargetTypeID)reader.ReadUInt16());
+				reader.BaseStream.Position = start;
+				dataType.ReadFrame(reader);
+				frames.Add(dataType);
 			}
-			reader.BaseStream.Position = originalpos;
-			return types;
+			return frames;
 		}
 
 		public static PmdTargetType GetFrameType(PmdTargetTypeID Type) => Type switch
