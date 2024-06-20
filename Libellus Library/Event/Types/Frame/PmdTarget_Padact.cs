@@ -16,16 +16,16 @@ namespace LibellusLibrary.Event.Types.Frame
 		public ushort Field16 { get; set; }
 
 		[JsonPropertyOrder(-90)]
-		public short ZIKAN { get; set; } // Mnemonic = L
+		public short ZIKAN { get; set; } // Mnemonic = L; limited to 0-3000 in editor
 
 		[JsonPropertyOrder(-90)]
-		public short TUYOSA { get; set; } // Mnemonic = P
+		public short TUYOSA { get; set; } // Mnemonic = P; limited to 0-255 in editor (why not use a byte atlus???)
 
 		[JsonPropertyOrder(-90)]
-		public short ON_ZIKAN { get; set; } // Mnemonic = ON
+		public short ON_ZIKAN { get; set; } // Mnemonic = ON; limited to 0-1000 in editor
 
 		[JsonPropertyOrder(-90)]
-		public short OFF_ZIKAN { get; set; } // Mnemonic = OFF
+		public short OFF_ZIKAN { get; set; } // Mnemonic = OFF; limited to 0-1000 in editor
 
 		[JsonPropertyOrder(-90)]
 		[JsonConverter(typeof(ByteArrayToHexArray))]
