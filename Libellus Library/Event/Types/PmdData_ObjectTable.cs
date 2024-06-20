@@ -67,11 +67,12 @@ namespace LibellusLibrary.Event.Types
 		public short Field04 { get; set; }
 		[JsonPropertyOrder(-96)]
 		public sbyte Field06 { get; set; }
-		
 		[JsonPropertyOrder(-95)]
 		[JsonConverter(typeof(ByteArrayToHexArray))]
 		public byte[] Data { get; set; } = Array.Empty<byte>();
-		
+		[JsonPropertyOrder(-94)]
+		public uint Field10 { get; set; }
+
 		public void ReadObject(BinaryReader reader)
 		{
 			ObjectID = (PmdTargetTypeID)reader.ReadByte();
@@ -79,7 +80,8 @@ namespace LibellusLibrary.Event.Types
 			Field02 = reader.ReadInt16();
 			Field04 = reader.ReadInt16();
 			Field06 = reader.ReadSByte();
-			Data = reader.ReadBytes(13);
+			Data = reader.ReadBytes(9);
+			Field10 = reader.ReadUInt32();
 		}
 
 		public void WriteObject(BinaryWriter writer)
@@ -90,6 +92,7 @@ namespace LibellusLibrary.Event.Types
 			writer.Write(Field04);
 			writer.Write(Field06);
 			writer.Write(Data);
+			writer.Write(Field10);
 		}
 	}
 }
