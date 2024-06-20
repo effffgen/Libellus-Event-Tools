@@ -49,6 +49,7 @@ namespace LibellusLibrary.Event.Types.Frame
 			PmdTargetTypeID.JUMP => new PmdTarget_Jump(),
 			PmdTargetTypeID.CUSTOMEVENT => new PmdTarget_CustomEvent(),
 			PmdTargetTypeID.SCRIPT => new PmdTarget_Script(),
+			PmdTargetTypeID.FOG => new PmdTarget_Fog(),
 			_ => new PmdTarget_Unknown()
 		};
 
