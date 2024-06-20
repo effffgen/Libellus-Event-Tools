@@ -6,8 +6,7 @@
 		public PmdDataType CreateFromVersion(uint version, BinaryReader reader)
 		{
 			return version switch {
-				10 => new PmdData_P3CutInfo(reader),
-				12 => new PmdData_P3CutInfo(reader),
+				10 or 11 or 12 => new PmdData_P3CutInfo(reader),
 				_ => throw new NotImplementedException(),
 			};
 		}
@@ -16,8 +15,7 @@
 		{
 			return version switch
 			{
-				10 => new PmdData_P3CutInfo(),
-				12 => new PmdData_P3CutInfo(),
+				10 or 11 or 12 => new PmdData_P3CutInfo(),
 				_ => throw new NotImplementedException(),
 			};
 		}
