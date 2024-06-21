@@ -35,7 +35,7 @@ namespace LibellusLibrary.Event.Types.Frame
             writer.Write((ushort)GlobalFlagType);
         }
 
-        public enum UnitFlagType : short
+        public enum UnitFlagType : ushort
         {
             DISABLE = 0,
             LOCAL = 1,
@@ -43,7 +43,7 @@ namespace LibellusLibrary.Event.Types.Frame
         }
 
         // GFlagType == GlobalFlagType
-        public enum UnitGFlagType : short
+        public enum UnitGFlagType : ushort
         {
             EVT = 0,
             COMMU = 1,

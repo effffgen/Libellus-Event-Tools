@@ -23,6 +23,7 @@
 			PmdTargetTypeID.MESSAGE => new PmdTarget_Message(),
 			PmdTargetTypeID.FADE => new PmdTarget_Fade(),
 			PmdTargetTypeID.QUAKE => new PmdTarget_Quake(),
+			PmdTargetTypeID.SLIGHT => new PmdTarget_Slight(),
 			PmdTargetTypeID.BGM => new PmdTarget_Bgm(),
 			PmdTargetTypeID.PADACT => new PmdTarget_Padact(),
 			PmdTargetTypeID.CTLCAM => new PmdTarget_Ctlcam(),
