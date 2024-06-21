@@ -33,6 +33,7 @@
 			PmdTypeID.FrameTable => new PmdData_FrameTable(),
 			PmdTypeID.Message => new PmdData_Message(),
 			PmdTypeID.Effect => new PmdData_Effect(),
+			PmdTypeID.SLight => new PmdData_SLight(),
 			PmdTypeID.ObjectTable => new PmdData_ObjectTable(),
 			PmdTypeID.BezierTable => new PmdData_BezierTable(),
 			_ => new UnkType()

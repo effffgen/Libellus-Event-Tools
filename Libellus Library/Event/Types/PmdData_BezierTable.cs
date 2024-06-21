@@ -1,4 +1,3 @@
-using LibellusLibrary.JSON;
 using System.Text.Json.Serialization;
 
 namespace LibellusLibrary.Event.Types

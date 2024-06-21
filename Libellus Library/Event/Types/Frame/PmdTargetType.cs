@@ -14,7 +14,7 @@ namespace LibellusLibrary.Event.Types.Frame
 		[JsonPropertyOrder(-98)]
 		public ushort Length { get; set; }
 		[JsonPropertyOrder(-97)]
-		public short NameIndex { get; set; }
+		public short NameIndex { get; set; } // SLIGHT replaces this with a (u)int called HOKAN; TODO: figure out how to get a PmdTarget_Slight made...
 		[JsonPropertyOrder(-96)]
 		public byte FBNResourceID { get; set; }
 		[JsonPropertyOrder(-95)]
