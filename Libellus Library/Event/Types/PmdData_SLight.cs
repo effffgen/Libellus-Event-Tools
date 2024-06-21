@@ -56,28 +56,28 @@ namespace LibellusLibrary.Event.Types
 	{
 		[JsonPropertyOrder(-100)]
 		public float DirectionRed { get; set; }
-		[JsonPropertyOrder(-100)]
+		[JsonPropertyOrder(-99)]
 		public float DirectionGreen { get; set; }
-		[JsonPropertyOrder(-100)]
+		[JsonPropertyOrder(-98)]
 		public float DirectionBlue { get; set; }
-		[JsonPropertyOrder(-100)]
+		[JsonPropertyOrder(-97)]
 		public uint Field0C { get; set; } // Unknown/unused
 
-		[JsonPropertyOrder(-100)]
+		[JsonPropertyOrder(-96)]
 		public float DirectionYaw { get; set; } // editor name: DIR Y; limited to 0-359 (whole numbers)
-		[JsonPropertyOrder(-100)]
+		[JsonPropertyOrder(-95)]
 		public float DirectionPitch { get; set; } // editor name: DIR X; limited to 0-359 (whole numbers)
-		[JsonPropertyOrder(-99)]
+		[JsonPropertyOrder(-94)]
 		[JsonConverter(typeof(ByteArrayToHexArray))]
 		public byte[] Data { get; set; } = Array.Empty<byte>();
 
-		[JsonPropertyOrder(-100)]
+		[JsonPropertyOrder(-93)]
 		public float AmbientRed { get; set; }
-		[JsonPropertyOrder(-100)]
+		[JsonPropertyOrder(-92)]
 		public float AmbientGreen { get; set; }
-		[JsonPropertyOrder(-100)]
+		[JsonPropertyOrder(-91)]
 		public float AmbientBlue { get; set; }
-		[JsonPropertyOrder(-100)]
+		[JsonPropertyOrder(-90)]
 		public uint Field2C { get; set; } // Unknown/unused
 
 		public void ReadSLight(BinaryReader reader)
