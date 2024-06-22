@@ -4,6 +4,10 @@ namespace LibellusEventTool
 {
 	class Program
 	{
+		/// <summary>
+		/// Controls whether to convert all PMD or JSON files contained within a passed folder and it's subfolders.
+		/// </summary>
+		private static bool _recurse = false;
 		static async Task Main(string[] args)
 		{
 			System.Reflection.Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();
@@ -11,7 +15,9 @@ namespace LibellusEventTool
 			string version = fvi.FileVersion ?? "Null Version"; // Address CS8600 warning
 			Console.WriteLine($"Welcome to LEET!\nLibellus Event Editing Tool: v{version}\nNow with better syntax!\n");
 
-			if (args.Length < 1)
+			_recurse = args.Contains("-r", StringComparer.OrdinalIgnoreCase);
+			int numberPaths = _recurse ? args.Length - 1 : args.Length;
+			if (numberPaths < 1)
 			{
 				Console.ForegroundColor = ConsoleColor.Yellow;
 				Console.WriteLine("Not enough args!");
@@ -20,7 +26,14 @@ namespace LibellusEventTool
 				Console.ReadKey();
 				return;
 			}
-			foreach (string file in args)
+			await ConvertPaths(args);
+			Console.WriteLine("Press Any Button To Exit.");
+			Console.ReadKey();
+		}
+
+		private static async Task ConvertPaths(string[] paths)
+		{
+			foreach (string file in paths)
 			{
 				string ext = Path.GetExtension(file).ToLower();
 				if (ext == ".pm1" || ext == ".pm2" || ext == ".pm3")
@@ -31,18 +44,18 @@ namespace LibellusEventTool
 					// the "!" in Path.GetDirectoryName(file)! indicates null forgiveness; should be safe & addresses CS8604
 					string folder = Path.Combine(Path.GetDirectoryName(file)!, Path.GetFileNameWithoutExtension(file));
 					await pmd.ExtractPmd(folder, Path.GetFileName(file));
-					continue;
 				}
-
-				if (ext == ".json")
+				else if (ext == ".json")
 				{
 					Console.WriteLine($"Coverting to PMD: {file}");
 					PolyMovieData pmd = await PolyMovieData.LoadPmd(file);
 					pmd.SavePmd($"{file}.PM{pmd.MagicCode[3]}");
 				}
+				else if (Directory.Exists(file) && _recurse)
+				{
+					await ConvertPaths(Directory.GetFiles(file, "*", SearchOption.AllDirectories));
+				}
 			}
-			Console.WriteLine("Press Any Button To Exit.");
-			Console.ReadKey();
 		}
 	}
 }
