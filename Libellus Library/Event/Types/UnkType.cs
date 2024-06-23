@@ -12,8 +12,14 @@ namespace LibellusLibrary.Event.Types
 		public PmdDataType? ReadType(BinaryReader reader, uint version, List<PmdTypeID> typeIDs, PmdTypeFactory typeFactory)
 		{
 			long OriginalPos = reader.BaseStream.Position;
+			if (!PmdTypeFactory.IsSerialized((PmdTypeID)reader.ReadUInt32()) && (typeIDs.Contains(PmdTypeID.Message) || typeIDs.Contains(PmdTypeID.Unit) || typeIDs.Contains(PmdTypeID.Effect)))
+			{
+				reader.BaseStream.Position = OriginalPos;
+				return null;
+			}
 
-			reader.BaseStream.Position += 0x8;
+			reader.BaseStream.Position = OriginalPos + 0x4;
+			int size = reader.ReadInt32();
 			uint cnt = reader.ReadUInt32();
 			if (cnt == 0)
 			{
@@ -22,19 +28,8 @@ namespace LibellusLibrary.Event.Types
 				empty.Data = new();
 				return empty;
 			}
-			reader.BaseStream.Position = OriginalPos;
-			
-			if (!PmdTypeFactory.IsSerialized((PmdTypeID)reader.ReadUInt32()) && (typeIDs.Contains(PmdTypeID.Message) || typeIDs.Contains(PmdTypeID.Unit) || typeIDs.Contains(PmdTypeID.Effect)))
-			{
-				reader.BaseStream.Position = OriginalPos;
-				return null;
-			}
-			
-			PmdData_RawData type = new();
-			reader.BaseStream.Position = OriginalPos + 0x4;
-			int size = reader.ReadInt32();
 
-			reader.BaseStream.Position = OriginalPos + 0xC;
+			PmdData_RawData type = new();
 			reader.BaseStream.Position = (long)reader.ReadUInt32();
 			for(int i = 0; i < cnt; i++)
 			{

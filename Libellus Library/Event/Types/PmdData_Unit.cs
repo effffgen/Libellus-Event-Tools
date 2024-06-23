@@ -52,8 +52,6 @@ namespace LibellusLibrary.Event.Types
 
 			reader.BaseStream.Position = OriginalPos + 0x8;
 			uint count = reader.ReadUInt32();
-
-			reader.BaseStream.Position = OriginalPos + 0xC;
 			reader.BaseStream.Position = (long)reader.ReadUInt32();
 			long unitStart = reader.FTell();
 			for(int i = 0; i < count; i++)

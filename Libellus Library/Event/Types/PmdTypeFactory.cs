@@ -16,7 +16,7 @@
 				ITypeCreator typecreator = GetTypeCreator(type);
 
 				PmdDataType? dataType = typecreator.ReadType(reader, version, typeIDs, this);
-				if(dataType != null) { 
+				if(dataType != null) {
 					dataType.Type = type;
 					_types.Add(dataType);
 				}

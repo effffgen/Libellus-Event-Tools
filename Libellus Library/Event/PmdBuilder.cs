@@ -50,12 +50,8 @@ namespace LibellusLibrary.Event
 					{
 						continue;
 					}
-					// Only add extra "headers" when we need to write additional ones to the PMD Type table
-					if (pmdData.GetCount() > 0)
-					{
-						pmdHeaderLength += 0x10;
-						pmdTypesCount += 1;
-					}
+					pmdHeaderLength += 0x10;
+					pmdTypesCount += 1;
 				}
 			}
 			pmdHeaderLength += 0x10 * (Pmd.PmdDataTypes.Count + ReferenceTables.Count);
@@ -69,7 +65,7 @@ namespace LibellusLibrary.Event
 				dataType.SaveData(this, writer);
 				dataTypes.Add(dataType, start);
 			}
-			bool hasUnit = false; // only false if unit isn't present or is empty
+			bool hasUnit = false; // only false if unit isn't present
 			int unitTotalSize = 0;
 			foreach (PmdDataType pmdData in Pmd.PmdDataTypes)
 			{
@@ -77,7 +73,7 @@ namespace LibellusLibrary.Event
 				if (pmdData is PmdData_Unit unit)
 				{
 					unitDataOffset += start; // Get exact offset to Unit file data
-					hasUnit = unit.GetCount() > 0;
+					hasUnit = true;
 					unitTotalSize = unit.GetTotalFileSize();
 					unit.storeFileOverride = unitDataOffset;
 				}
@@ -105,7 +101,9 @@ namespace LibellusLibrary.Event
 				{
 					writer.Write((int)PmdTypeID.UnitData);
 					writer.Write(unitTotalSize);
-					writer.Write(1);
+					// Only write count of 1 if UnitData has any data; unsure if there are
+					// edge cases where the size is 0 but the count is still 1
+					writer.Write(unitTotalSize == 0 ? 0 : 1);
 					writer.Write((int)unitDataOffset);
 				}
 				writer.Write((int)dataType.Key.Type);
@@ -113,11 +111,13 @@ namespace LibellusLibrary.Event
 				writer.Write(dataType.Key.GetCount());
 				writer.Write((int)dataType.Value); // Offset
 				// Insert EffectData header after Effect if we have any
-				if (dataType.Key.Type == PmdTypeID.Effect && dataType.Key.GetCount() > 0)
+				if (dataType.Key.Type == PmdTypeID.Effect)
 				{
 					writer.Write((int)PmdTypeID.EffectData);
 					writer.Write(((IExternalFile)dataType.Key).GetTotalFileSize());
-					writer.Write(1);
+					// Only write count of 1 if Effect has any effects; unsure of edge cases
+					// where Effect has no effects but the count is still 1
+					writer.Write(dataType.Key.GetCount() != 0 ? 1 : 0);
 					writer.Write((int)dataType.Value + dataType.Key.GetSize() * dataType.Key.GetCount());
 				}
 				lastPmdType = (int)dataType.Key.Type;
