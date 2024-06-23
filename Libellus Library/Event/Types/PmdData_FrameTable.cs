@@ -28,7 +28,7 @@ namespace LibellusLibrary.Event.Types
 			uint count = reader.ReadUInt32();
 			reader.BaseStream.Position = (long)reader.ReadUInt32();
 
-			if (version != 12)
+			if (version != 10 && version != 11 && version != 12)
 			{
 				Console.ForegroundColor = ConsoleColor.Yellow;
 				Console.WriteLine($"Version {version} FrameTable is not supported! Reading data to Hex array...");
