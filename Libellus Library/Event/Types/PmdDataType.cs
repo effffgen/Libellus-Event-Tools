@@ -1,5 +1,4 @@
-﻿using System.Text.Json;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 
 namespace LibellusLibrary.Event.Types
 {
@@ -12,45 +11,6 @@ namespace LibellusLibrary.Event.Types
 		internal virtual void SaveData(PmdBuilder builder, BinaryWriter writer) => throw new NotImplementedException(this.Type.ToString());
 		internal virtual int GetCount() => throw new NotImplementedException(this.Type.ToString());
 		internal virtual int GetSize() => 0; // Data size doesnt matter for certain types
-	}
-	
-	public class PmdDataTypeConverter : JsonConverter<PmdDataType>
-	{
-		public override PmdDataType? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-		{
-			// obj = base.Read(ref reader, typeToConvert, options);
-			//var conv = new ;
-			//var type = reader.TokenType;
-			//reader.Read();
-			//type = reader.TokenType;
-			/*
-			reader.Read();
-			reader.Read();
-			var typeID = (PmdTypeID)reader.GetInt32();
-			var creator = PmdTypeFactory.GetTypeCreator(typeID);
-			read
-			var dataType = creator.CreateType()
-
-			var conv = new JsonStringEnumConverter().CreateConverter(typeof(PmdTypeID), options);
-			
-			JsonSerializer.Deserialize<PmdTypeID>(ref reader, options);
-			*/
-
-			//var str = reader.GetString();
-			//var converters = options.
-			//var pmdData = new PmdDataType();
-			//var obj = JsonSerializer.Deserialize(ref reader, typeof(PmdDataType),options, pmdData);
-			//type = reader.TokenType;
-			//var typeID = reader.GetInt32();
-
-			var deser = JsonSerializer.Deserialize<PmdDataType>(ref reader, options);
-			throw new NotImplementedException();
-		}
-
-		public override void Write(Utf8JsonWriter writer, PmdDataType value, JsonSerializerOptions options)
-		{
-			writer.WriteRawValue(JsonSerializer.Serialize<object>(value,options));
-		}
 	}
 
 	public enum PmdTypeID
