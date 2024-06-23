@@ -23,9 +23,23 @@ namespace LibellusLibrary.Event.Types
 		{
 			long OriginalPos = reader.BaseStream.Position;
 
-			reader.BaseStream.Position += 0x8;
+			reader.BaseStream.Position += 0x4;
+			int size = reader.ReadInt32();
 			uint count = reader.ReadUInt32();
 			reader.BaseStream.Position = (long)reader.ReadUInt32();
+
+			if (version != 12)
+			{
+				Console.ForegroundColor = ConsoleColor.Yellow;
+				Console.WriteLine($"Version {version} FrameTable is not supported! Reading data to Hex array...");
+				Console.ResetColor();
+				PmdData_RawData unsupportedFrameTable = new();
+				for (int i = 0; i < count; i++)
+				{
+					unsupportedFrameTable.Data.Add(reader.ReadBytes(size));
+				}
+				return unsupportedFrameTable;
+			}
 
 			PmdFrameFactory factory = new();
 			Frames = factory.ReadDataTypes(reader, count);
@@ -42,7 +56,7 @@ namespace LibellusLibrary.Event.Types
 			}
 		}
 		internal override int GetCount() => Frames.Count;
-		internal override int GetSize() => 0x3C; // Data size doesnt matter for certain types
+		internal override int GetSize() => 0x3C; // TODO: 0x2C for v9 PMD
 
 	}
 
