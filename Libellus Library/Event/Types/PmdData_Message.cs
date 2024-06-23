@@ -19,8 +19,12 @@ namespace LibellusLibrary.Event.Types
 
 			reader.BaseStream.Position += 0x4;
 			int size = reader.ReadInt32();
-
-			reader.BaseStream.Position = OriginalPos + 0xC;
+			uint count = reader.ReadUInt32();
+			if (count == 0)
+			{
+				reader.BaseStream.Position = OriginalPos;
+				return this;
+			}
 			reader.BaseStream.Position = (long)reader.ReadUInt32();
 
 			MessageData = reader.ReadBytes(size);
@@ -68,10 +72,14 @@ namespace LibellusLibrary.Event.Types
 		}
 		
 		internal override int GetSize() => MessageData.Length;
-		internal override int GetCount() => 1;
+		internal override int GetCount() => MessageData.Length > 0 ? 1 : 0;
 
 		public void SetReferences(PmdBuilder pmdBuilder)
 		{
+			if (GetCount() == 0)
+			{
+				return;
+			}
 			if (FileName.EndsWith(".bmd"))
 			{
 				FileName = FileName.Substring(0, FileName.LastIndexOf('.')) + ".msg";
