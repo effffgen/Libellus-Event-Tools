@@ -7,5 +7,9 @@ These files are referred to as PMD (short for Polygon Movie Data or PolyMovieDat
 - Conversion of PMD to and from JSON
 
 ## Supported PMD Versions
+- 10 (Partial)
+  - Possibly unused in any game; PMD's of this version can be found in Persona 3 FES's files
+- 11 (Partial)
+  - Possibly unused in any game; PMD's of this version can be found in Persona 3 FES's files
 - 12
   - Used in Persona 3 (Original and FES), Persona 4 and Persona 4 Golden
