@@ -44,7 +44,7 @@ namespace LibellusLibrary.Event
 			tasks.Add(Task.Run(() => File.WriteAllTextAsync(Path.Combine(directoryToExtract, filename + ".json"), json)));
 			foreach (PmdDataType dataType in PmdDataTypes)
 			{
-				if (dataType.GetCount() > 0 && dataType is IExternalFile fileType)
+				if (dataType is IExternalFile fileType)
 				{
 					tasks.Add(fileType.SaveExternalFile(directoryToExtract));
 				}
@@ -66,7 +66,7 @@ namespace LibellusLibrary.Event
 				// This the final step, the last battle!
 				foreach (PmdDataType data in pmd.PmdDataTypes)
 				{
-					if (data.GetCount() > 0 && data is IExternalFile externalData)
+					if (data is IExternalFile externalData)
 					{
 						tasks.Add(externalData.LoadExternalFile(Directory.GetParent(path)!.FullName));
 					}

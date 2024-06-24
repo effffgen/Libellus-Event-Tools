@@ -4,7 +4,7 @@ namespace LibellusLibrary.Event.Types
 {
 	internal class PmdData_Message : PmdDataType, ITypeCreator, IExternalFile, IReferenceType
 	{
-		public string FileName { get; set; } = String.Empty;
+		public string FileName { get; set; } = string.Empty;
 
 		public byte[] MessageData = Array.Empty<byte>();
 
@@ -41,7 +41,7 @@ namespace LibellusLibrary.Event.Types
 					break;
 				}
 			}
-			if (FileName == String.Empty)
+			if (FileName == string.Empty)
 			{
 				Console.ForegroundColor = ConsoleColor.Yellow;
 				Console.WriteLine("Could not locate BMD filename! Saving as Message.bmd!");
@@ -55,11 +55,19 @@ namespace LibellusLibrary.Event.Types
 
 		public async Task SaveExternalFile(string directory)
 		{
+			if (FileName == string.Empty)
+			{
+				return;
+			}
 			await File.WriteAllBytesAsync(Path.Combine(directory, FileName), MessageData);
 		}
 
 		public async Task LoadExternalFile(string directory)
 		{
+			if (FileName == string.Empty)
+			{
+				return;
+			}
 			MessageData = await File.ReadAllBytesAsync(Path.Combine(directory, FileName));
 		}
 
@@ -72,7 +80,7 @@ namespace LibellusLibrary.Event.Types
 		}
 		
 		internal override int GetSize() => MessageData.Length;
-		internal override int GetCount() => MessageData.Length > 0 ? 1 : 0;
+		internal override int GetCount() => FileName == string.Empty ? 0 : 1;
 
 		public void SetReferences(PmdBuilder pmdBuilder)
 		{
