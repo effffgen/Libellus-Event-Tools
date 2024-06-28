@@ -22,10 +22,10 @@ namespace LibellusLibrary.Event.Types.Frame
 		public short FACE { get; set; }
 
 		[JsonPropertyOrder(-87)]
-		public ushort FUKU { get; set; }
+		public ushort FUKU { get; set; } // Likely 服 (ふく), which roughly means "clothes"
 
 		[JsonPropertyOrder(-86)]
-		public short SYURUI { get; set; }
+		public short SYURUI { get; set; } // Likely 種類 (しゅるい), which roughly means "type" (as in variant)
 
 		[JsonPropertyOrder(-85)]
 		public short X { get; set; }

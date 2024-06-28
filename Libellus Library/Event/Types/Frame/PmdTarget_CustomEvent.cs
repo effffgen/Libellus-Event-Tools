@@ -16,7 +16,7 @@ namespace LibellusLibrary.Event.Types.Frame
 		// PERU == Persona?
 		internal enum EventModeEnum : uint
 		{
-			HIRU_SASO = 0,
+			HIRU_SASO = 0, // Likely means roughly "Invited at noon"
 			BASHO2SAS = 1,
 			PARA_UPDW = 2,
 			HOLYHOGO = 3,
