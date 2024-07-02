@@ -48,8 +48,12 @@
 		public short Unknown1 { get; set; }
 
 		public short FieldFBN { get; set; }
-		public int FieldENV { get; set; }
+		public short FieldENV { get; set; }
 
+		public short Unknown2 { get; set; }
+
+		// TODO: Create enum & identify values and functionality of bit values
+		// for ease of reading and modifying JSON output
 		public int Flags { get; set; }
 
 		public PmdData_P3CutInfo()
@@ -66,7 +70,8 @@
 			FieldMinorID = reader.ReadInt32();
 			Unknown1 = reader.ReadInt16();
 			FieldFBN = reader.ReadInt16();
-			FieldENV = reader.ReadInt32();
+			FieldENV = reader.ReadInt16();
+			Unknown2 = reader.ReadInt16();
 			Flags = reader.ReadInt32();
 		}
 
@@ -81,6 +86,7 @@
 			writer.Write(Unknown1);
 			writer.Write(FieldFBN);
 			writer.Write(FieldENV);
+			writer.Write(Unknown2);
 			writer.Write(Flags);
 		}
 		internal override int GetCount() => 1;
