@@ -1,4 +1,6 @@
-﻿namespace LibellusLibrary.Event.Types
+﻿using System.Text.Json.Serialization;
+
+namespace LibellusLibrary.Event.Types
 {
 	internal class PmdData_CutInfo : PmdDataType, ITypeCreator, IVersionable
 	{
@@ -45,16 +47,27 @@
 		public int FieldMajorID { get; set; }
 		public int FieldMinorID { get; set; }
 
-		public short Unknown1 { get; set; }
+		public byte PC_CONTROL { get; set; } // Dunno what this does exactly; has no obvious effect?
+		public byte COUNT_IDX { get; set; } // Dunno what this does exactly; has no obvious effect? DONTUSE (0) to 8 in editor
 
 		public short FieldFBN { get; set; }
 		public short FieldENV { get; set; }
 
-		public short Unknown2 { get; set; }
+		public short SPU_Sound { get; set; } // SPU SOUND/EVENT SPUFILE LOAD = TRUE/FALSE in editor
 
-		// TODO: Create enum & identify values and functionality of bit values
-		// for ease of reading and modifying JSON output
-		public int Flags { get; set; }
+		[JsonConverter(typeof(JsonStringEnumConverter))]
+		public P3CutFlags Flags { get; set; }
+		
+		// Values correspond to bits of Flags field;
+		// Bit 0b1000 appears to be forced on by game even if set to 0 by file?
+		public enum P3CutFlags : int
+		{
+			LOAD_VOICE = 1,
+			MESSAGE_GAMEOVER = 2,
+			BATTLE_BLUR = 4,
+			LDVOICE_UNK08 = 9,
+			LDVOICE_BTLBLUR_UNK08 = 13,
+		}
 
 		public PmdData_P3CutInfo()
 		{
@@ -68,11 +81,12 @@
 			Reserve1 = reader.ReadInt32();
 			FieldMajorID = reader.ReadInt32();
 			FieldMinorID = reader.ReadInt32();
-			Unknown1 = reader.ReadInt16();
+			PC_CONTROL = reader.ReadByte();
+			COUNT_IDX = reader.ReadByte();
 			FieldFBN = reader.ReadInt16();
 			FieldENV = reader.ReadInt16();
-			Unknown2 = reader.ReadInt16();
-			Flags = reader.ReadInt32();
+			SPU_Sound = reader.ReadInt16();
+			Flags = (P3CutFlags)reader.ReadInt32();
 		}
 
 		internal override void SaveData(PmdBuilder builder, BinaryWriter writer)
@@ -83,11 +97,12 @@
 			writer.Write(Reserve1);
 			writer.Write(FieldMajorID);
 			writer.Write(FieldMinorID);
-			writer.Write(Unknown1);
+			writer.Write(PC_CONTROL);
+			writer.Write(COUNT_IDX);
 			writer.Write(FieldFBN);
 			writer.Write(FieldENV);
-			writer.Write(Unknown2);
-			writer.Write(Flags);
+			writer.Write(SPU_Sound);
+			writer.Write((int)Flags);
 		}
 		internal override int GetCount() => 1;
 		internal override int GetSize() => 0x24;
