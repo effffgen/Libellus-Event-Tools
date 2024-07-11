@@ -14,7 +14,7 @@ namespace LibellusLibrary.Event.Types
 		{
 			return version switch
 			{
-				12 => new PmdData_FrameTable(),
+				10 or 11 or 12 => new PmdData_FrameTable(),
 				_ => new PmdData_RawData()
 			};
 		}
@@ -57,8 +57,5 @@ namespace LibellusLibrary.Event.Types
 		}
 		internal override int GetCount() => Frames.Count;
 		internal override int GetSize() => 0x3C; // TODO: 0x2C for v9 PMD
-
 	}
-
-
 }

@@ -12,14 +12,13 @@ namespace LibellusLibrary.Event.Types.Frame
 			reader.Read();
 			List<PmdTargetType> abstractTypes = new();
 
-			var abstractReader = reader;
+			Utf8JsonReader abstractReader = reader;
 
 			while (abstractReader.TokenType != JsonTokenType.EndArray)
 			{
 				PmdTargetType abstractType = JsonSerializer.Deserialize<PmdTargetType>(ref abstractReader, options)!;
 				abstractTypes.Add(abstractType);
 				abstractReader.Read();
-
 			}
 
 			foreach (PmdTargetType abstractType in abstractTypes)
