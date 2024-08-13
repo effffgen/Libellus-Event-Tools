@@ -3,6 +3,8 @@ using System.Text.Json.Serialization;
 
 namespace LibellusLibrary.Event.Types.Frame
 {
+	// TODO: Refactor this to use a similar Factory/Reader setup (ala the object table) so that
+	// the output of UNIT frametargets don't use type discriminators and are slightly cleaner
 	internal class PmdTarget_Unit : PmdTargetType
 	{
 		[JsonPropertyOrder(-92)]
@@ -34,6 +36,7 @@ namespace LibellusLibrary.Event.Types.Frame
 			UnitType = (UnitTypeEnum)reader.ReadUInt32();
 			UnitData = UnitType switch
 			{
+				UnitTypeEnum.DISP => new DisplayUnit(),
 				UnitTypeEnum.POS_CHANGE_D => new SetPositionDirect(),
 				UnitTypeEnum.MOTION_CHANGE => new ChangeAnimation(),
 				UnitTypeEnum.ICON_DISP => new DisplayIcon(),
@@ -51,6 +54,7 @@ namespace LibellusLibrary.Event.Types.Frame
 	}
 
 	[JsonDerivedType(typeof(UnknownUnit), typeDiscriminator: "unk")]
+	[JsonDerivedType(typeof(DisplayUnit), typeDiscriminator: "dsp")]
 	[JsonDerivedType(typeof(SetPositionDirect), typeDiscriminator: "spd")]
 	[JsonDerivedType(typeof(ChangeAnimation), typeDiscriminator: "ani")]
 	[JsonDerivedType(typeof(DisplayIcon), typeDiscriminator: "dip")]
@@ -65,7 +69,7 @@ namespace LibellusLibrary.Event.Types.Frame
 	{
 		[JsonPropertyOrder(-90)]
 		[JsonConverter(typeof(ByteArrayToHexArray))]
-		public byte[] Data { get; set; } = {};
+		public byte[] Data { get; set; } = Array.Empty<byte>();
 
 		public override void ReadData(BinaryReader reader)
 		{
@@ -74,6 +78,34 @@ namespace LibellusLibrary.Event.Types.Frame
 
 		public override void WriteData(BinaryWriter writer)
 		{
+			writer.Write(Data);
+		}
+	}
+
+	public class DisplayUnit : Unit
+	{
+		[JsonPropertyOrder(-90)]
+		public DispUnitEnum DisplayMode { get; set; } // "ON/OFF MODE" in editor
+
+		[JsonPropertyOrder(-89)]
+		[JsonConverter(typeof(ByteArrayToHexArray))]
+		public byte[] Data { get; set; } = Array.Empty<byte>(); // Probably unused in P3, possibly used in P4?
+
+		public enum DispUnitEnum : byte
+		{
+			ON = 0,
+			OFF = 1
+		}
+
+		public override void ReadData(BinaryReader reader)
+		{
+			DisplayMode = (DispUnitEnum)reader.ReadByte();
+			Data = reader.ReadBytes(35);
+		}
+
+		public override void WriteData(BinaryWriter writer)
+		{
+			writer.Write((byte)DisplayMode);
 			writer.Write(Data);
 		}
 	}
@@ -89,7 +121,7 @@ namespace LibellusLibrary.Event.Types.Frame
 		public MoveTypeEnum MOVETYPE { get; set; }
 
 		[JsonPropertyOrder(-88)]
-		public short SPEED { get; set; }
+		public short SPEED { get; set; } // Treated as index for SPEED1-SPEED100 if MOVETYPE == SPEED
 
 		[JsonPropertyOrder(-87)]
 		public float PosX { get; set; }
@@ -110,20 +142,28 @@ namespace LibellusLibrary.Event.Types.Frame
 		public byte AUTO_ROT { get; set; }
 
 		[JsonPropertyOrder(-81)]
-		[JsonConverter(typeof(ByteArrayToHexArray))]
-		public byte[] Data { get; set; } = {};
+		public byte Field2B { get; set; }
 
 		[JsonPropertyOrder(-80)]
-		public byte PlaySound { get; set; }
-
+		public float Pitch { get; set; } // Seemingly not possible to edit via event editor normally
 		[JsonPropertyOrder(-79)]
-		public byte ChannelNumber { get; set; }
+		public float Yaw { get; set; }
 
 		[JsonPropertyOrder(-78)]
-		public byte SoundInterval { get; set; }
+		[JsonConverter(typeof(ByteArrayToHexArray))]
+		public byte[] Data { get; set; } = Array.Empty<byte>();
 
 		[JsonPropertyOrder(-77)]
-		public byte SoundWait { get; set; }
+		public byte ASIOTO_USE { get; set; } // Whether to play SFX or not
+
+		[JsonPropertyOrder(-76)]
+		public byte ASIOTO_CHNO { get; set; } // Which channel to play SFX in
+
+		[JsonPropertyOrder(-75)]
+		public byte ASIOTO_KANKAKU { get; set; } // Number of frames(?) between SFX being played
+
+		[JsonPropertyOrder(-74)]
+		public byte ASIOTO_WAIT { get; set; } // Number of frames(?) to wait before playing any SFX
 
 		public enum HokanTypeEnum : byte
 		{
@@ -149,11 +189,14 @@ namespace LibellusLibrary.Event.Types.Frame
 			LOOP = reader.ReadByte();
 			MUSI_STOP = reader.ReadByte();
 			AUTO_ROT = reader.ReadByte();
-			Data = reader.ReadBytes(13);
-			PlaySound = reader.ReadByte();
-			ChannelNumber = reader.ReadByte();
-			SoundInterval = reader.ReadByte();
-			SoundWait = reader.ReadByte();
+			Field2B = reader.ReadByte();
+			Pitch = reader.ReadSingle();
+			Yaw = reader.ReadSingle();
+			Data = reader.ReadBytes(4);
+			ASIOTO_USE = reader.ReadByte();
+			ASIOTO_CHNO = reader.ReadByte();
+			ASIOTO_KANKAKU = reader.ReadByte();
+			ASIOTO_WAIT = reader.ReadByte();
 		}
 
 		public override void WriteData(BinaryWriter writer)
@@ -167,48 +210,111 @@ namespace LibellusLibrary.Event.Types.Frame
 			writer.Write(LOOP);
 			writer.Write(MUSI_STOP);
 			writer.Write(AUTO_ROT);
+			writer.Write(Field2B);
+			writer.Write(Pitch);
+			writer.Write(Yaw);
 			writer.Write(Data);
-			writer.Write(PlaySound);
-			writer.Write(ChannelNumber);
-			writer.Write(SoundInterval);
-			writer.Write(SoundWait);
+			writer.Write(ASIOTO_USE);
+			writer.Write(ASIOTO_CHNO);
+			writer.Write(ASIOTO_KANKAKU);
+			writer.Write(ASIOTO_WAIT);
 		}
 	}
 
 	public class ChangeAnimation : Unit
 	{
 		[JsonPropertyOrder(-90)]
-		public byte Field18 { get; set; }
+		public sbyte AnimationGroup { get; set; } // Limited 0-(Maximum number of ??? in RMD - 1) in editor
 
 		[JsonPropertyOrder(-89)]
-		public byte AnimationIndex { get; set; }
+		public sbyte AnimationIndex { get; set; } // Limited 0-(Maximum number of animations in RMD - 1) in editor or 0-9 if AnimationType == REF
 
 		[JsonPropertyOrder(-88)]
-		public byte Field1A { get; set; }
+		[JsonConverter(typeof(JsonStringEnumConverter))]
+		public LoopModeEnum LoopMode { get; set; }
 
 		[JsonPropertyOrder(-87)]
-		public byte WaitFrames { get; set; }
+		public sbyte WaitFrames { get; set; } // HOKAN in editor; Limited 0-100 in editor
 
 		[JsonPropertyOrder(-86)]
 		[JsonConverter(typeof(ByteArrayToHexArray))]
-		public byte[] Data { get; set; } = {};
+		public byte[] Data { get; set; } = Array.Empty<byte>();
+        
+		[JsonPropertyOrder(-85)]
+		public short OFFSET { get; set; } // Min. value of 0 in editor; editor incorrectly reads this as an int?
+
+		[JsonPropertyOrder(-84)]
+		[JsonConverter(typeof(JsonStringEnumConverter))]
+		public MotionTypeEnum AnimationType { get; set; }
+        
+		[JsonPropertyOrder(-83)]
+		public byte MOT2USE { get; set; }
+        
+		[JsonPropertyOrder(-82)]
+		public sbyte MOT2NO { get; set; }
+        
+		[JsonPropertyOrder(-81)]
+		[JsonConverter(typeof(JsonStringEnumConverter))]
+		public LoopModeEnum LOOP2 { get; set; }
+        
+		[JsonPropertyOrder(-80)]
+		public short HOKAN2 { get; set; } // Limited 0-100 in editor
+        
+		[JsonPropertyOrder(-79)]
+		public short SPEED { get; set; } // Limited to 10-500 in editor
+        
+		[JsonPropertyOrder(-78)]
+		public short SPEED2 { get; set; } // Limited to 10-500 in editor
+        
+		[JsonPropertyOrder(-77)]
+		[JsonConverter(typeof(ByteArrayToHexArray))]
+		public byte[] Data2 { get; set; } = Array.Empty<byte>();
+
+		public enum LoopModeEnum : byte
+		{
+			REPEAT = 0,
+			END = 1
+		}
+		public enum MotionTypeEnum : byte
+		{
+			DIRECT = 0,
+			REF = 1
+		}
 
 		public override void ReadData(BinaryReader reader)
 		{
-			Field18 = reader.ReadByte();
-			AnimationIndex = reader.ReadByte();
-			Field1A = reader.ReadByte();
-			WaitFrames = reader.ReadByte();
-			Data = reader.ReadBytes(32);
+			AnimationGroup = reader.ReadSByte();
+			AnimationIndex = reader.ReadSByte();
+			LoopMode = (LoopModeEnum)reader.ReadByte();
+			WaitFrames = reader.ReadSByte();
+			Data = reader.ReadBytes(8);
+			OFFSET = reader.ReadInt16();
+			AnimationType = (MotionTypeEnum)reader.ReadByte();
+			MOT2USE = reader.ReadByte();
+			MOT2NO = reader.ReadSByte();
+			LOOP2 = (LoopModeEnum)reader.ReadByte();
+			HOKAN2 = reader.ReadInt16();
+			SPEED = reader.ReadInt16();
+			SPEED2 = reader.ReadInt16();
+			Data2 = reader.ReadBytes(12);
 		}
 
 		public override void WriteData(BinaryWriter writer)
 		{
-			writer.Write(Field18);
+			writer.Write(AnimationGroup);
 			writer.Write(AnimationIndex);
-			writer.Write(Field1A);
+			writer.Write((byte)LoopMode);
 			writer.Write(WaitFrames);
 			writer.Write(Data);
+			writer.Write(OFFSET);
+			writer.Write((byte)AnimationType);
+			writer.Write(MOT2USE);
+			writer.Write(MOT2NO);
+			writer.Write((byte)LOOP2);
+			writer.Write(HOKAN2);
+			writer.Write(SPEED);
+			writer.Write(SPEED2);
+			writer.Write(Data2);
 		}
 	}
 
@@ -219,7 +325,7 @@ namespace LibellusLibrary.Event.Types.Frame
 
 		[JsonPropertyOrder(-89)]
 		[JsonConverter(typeof(ByteArrayToHexArray))]
-		public byte[] Data { get; set; } = {};
+		public byte[] Data { get; set; } = Array.Empty<byte>();
 
 		public override void ReadData(BinaryReader reader)
 		{
