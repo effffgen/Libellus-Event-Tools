@@ -39,6 +39,7 @@ namespace LibellusLibrary.Event.Types.Frame
 				UnitTypeEnum.DISP => new DisplayUnit(),
 				UnitTypeEnum.POS_CHANGE_D => new SetPositionDirect(),
 				UnitTypeEnum.MOTION_CHANGE => new ChangeAnimation(),
+				UnitTypeEnum.POS_CHANGE => new ChangePosition(),
 				UnitTypeEnum.ICON_DISP => new DisplayIcon(),
 				UnitTypeEnum.KUBI => new RotateHead(),
 				_ => new UnknownUnit()
@@ -57,6 +58,7 @@ namespace LibellusLibrary.Event.Types.Frame
 	[JsonDerivedType(typeof(DisplayUnit), typeDiscriminator: "dsp")]
 	[JsonDerivedType(typeof(SetPositionDirect), typeDiscriminator: "spd")]
 	[JsonDerivedType(typeof(ChangeAnimation), typeDiscriminator: "ani")]
+	[JsonDerivedType(typeof(ChangePosition), typeDiscriminator: "pch")]
 	[JsonDerivedType(typeof(DisplayIcon), typeDiscriminator: "dip")]
 	[JsonDerivedType(typeof(RotateHead), typeDiscriminator: "kubi")]
 	public class Unit
@@ -85,6 +87,7 @@ namespace LibellusLibrary.Event.Types.Frame
 	public class DisplayUnit : Unit
 	{
 		[JsonPropertyOrder(-90)]
+		[JsonConverter(typeof(JsonStringEnumConverter))]
 		public DispUnitEnum DisplayMode { get; set; } // "ON/OFF MODE" in editor
 
 		[JsonPropertyOrder(-89)]
@@ -315,6 +318,52 @@ namespace LibellusLibrary.Event.Types.Frame
 			writer.Write(SPEED);
 			writer.Write(SPEED2);
 			writer.Write(Data2);
+		}
+	}
+
+	public class ChangePosition : Unit
+	{
+		[JsonPropertyOrder(-90)]
+		[JsonConverter(typeof(JsonStringEnumConverter))]
+		public PosChangeEnum ChangeType { get; set; }
+        
+		[JsonPropertyOrder(-89)]
+		public sbyte SPEED { get; set; } // Limited 0x0-0x63 (SPEED1-SPEED100) in editor
+        
+		// ResourceIndex and ResourceType are both listed as "ResID" in editor menu; see ..\Object\PmdObject_SLight.cs for details
+		// Seemingly can only be changed if a value is already set for given target, otherwise not possible to alter values in event editor
+		[JsonPropertyOrder(-88)]
+		public byte ResourceIndex { get; set; }
+
+		[JsonPropertyOrder(-87)]
+		public byte ResourceType { get; set; }
+
+		[JsonPropertyOrder(-86)]
+		[JsonConverter(typeof(ByteArrayToHexArray))]
+		public byte[] Data { get; set; } = Array.Empty<byte>();
+
+		public enum PosChangeEnum : byte
+		{
+			DIRECT = 0,
+			MOVE = 1,
+			PATH = 2
+		}
+		public override void ReadData(BinaryReader reader)
+		{
+			ChangeType = (PosChangeEnum)reader.ReadByte();
+			SPEED = reader.ReadSByte();
+			ResourceIndex = reader.ReadByte();
+			ResourceType = reader.ReadByte();
+			Data = reader.ReadBytes(32);
+		}
+
+		public override void WriteData(BinaryWriter writer)
+		{
+			writer.Write((byte)ChangeType);
+			writer.Write(SPEED);
+			writer.Write(ResourceIndex);
+			writer.Write(ResourceType);
+			writer.Write(Data);
 		}
 	}
 
