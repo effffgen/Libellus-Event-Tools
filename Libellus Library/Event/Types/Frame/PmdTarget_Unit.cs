@@ -40,6 +40,7 @@ namespace LibellusLibrary.Event.Types.Frame
 				UnitTypeEnum.POS_CHANGE_D => new SetPositionDirect(),
 				UnitTypeEnum.MOTION_CHANGE => new ChangeAnimation(),
 				UnitTypeEnum.POS_CHANGE => new ChangePosition(),
+				UnitTypeEnum.ROT_CHANGE => new ChangeRotation(),
 				UnitTypeEnum.ICON_DISP => new DisplayIcon(),
 				UnitTypeEnum.KUBI => new RotateHead(),
 				_ => new UnknownUnit()
@@ -59,6 +60,7 @@ namespace LibellusLibrary.Event.Types.Frame
 	[JsonDerivedType(typeof(SetPositionDirect), typeDiscriminator: "spd")]
 	[JsonDerivedType(typeof(ChangeAnimation), typeDiscriminator: "ani")]
 	[JsonDerivedType(typeof(ChangePosition), typeDiscriminator: "pch")]
+	[JsonDerivedType(typeof(ChangeRotation), typeDiscriminator: "rch")]
 	[JsonDerivedType(typeof(DisplayIcon), typeDiscriminator: "dip")]
 	[JsonDerivedType(typeof(RotateHead), typeDiscriminator: "kubi")]
 	public class Unit
@@ -149,24 +151,17 @@ namespace LibellusLibrary.Event.Types.Frame
 
 		[JsonPropertyOrder(-80)]
 		public float Pitch { get; set; } // Seemingly not possible to edit via event editor normally
+
 		[JsonPropertyOrder(-79)]
 		public float Yaw { get; set; }
 
 		[JsonPropertyOrder(-78)]
 		[JsonConverter(typeof(ByteArrayToHexArray))]
 		public byte[] Data { get; set; } = Array.Empty<byte>();
-
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 		[JsonPropertyOrder(-77)]
-		public byte FootstepSoundsUse { get; set; } // Whether to play footstep SFX or not; ASIOTO_USE in editor (ASIOTO/Possibly 足音 roughly means "sound of footsteps")
-
-		[JsonPropertyOrder(-76)]
-		public byte FootstepChannelNo { get; set; } // Which channel to play footstep SFX in; ASIOTO_CHNO in editor
-
-		[JsonPropertyOrder(-75)]
-		public byte FootstepInterval { get; set; } // Number of frames(?) between footstep SFX being played; ASIOTO_KANKAKU in editor (KANKAKU/Possibly 間隔 roughly means "interval")
-
-		[JsonPropertyOrder(-74)]
-		public byte FootstepWait { get; set; } // Number of frames(?) to wait before playing any footstep SFX; ASIOTO_WAIT in editor
+		public PmdAsioto FootstepSounds { get; set; }
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
 		public enum HokanTypeEnum : byte
 		{
@@ -196,10 +191,8 @@ namespace LibellusLibrary.Event.Types.Frame
 			Pitch = reader.ReadSingle();
 			Yaw = reader.ReadSingle();
 			Data = reader.ReadBytes(4);
-			FootstepSoundsUse = reader.ReadByte();
-			FootstepChannelNo = reader.ReadByte();
-			FootstepInterval = reader.ReadByte();
-			FootstepWait = reader.ReadByte();
+			FootstepSounds = new();
+			FootstepSounds.ReadData(reader);
 		}
 
 		public override void WriteData(BinaryWriter writer)
@@ -217,10 +210,7 @@ namespace LibellusLibrary.Event.Types.Frame
 			writer.Write(Pitch);
 			writer.Write(Yaw);
 			writer.Write(Data);
-			writer.Write(FootstepSoundsUse);
-			writer.Write(FootstepChannelNo);
-			writer.Write(FootstepInterval);
-			writer.Write(FootstepWait);
+			FootstepSounds.WriteData(writer);
 		}
 	}
 
@@ -242,33 +232,33 @@ namespace LibellusLibrary.Event.Types.Frame
 		[JsonPropertyOrder(-86)]
 		[JsonConverter(typeof(ByteArrayToHexArray))]
 		public byte[] Data { get; set; } = Array.Empty<byte>();
-        
+
 		[JsonPropertyOrder(-85)]
 		public short OFFSET { get; set; } // Min. value of 0 in editor; editor incorrectly reads this as an int?
 
 		[JsonPropertyOrder(-84)]
 		[JsonConverter(typeof(JsonStringEnumConverter))]
 		public MotionTypeEnum AnimationType { get; set; }
-        
+
 		[JsonPropertyOrder(-83)]
 		public byte MOT2USE { get; set; }
-        
+
 		[JsonPropertyOrder(-82)]
 		public sbyte MOT2NO { get; set; }
-        
+
 		[JsonPropertyOrder(-81)]
 		[JsonConverter(typeof(JsonStringEnumConverter))]
 		public LoopModeEnum LOOP2 { get; set; }
-        
+
 		[JsonPropertyOrder(-80)]
 		public short HOKAN2 { get; set; } // Limited 0-100 in editor
-        
+
 		[JsonPropertyOrder(-79)]
 		public short SPEED { get; set; } // Limited to 10-500 in editor
-        
+
 		[JsonPropertyOrder(-78)]
 		public short SPEED2 { get; set; } // Limited to 10-500 in editor
-        
+
 		[JsonPropertyOrder(-77)]
 		[JsonConverter(typeof(ByteArrayToHexArray))]
 		public byte[] Data2 { get; set; } = Array.Empty<byte>();
@@ -326,10 +316,10 @@ namespace LibellusLibrary.Event.Types.Frame
 		[JsonPropertyOrder(-90)]
 		[JsonConverter(typeof(JsonStringEnumConverter))]
 		public PosChangeEnum ChangeType { get; set; }
-        
+
 		[JsonPropertyOrder(-89)]
 		public sbyte SPEED { get; set; } // Limited 0x0-0x63 (SPEED1-SPEED100) in editor
-        
+
 		// ResourceIndex and ResourceType are both listed as "ResID" in editor menu; see ..\Object\PmdObject_SLight.cs for details
 		// Seemingly can only be changed if a value is already set for given target, otherwise not possible to alter values in event editor
 		[JsonPropertyOrder(-88)]
@@ -364,6 +354,52 @@ namespace LibellusLibrary.Event.Types.Frame
 			writer.Write(ResourceIndex);
 			writer.Write(ResourceType);
 			writer.Write(Data);
+		}
+	}
+
+	public class ChangeRotation : Unit
+	{
+		[JsonPropertyOrder(-90)]
+		public float Yaw { get; set; } // ROT Y in editor; editor also lists a "ROT X" option which doesn't appear to be saved or read at all (though it does work)
+
+		[JsonPropertyOrder(-89)]
+		[JsonConverter(typeof(ByteArrayToHexArray))]
+		public byte[] Data { get; set; } = Array.Empty<byte>();
+
+		[JsonPropertyOrder(-88)]
+		public short RotationLength { get; set; } // ROT LENGTH in editor
+
+		[JsonPropertyOrder(-87)]
+		public ushort Field2A { get; set; }
+
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+		[JsonPropertyOrder(-86)]
+		public PmdAsioto FootstepSounds { get; set; }
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+
+		[JsonPropertyOrder(-85)]
+		[JsonConverter(typeof(ByteArrayToHexArray))]
+		public byte[] Data2 { get; set; } = Array.Empty<byte>();
+
+		public override void ReadData(BinaryReader reader)
+		{
+			Yaw = reader.ReadSingle();
+			Data = reader.ReadBytes(12);
+			RotationLength = reader.ReadInt16();
+			Field2A = reader.ReadUInt16();
+			FootstepSounds = new();
+			FootstepSounds.ReadData(reader);
+			Data2 = reader.ReadBytes(12);
+		}
+
+		public override void WriteData(BinaryWriter writer)
+		{
+			writer.Write(Yaw);
+			writer.Write(Data);
+			writer.Write(RotationLength);
+			writer.Write(Field2A);
+			FootstepSounds.WriteData(writer);
+			writer.Write(Data2);
 		}
 	}
 
