@@ -114,11 +114,11 @@ namespace LibellusLibrary.Event.Types.Frame
 	{
 		[JsonPropertyOrder(-90)]
 		[JsonConverter(typeof(JsonStringEnumConverter))]
-		public HokanTypeEnum HOKANTYPE { get; set; }
+		public HokanTypeEnum InterpolationType { get; set; } // HOKANTYPE in editor (HOKAN/Possibly 補間 roughly means "interpolation")
 
 		[JsonPropertyOrder(-89)]
 		[JsonConverter(typeof(JsonStringEnumConverter))]
-		public MoveTypeEnum MOVETYPE { get; set; }
+		public MoveTypeEnum MOVETYPE { get; set; } // Maybe controls whether to change position at a constant rate (SPEED) or over set number of frames (LENGTH)?
 
 		[JsonPropertyOrder(-88)]
 		public short SPEED { get; set; } // Treated as index for SPEED1-SPEED100 if MOVETYPE == SPEED
@@ -154,16 +154,16 @@ namespace LibellusLibrary.Event.Types.Frame
 		public byte[] Data { get; set; } = Array.Empty<byte>();
 
 		[JsonPropertyOrder(-77)]
-		public byte ASIOTO_USE { get; set; } // Whether to play SFX or not
+		public byte FootstepSoundsUse { get; set; } // Whether to play footstep SFX or not; ASIOTO_USE in editor (ASIOTO/Possibly 足音 roughly means "sound of footsteps")
 
 		[JsonPropertyOrder(-76)]
-		public byte ASIOTO_CHNO { get; set; } // Which channel to play SFX in
+		public byte FootstepChannelNo { get; set; } // Which channel to play footstep SFX in; ASIOTO_CHNO in editor
 
 		[JsonPropertyOrder(-75)]
-		public byte ASIOTO_KANKAKU { get; set; } // Number of frames(?) between SFX being played
+		public byte FootstepInterval { get; set; } // Number of frames(?) between footstep SFX being played; ASIOTO_KANKAKU in editor (KANKAKU/Possibly 間隔 roughly means "interval")
 
 		[JsonPropertyOrder(-74)]
-		public byte ASIOTO_WAIT { get; set; } // Number of frames(?) to wait before playing any SFX
+		public byte FootstepWait { get; set; } // Number of frames(?) to wait before playing any footstep SFX; ASIOTO_WAIT in editor
 
 		public enum HokanTypeEnum : byte
 		{
@@ -180,7 +180,7 @@ namespace LibellusLibrary.Event.Types.Frame
 
 		public override void ReadData(BinaryReader reader)
 		{
-			HOKANTYPE = (HokanTypeEnum)reader.ReadByte();
+			InterpolationType = (HokanTypeEnum)reader.ReadByte();
 			MOVETYPE = (MoveTypeEnum)reader.ReadByte();
 			SPEED = reader.ReadInt16();
 			PosX = reader.ReadSingle();
@@ -193,15 +193,15 @@ namespace LibellusLibrary.Event.Types.Frame
 			Pitch = reader.ReadSingle();
 			Yaw = reader.ReadSingle();
 			Data = reader.ReadBytes(4);
-			ASIOTO_USE = reader.ReadByte();
-			ASIOTO_CHNO = reader.ReadByte();
-			ASIOTO_KANKAKU = reader.ReadByte();
-			ASIOTO_WAIT = reader.ReadByte();
+			FootstepSoundsUse = reader.ReadByte();
+			FootstepChannelNo = reader.ReadByte();
+			FootstepInterval = reader.ReadByte();
+			FootstepWait = reader.ReadByte();
 		}
 
 		public override void WriteData(BinaryWriter writer)
 		{
-			writer.Write((byte)HOKANTYPE);
+			writer.Write((byte)InterpolationType);
 			writer.Write((byte)MOVETYPE);
 			writer.Write(SPEED);
 			writer.Write(PosX);
@@ -214,10 +214,10 @@ namespace LibellusLibrary.Event.Types.Frame
 			writer.Write(Pitch);
 			writer.Write(Yaw);
 			writer.Write(Data);
-			writer.Write(ASIOTO_USE);
-			writer.Write(ASIOTO_CHNO);
-			writer.Write(ASIOTO_KANKAKU);
-			writer.Write(ASIOTO_WAIT);
+			writer.Write(FootstepSoundsUse);
+			writer.Write(FootstepChannelNo);
+			writer.Write(FootstepInterval);
+			writer.Write(FootstepWait);
 		}
 	}
 
