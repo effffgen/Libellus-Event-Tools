@@ -28,6 +28,7 @@
 			PmdTargetTypeID.PADACT => new PmdTarget_Padact(),
 			PmdTargetTypeID.MOVIE => new PmdTarget_Movie(),
 			PmdTargetTypeID.CTLCAM => new PmdTarget_Ctlcam(),
+			PmdTargetTypeID.WAIT => new PmdTarget_Wait(),
 			PmdTargetTypeID.CUTIN => new PmdTarget_Cutin(),
 			PmdTargetTypeID.JUMP => new PmdTarget_Jump(),
 			PmdTargetTypeID.KEYFREE => new PmdTarget_Keyfree(),
