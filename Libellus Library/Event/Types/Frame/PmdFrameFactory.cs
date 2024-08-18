@@ -21,6 +21,7 @@
 		{
 			PmdTargetTypeID.UNIT => new PmdTarget_Unit(),
 			PmdTargetTypeID.MESSAGE => new PmdTarget_Message(),
+			PmdTargetTypeID.SE => new PmdTarget_Se(),
 			PmdTargetTypeID.FADE => new PmdTarget_Fade(),
 			PmdTargetTypeID.QUAKE => new PmdTarget_Quake(),
 			PmdTargetTypeID.SLIGHT => new PmdTarget_Slight(),
