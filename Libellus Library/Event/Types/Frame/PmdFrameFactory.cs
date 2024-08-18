@@ -30,6 +30,7 @@
 			PmdTargetTypeID.CUTIN => new PmdTarget_Cutin(),
 			PmdTargetTypeID.JUMP => new PmdTarget_Jump(),
 			PmdTargetTypeID.CUSTOMEVENT => new PmdTarget_CustomEvent(),
+			PmdTargetTypeID.HOLYJUMP => new PmdTarget_HolyJump(),
 			PmdTargetTypeID.SCRIPT => new PmdTarget_Script(),
 			PmdTargetTypeID.FOG => new PmdTarget_Fog(),
 			_ => new PmdTarget_Unknown()
