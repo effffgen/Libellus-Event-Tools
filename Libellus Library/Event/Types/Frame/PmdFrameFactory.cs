@@ -29,6 +29,7 @@
 			PmdTargetTypeID.CTLCAM => new PmdTarget_Ctlcam(),
 			PmdTargetTypeID.CUTIN => new PmdTarget_Cutin(),
 			PmdTargetTypeID.JUMP => new PmdTarget_Jump(),
+			PmdTargetTypeID.KEYFREE => new PmdTarget_Keyfree(),
 			PmdTargetTypeID.CUSTOMEVENT => new PmdTarget_CustomEvent(),
 			PmdTargetTypeID.COUNTJUMP => new PmdTarget_CountJump(),
 			PmdTargetTypeID.HOLYJUMP => new PmdTarget_HolyJump(),
