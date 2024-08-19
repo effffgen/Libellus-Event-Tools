@@ -16,16 +16,16 @@ namespace LibellusLibrary.Event.Types.Frame
 		public ushort Field16 { get; set; }
 
 		[JsonPropertyOrder(-90)]
-		public short ZIKAN { get; set; } // Mnemonic = L; limited to 0-3000 in editor
+		public short RumbleDuration { get; set; } // Total frames to rumble for; Mnemonic = L; ZIKAN (likely 時間 which roughly means time)+limited to 0-3000 in editor
 
 		[JsonPropertyOrder(-90)]
-		public short TUYOSA { get; set; } // Mnemonic = P; limited to 0-255 in editor (why not use a byte atlus???)
+		public short RumbleStrength { get; set; } // Mnemonic = P; TUYOSA (likely 強さ which roughly means strength)+limited to 0-255 in editor
 
 		[JsonPropertyOrder(-90)]
-		public short ON_ZIKAN { get; set; } // Mnemonic = ON; limited to 0-1000 in editor
+		public short RumbleOnFrames { get; set; } // Number of frames to rumble for; Mnemonic = ON; ON_ZIKAN+limited to 0-1000 in editor
 
 		[JsonPropertyOrder(-90)]
-		public short OFF_ZIKAN { get; set; } // Mnemonic = OFF; limited to 0-1000 in editor
+		public short RumbleOffFrames { get; set; } // Number of frames to wait before rumble; Mnemonic = OFF; OFF_ZIKAN+limited to 0-1000 in editor
 
 		[JsonPropertyOrder(-90)]
 		[JsonConverter(typeof(ByteArrayToHexArray))]
@@ -42,10 +42,10 @@ namespace LibellusLibrary.Event.Types.Frame
 			PadactMode = (PadactEnum)reader.ReadByte();
 			Field15 = reader.ReadByte();
 			Field16 = reader.ReadUInt16();
-			ZIKAN = reader.ReadInt16();
-			TUYOSA = reader.ReadInt16();
-			ON_ZIKAN = reader.ReadInt16();
-			OFF_ZIKAN = reader.ReadInt16();
+			RumbleDuration = reader.ReadInt16();
+			RumbleStrength = reader.ReadInt16();
+			RumbleOnFrames = reader.ReadInt16();
+			RumbleOffFrames = reader.ReadInt16();
 			Data = reader.ReadBytes(28);
 		}
 
@@ -54,10 +54,10 @@ namespace LibellusLibrary.Event.Types.Frame
 			writer.Write((byte)PadactMode);
 			writer.Write(Field15);
 			writer.Write(Field16);
-			writer.Write(ZIKAN);
-			writer.Write(TUYOSA);
-			writer.Write(ON_ZIKAN);
-			writer.Write(OFF_ZIKAN);
+			writer.Write(RumbleDuration);
+			writer.Write(RumbleStrength);
+			writer.Write(RumbleOnFrames);
+			writer.Write(RumbleOffFrames);
 			writer.Write(Data);
 		}
 	}
