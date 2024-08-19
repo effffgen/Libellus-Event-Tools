@@ -33,6 +33,7 @@
 			PmdTargetTypeID.CUTIN => new PmdTarget_Cutin(),
 			PmdTargetTypeID.JUMP => new PmdTarget_Jump(),
 			PmdTargetTypeID.KEYFREE => new PmdTarget_Keyfree(),
+			PmdTargetTypeID.RANDOMJUMP => new PmdTarget_RandomJump(),
 			PmdTargetTypeID.CUSTOMEVENT => new PmdTarget_CustomEvent(),
 			PmdTargetTypeID.COUNTJUMP => new PmdTarget_CountJump(),
 			PmdTargetTypeID.HOLYJUMP => new PmdTarget_HolyJump(),

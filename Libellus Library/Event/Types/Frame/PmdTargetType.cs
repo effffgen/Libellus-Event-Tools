@@ -18,7 +18,7 @@ namespace LibellusLibrary.Event.Types.Frame
 		[JsonPropertyOrder(-96)]
 		public byte ResourceID { get; set; }
 		[JsonPropertyOrder(-95)]
-		public byte Field09 { get; set; }
+		public byte ResourceType { get; set; }
 		[JsonPropertyOrder(-94)]
 		public short Field0A { get; set; }
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
@@ -33,7 +33,7 @@ namespace LibellusLibrary.Event.Types.Frame
 			Length = reader.ReadUInt16();
 			NameIndex = reader.ReadInt16();
 			ResourceID = reader.ReadByte();
-			Field09 = reader.ReadByte();
+			ResourceType = reader.ReadByte();
 			Field0A = reader.ReadInt16();
 			Flags = new PmdFlags();
 			Flags.ReadData(reader);
@@ -46,7 +46,7 @@ namespace LibellusLibrary.Event.Types.Frame
 			writer.Write(Length);
 			writer.Write(NameIndex);
 			writer.Write(ResourceID);
-			writer.Write(Field09);
+			writer.Write(ResourceType);
 			writer.Write(Field0A);
 			Flags.WriteData(writer);
 			WriteData(writer);
