@@ -23,11 +23,24 @@ namespace LibellusLibrary.Event.Types
 		{
 			long OriginalPos = reader.BaseStream.Position;
 
-			reader.BaseStream.Position = OriginalPos + 0x8;
+			reader.BaseStream.Position = OriginalPos + 0x4;
+			int size = reader.ReadInt32();
 			uint count = reader.ReadUInt32();
-
-			reader.BaseStream.Position = OriginalPos + 0xC;
 			reader.BaseStream.Position = (long)reader.ReadUInt32();
+
+			if (version != 10 && version != 11 && version != 12)
+			{
+				Console.ForegroundColor = ConsoleColor.Yellow;
+				Console.WriteLine($"Version {version} ObjectTable is not supported! Reading data to Hex array...");
+				Console.ResetColor();
+				PmdData_RawData unsupportedObjectTable = new();
+				for (int i = 0; i < count; i++)
+				{
+					unsupportedObjectTable.Data.Add(reader.ReadBytes(size));
+				}
+				reader.BaseStream.Position = OriginalPos;
+				return unsupportedObjectTable;
+			}
 
 			PmdObjectFactory factory = new();
 			Objects = factory.ReadDataTypes(reader, count);

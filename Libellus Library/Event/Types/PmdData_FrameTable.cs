@@ -38,6 +38,7 @@ namespace LibellusLibrary.Event.Types
 				{
 					unsupportedFrameTable.Data.Add(reader.ReadBytes(size));
 				}
+				reader.BaseStream.Position = OriginalPos;
 				return unsupportedFrameTable;
 			}
 

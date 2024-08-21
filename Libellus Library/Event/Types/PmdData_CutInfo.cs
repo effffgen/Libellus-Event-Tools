@@ -8,6 +8,7 @@ namespace LibellusLibrary.Event.Types
 		public PmdDataType CreateFromVersion(uint version, BinaryReader reader)
 		{
 			return version switch {
+				9 => new PmdData_DDSCutInfo(reader),
 				10 or 11 or 12 => new PmdData_P3CutInfo(reader),
 				_ => throw new NotImplementedException(),
 			};
@@ -17,6 +18,7 @@ namespace LibellusLibrary.Event.Types
 		{
 			return version switch
 			{
+				9 => new PmdData_DDSCutInfo(),
 				10 or 11 or 12 => new PmdData_P3CutInfo(),
 				_ => throw new NotImplementedException(),
 			};
@@ -33,6 +35,38 @@ namespace LibellusLibrary.Event.Types
 			reader.BaseStream.Position = OriginalPos;
 			return cut;
 		}
+	}
+
+	public class PmdData_DDSCutInfo : PmdDataType
+	{
+		public int FirstFrame { get; set; }
+		public int LastFrame { get; set; }
+		public int TotalFrame { get; set; }
+
+		[JsonConverter(typeof(JSON.ByteArrayToHexArray))]
+		public byte[] Data { get; set; } = Array.Empty<byte>();
+
+		public PmdData_DDSCutInfo()
+		{
+			return;
+		}
+		public PmdData_DDSCutInfo(BinaryReader reader)
+		{
+			FirstFrame = reader.ReadInt32();
+			LastFrame = reader.ReadInt32();
+			TotalFrame = reader.ReadInt32();
+			Data = reader.ReadBytes(4);
+		}
+
+		internal override void SaveData(PmdBuilder builder, BinaryWriter writer)
+		{
+			writer.Write(FirstFrame);
+			writer.Write(LastFrame);
+			writer.Write(TotalFrame);
+			writer.Write(Data);
+		}
+		internal override int GetCount() => 1;
+		internal override int GetSize() => 0x10;
 	}
 
 	public class PmdData_P3CutInfo : PmdDataType
