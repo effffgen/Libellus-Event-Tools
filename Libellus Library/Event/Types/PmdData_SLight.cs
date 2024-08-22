@@ -61,34 +61,37 @@ namespace LibellusLibrary.Event.Types
 		[JsonPropertyOrder(-98)]
 		public float DirectionBlue { get; set; }
 		[JsonPropertyOrder(-97)]
-		public uint Field0C { get; set; } // Unknown/unused
+		public float Field0C { get; set; } // Unknown; alpha?
 
 		[JsonPropertyOrder(-96)]
 		public float DirectionYaw { get; set; } // editor name: DIR Y; limited to 0-359 (whole numbers)
 		[JsonPropertyOrder(-95)]
 		public float DirectionPitch { get; set; } // editor name: DIR X; limited to 0-359 (whole numbers)
+		
 		[JsonPropertyOrder(-94)]
-		[JsonConverter(typeof(ByteArrayToHexArray))]
-		public byte[] Data { get; set; } = Array.Empty<byte>();
-
+		public float Field18 { get; set; }
 		[JsonPropertyOrder(-93)]
-		public float AmbientRed { get; set; }
+		public float Field1C { get; set; }
+
 		[JsonPropertyOrder(-92)]
-		public float AmbientGreen { get; set; }
+		public float AmbientRed { get; set; }
 		[JsonPropertyOrder(-91)]
-		public float AmbientBlue { get; set; }
+		public float AmbientGreen { get; set; }
 		[JsonPropertyOrder(-90)]
-		public uint Field2C { get; set; } // Unknown/unused
+		public float AmbientBlue { get; set; }
+		[JsonPropertyOrder(-89)]
+		public float Field2C { get; set; } // Unknown; alpha?
 
 		public void ReadSLight(BinaryReader reader)
 		{
 			DirectionRed = reader.ReadSingle();
 			DirectionGreen = reader.ReadSingle();
 			DirectionBlue = reader.ReadSingle();
-			Field0C = reader.ReadUInt32();
+			Field0C = reader.ReadSingle();
 			DirectionYaw = reader.ReadSingle();
 			DirectionPitch = reader.ReadSingle();
-			Data = reader.ReadBytes(8);
+			Field18 = reader.ReadSingle();
+			Field1C = reader.ReadSingle();
 			AmbientRed = reader.ReadSingle();
 			AmbientGreen = reader.ReadSingle();
 			AmbientBlue = reader.ReadSingle();
@@ -103,7 +106,8 @@ namespace LibellusLibrary.Event.Types
 			writer.Write(Field0C);
 			writer.Write(DirectionYaw);
 			writer.Write(DirectionPitch);
-			writer.Write(Data);
+			writer.Write(Field18);
+			writer.Write(Field1C);
 			writer.Write(AmbientRed);
 			writer.Write(AmbientGreen);
 			writer.Write(AmbientBlue);
