@@ -70,7 +70,7 @@
 			FB = 22,
 			RBLUR = 23,
 			TMX = 24,
-			// RAIN = 25, TODO: Confirm this? Seemingly not present in "used" P4G Event Editor strings?
+			RAIN = 25,
 			EPL = 26,
 			HBLUR = 27,
 			PADACT = 28,
