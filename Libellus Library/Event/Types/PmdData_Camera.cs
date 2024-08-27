@@ -55,7 +55,7 @@ namespace LibellusLibrary.Event.Types
 	internal class Pmd_CameraDef
 	{
 		[JsonPropertyOrder(-100)]
-		public byte CameraIndex { get; set; } // Datatype not known for certain, only a guess for now
+		public byte NameIndex { get; set; } // Datatype not known for certain, only a guess for now
 
 		[JsonPropertyOrder(-99)]
 		[JsonConverter(typeof(ByteArrayToHexArray))]
@@ -63,13 +63,13 @@ namespace LibellusLibrary.Event.Types
 		
 		public void ReadCamera(BinaryReader reader)
 		{
-			CameraIndex = reader.ReadByte();
+			NameIndex = reader.ReadByte();
 			Data = reader.ReadBytes(0xF);
 		}
 
 		public void WriteCamera(BinaryWriter writer)
 		{
-			writer.Write(CameraIndex);
+			writer.Write(NameIndex);
 			writer.Write(Data);
 		}
 	}
