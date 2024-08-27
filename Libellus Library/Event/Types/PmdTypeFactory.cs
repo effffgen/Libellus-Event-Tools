@@ -32,6 +32,7 @@
 			PmdTypeID.Stage => new PmdData_Stage(),
 			PmdTypeID.Unit => new PmdData_Unit(),
 			PmdTypeID.FrameTable => new PmdData_FrameTable(),
+			PmdTypeID.Camera => new PmdData_Camera(),
 			PmdTypeID.Message => new PmdData_Message(),
 			PmdTypeID.Effect => new PmdData_Effect(),
 			PmdTypeID.SLight => new PmdData_SLight(),
