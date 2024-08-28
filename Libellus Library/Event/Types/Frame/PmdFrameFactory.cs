@@ -29,7 +29,7 @@
 			PmdTargetTypeID.MESSAGE => new PmdTarget_Message(),
 			PmdTargetTypeID.SE => new PmdTarget_Se(),
 			PmdTargetTypeID.FADE => new PmdTarget_Fade(),
-			PmdTargetTypeID.QUAKE => new PmdTarget_Quake(),
+			PmdTargetTypeID.QUAKE => new P3Target_Quake(),
 			PmdTargetTypeID.SLIGHT => new PmdTarget_Slight(),
 			PmdTargetTypeID.BGM => new P3Target_BGM(),
 			PmdTargetTypeID.PADACT => new PmdTarget_Padact(),
@@ -50,6 +50,7 @@
 
 		public static PmdTargetType GetDDSFrameType(PmdTargetTypeID Type) => Type switch
 		{
+			PmdTargetTypeID.QUAKE => new DDSTarget_Quake(),
 			_ => new DDSTarget_Unknown()
 		};
 
