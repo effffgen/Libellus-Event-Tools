@@ -14,7 +14,7 @@ namespace LibellusLibrary.Event.Types.Frame
 		[JsonPropertyOrder(-98)]
 		public ushort Length { get; set; }
 		[JsonPropertyOrder(-97)]
-		public short NameIndex { get; set; } // P3 SLIGHT replaces this with a (u)int called HOKAN; TODO: figure out how to get a PmdTarget_Slight made...
+		public short NameIndex { get; set; } // P3 SLIGHT replaces this with a (u)int called HOKAN; TODO: figure out how to get a P3Target_Slight made...
 
 		public virtual void ReadFrame(BinaryReader reader) => throw new NotImplementedException();
 		public virtual void WriteFrame(BinaryWriter writer) => throw new NotImplementedException();
