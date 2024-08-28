@@ -43,6 +43,8 @@ namespace LibellusLibrary.Event.Types.Frame
 				UnitTypeEnum.ROT_CHANGE => new ChangeRotation(),
 				UnitTypeEnum.ICON_DISP => new DisplayIcon(),
 				UnitTypeEnum.KUBI => new RotateHead(),
+				UnitTypeEnum.MODEL_ATTACH => new ModelAttach(),
+				UnitTypeEnum.SHADOW_ONOFF => new ShadowToggle(),
 				_ => new UnknownUnit()
 			};
 			UnitData.ReadData(reader);
@@ -63,8 +65,22 @@ namespace LibellusLibrary.Event.Types.Frame
 	[JsonDerivedType(typeof(ChangeRotation), typeDiscriminator: "rch")]
 	[JsonDerivedType(typeof(DisplayIcon), typeDiscriminator: "dip")]
 	[JsonDerivedType(typeof(RotateHead), typeDiscriminator: "kubi")]
+	[JsonDerivedType(typeof(ModelAttach), typeDiscriminator: "mda")]
+	[JsonDerivedType(typeof(ShadowToggle), typeDiscriminator: "sdw")]
 	public class Unit
 	{
+		public enum OnOffEnum : byte
+		{
+			ON = 0,
+			OFF = 1
+		}
+
+		public enum AccessTypeEnum : byte
+		{
+			DIRECT = 0,
+			REF = 1
+		}
+
 		public virtual void ReadData(BinaryReader reader) => throw new InvalidOperationException();
 		public virtual void WriteData(BinaryWriter writer) => throw new InvalidOperationException();
 	}
@@ -90,21 +106,15 @@ namespace LibellusLibrary.Event.Types.Frame
 	{
 		[JsonPropertyOrder(-90)]
 		[JsonConverter(typeof(JsonStringEnumConverter))]
-		public DispUnitEnum DisplayMode { get; set; } // "ON/OFF MODE" in editor
+		public OnOffEnum DisplayMode { get; set; } // "ON/OFF MODE" in editor
 
 		[JsonPropertyOrder(-89)]
 		[JsonConverter(typeof(ByteArrayToHexArray))]
 		public byte[] Data { get; set; } = Array.Empty<byte>(); // Probably unused in P3, possibly used in P4?
 
-		public enum DispUnitEnum : byte
-		{
-			ON = 0,
-			OFF = 1
-		}
-
 		public override void ReadData(BinaryReader reader)
 		{
-			DisplayMode = (DispUnitEnum)reader.ReadByte();
+			DisplayMode = (OnOffEnum)reader.ReadByte();
 			Data = reader.ReadBytes(35);
 		}
 
@@ -238,7 +248,7 @@ namespace LibellusLibrary.Event.Types.Frame
 
 		[JsonPropertyOrder(-84)]
 		[JsonConverter(typeof(JsonStringEnumConverter))]
-		public MotionTypeEnum AnimationType { get; set; }
+		public AccessTypeEnum AnimationType { get; set; }
 
 		[JsonPropertyOrder(-83)]
 		public byte MOT2USE { get; set; }
@@ -268,11 +278,6 @@ namespace LibellusLibrary.Event.Types.Frame
 			REPEAT = 0,
 			END = 1
 		}
-		public enum MotionTypeEnum : byte
-		{
-			DIRECT = 0,
-			REF = 1
-		}
 
 		public override void ReadData(BinaryReader reader)
 		{
@@ -282,7 +287,7 @@ namespace LibellusLibrary.Event.Types.Frame
 			WaitFrames = reader.ReadSByte();
 			Data = reader.ReadBytes(8);
 			OFFSET = reader.ReadInt16();
-			AnimationType = (MotionTypeEnum)reader.ReadByte();
+			AnimationType = (AccessTypeEnum)reader.ReadByte();
 			MOT2USE = reader.ReadByte();
 			MOT2NO = reader.ReadSByte();
 			LOOP2 = (LoopModeEnum)reader.ReadByte();
@@ -374,7 +379,7 @@ namespace LibellusLibrary.Event.Types.Frame
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 		[JsonPropertyOrder(-86)]
-		public PmdAsioto FootstepSounds { get; set; }
+		public PmdAsioto FootstepSounds { get; set; } // P4G stores this at the last 4 bytes... ugh
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
 		[JsonPropertyOrder(-85)]
@@ -406,21 +411,27 @@ namespace LibellusLibrary.Event.Types.Frame
 	public class DisplayIcon : Unit
 	{
 		[JsonPropertyOrder(-90)]
-		public ushort IconID { get; set; }
+		public sbyte IconIndex { get; set; }
 
 		[JsonPropertyOrder(-89)]
+		[JsonConverter(typeof(JsonStringEnumConverter))]
+		public AccessTypeEnum IndexType { get; set; }
+
+		[JsonPropertyOrder(-88)]
 		[JsonConverter(typeof(ByteArrayToHexArray))]
 		public byte[] Data { get; set; } = Array.Empty<byte>();
 
 		public override void ReadData(BinaryReader reader)
 		{
-			IconID = reader.ReadUInt16();
+			IconIndex = reader.ReadSByte();
+			IndexType = (AccessTypeEnum)reader.ReadByte();
 			Data = reader.ReadBytes(34);
 		}
 
 		public override void WriteData(BinaryWriter writer)
 		{
-			writer.Write(IconID);
+			writer.Write(IconIndex);
+			writer.Write((byte)IndexType);
 			writer.Write(Data);
 		}
 	}
@@ -429,7 +440,7 @@ namespace LibellusLibrary.Event.Types.Frame
 	{
 		[JsonPropertyOrder(-90)]
 		[JsonConverter(typeof(JsonStringEnumConverter))]
-		public KubiModeEnum KubiMode { get; set; }
+		public KubiModeEnum KubiMode { get; set; } // SYORI in editor
 		
 		[JsonPropertyOrder(-89)]
 		[JsonConverter(typeof(JsonStringEnumConverter))]
@@ -477,6 +488,78 @@ namespace LibellusLibrary.Event.Types.Frame
 			writer.Write(Field1A);
 			writer.Write(KubiPitch);
 			writer.Write(KubiYaw);
+			writer.Write(Data);
+		}
+	}
+
+	public class ShadowToggle : Unit
+	{
+		[JsonPropertyOrder(-90)]
+		[JsonConverter(typeof(JsonStringEnumConverter))]
+		public OnOffEnum ShadowMode { get; set; }
+		
+		[JsonPropertyOrder(-89)]
+		[JsonConverter(typeof(ByteArrayToHexArray))]
+		public byte[] Data { get; set; } = Array.Empty<byte>(); // P4G stores data within here
+
+		public override void ReadData(BinaryReader reader)
+		{
+			ShadowMode = (OnOffEnum)reader.ReadByte();
+			Data = reader.ReadBytes(35);
+		}
+
+		public override void WriteData(BinaryWriter writer)
+		{
+			writer.Write((byte)ShadowMode);
+			writer.Write(Data);
+		}
+	}
+
+	public class ModelAttach : Unit
+	{
+		[JsonPropertyOrder(-90)]
+		[JsonConverter(typeof(JsonStringEnumConverter))]
+		public AttachTypeEnum AttachType { get; set; }
+
+		[JsonPropertyOrder(-89)]
+		public sbyte BankNumber { get; set; }
+
+		[JsonPropertyOrder(-88)]
+		public sbyte ModelIndex { get; set; }
+
+		[JsonPropertyOrder(-87)]
+		public byte Field1B { get; set; }
+
+		[JsonPropertyOrder(-86)]
+		public int MAXPOS_ID { get; set; } // 3DMAXPOS ID & limited 0-65535 in editor
+
+		[JsonPropertyOrder(-85)]
+		[JsonConverter(typeof(ByteArrayToHexArray))]
+		public byte[] Data { get; set; } = Array.Empty<byte>();
+
+		public enum AttachTypeEnum : byte
+		{
+			ATTACH = 0,
+			DETACH = 1,
+		}
+
+		public override void ReadData(BinaryReader reader)
+		{
+			AttachType = (AttachTypeEnum)reader.ReadByte();
+			BankNumber = reader.ReadSByte();
+			ModelIndex = reader.ReadSByte();
+			Field1B = reader.ReadByte();
+			MAXPOS_ID = reader.ReadInt32();
+			Data = reader.ReadBytes(28);
+		}
+
+		public override void WriteData(BinaryWriter writer)
+		{
+			writer.Write((sbyte)AttachType);
+			writer.Write(BankNumber);
+			writer.Write(ModelIndex);
+			writer.Write(Field1B);
+			writer.Write(MAXPOS_ID);
 			writer.Write(Data);
 		}
 	}
