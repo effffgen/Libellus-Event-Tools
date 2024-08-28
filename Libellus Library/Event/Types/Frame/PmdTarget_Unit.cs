@@ -46,6 +46,7 @@ namespace LibellusLibrary.Event.Types.Frame
 				UnitTypeEnum.MODEL_ATTACH => new ModelAttach(),
 				UnitTypeEnum.ALPHA_CHANGE => new AlphaChange(),
 				UnitTypeEnum.SHADOW_ONOFF => new ShadowToggle(),
+				UnitTypeEnum.SCALE_CHANGE => new ScaleChange(),
 				_ => new UnknownUnit()
 			};
 			UnitData.ReadData(reader);
@@ -69,6 +70,7 @@ namespace LibellusLibrary.Event.Types.Frame
 	[JsonDerivedType(typeof(ModelAttach), typeDiscriminator: "mda")]
 	[JsonDerivedType(typeof(AlphaChange), typeDiscriminator: "alp")]
 	[JsonDerivedType(typeof(ShadowToggle), typeDiscriminator: "sdw")]
+	[JsonDerivedType(typeof(ScaleChange), typeDiscriminator: "scl")]
 	public class Unit
 	{
 		public enum OnOffEnum : byte
@@ -599,6 +601,38 @@ namespace LibellusLibrary.Event.Types.Frame
 			writer.Write(Field1A);
 			writer.Write(Alpha);
 			writer.Write(IsSpecial);
+			writer.Write(Data);
+		}
+	}
+
+	public class ScaleChange : Unit
+	{
+		[JsonPropertyOrder(-90)]
+		public short ChangeLength { get; set; } // limited 0-3000 in editor
+
+		[JsonPropertyOrder(-89)]
+		public ushort Field1A { get; set; }
+
+		[JsonPropertyOrder(-88)]
+		public float Scale { get; set; } // limited 0.0-100.0 in editor
+
+		[JsonPropertyOrder(-87)]
+		[JsonConverter(typeof(ByteArrayToHexArray))]
+		public byte[] Data { get; set; } = Array.Empty<byte>();
+
+		public override void ReadData(BinaryReader reader)
+		{
+			ChangeLength = reader.ReadInt16();
+			Field1A = reader.ReadUInt16();
+			Scale = reader.ReadSingle();
+			Data = reader.ReadBytes(28);
+		}
+
+		public override void WriteData(BinaryWriter writer)
+		{
+			writer.Write(ChangeLength);
+			writer.Write(Field1A);
+			writer.Write(Scale);
 			writer.Write(Data);
 		}
 	}
