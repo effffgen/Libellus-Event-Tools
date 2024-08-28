@@ -44,6 +44,7 @@ namespace LibellusLibrary.Event.Types.Frame
 				UnitTypeEnum.ICON_DISP => new DisplayIcon(),
 				UnitTypeEnum.KUBI => new RotateHead(),
 				UnitTypeEnum.MODEL_ATTACH => new ModelAttach(),
+				UnitTypeEnum.ALPHA_CHANGE => new AlphaChange(),
 				UnitTypeEnum.SHADOW_ONOFF => new ShadowToggle(),
 				_ => new UnknownUnit()
 			};
@@ -66,6 +67,7 @@ namespace LibellusLibrary.Event.Types.Frame
 	[JsonDerivedType(typeof(DisplayIcon), typeDiscriminator: "dip")]
 	[JsonDerivedType(typeof(RotateHead), typeDiscriminator: "kubi")]
 	[JsonDerivedType(typeof(ModelAttach), typeDiscriminator: "mda")]
+	[JsonDerivedType(typeof(AlphaChange), typeDiscriminator: "alp")]
 	[JsonDerivedType(typeof(ShadowToggle), typeDiscriminator: "sdw")]
 	public class Unit
 	{
@@ -560,6 +562,43 @@ namespace LibellusLibrary.Event.Types.Frame
 			writer.Write(ModelIndex);
 			writer.Write(Field1B);
 			writer.Write(MAXPOS_ID);
+			writer.Write(Data);
+		}
+	}
+
+	public class AlphaChange : Unit
+	{
+		[JsonPropertyOrder(-90)]
+		public short ChangeLength { get; set; } // limited 0-3000 in editor
+		
+		[JsonPropertyOrder(-89)]
+		public ushort Field1A { get; set; }
+
+		[JsonPropertyOrder(-88)]
+		public byte Alpha { get; set; }
+
+		[JsonPropertyOrder(-87)]
+		public byte IsSpecial { get; set; } // TOKUSHU (likely 特殊 roughly meaning special) ALPHA+TRUE/FALSE in editor
+
+		[JsonPropertyOrder(-86)]
+		[JsonConverter(typeof(ByteArrayToHexArray))]
+		public byte[] Data { get; set; } = Array.Empty<byte>();
+
+		public override void ReadData(BinaryReader reader)
+		{
+			ChangeLength = reader.ReadInt16();
+			Field1A = reader.ReadUInt16();
+			Alpha = reader.ReadByte();
+			IsSpecial = reader.ReadByte();
+			Data = reader.ReadBytes(30);
+		}
+
+		public override void WriteData(BinaryWriter writer)
+		{
+			writer.Write(ChangeLength);
+			writer.Write(Field1A);
+			writer.Write(Alpha);
+			writer.Write(IsSpecial);
 			writer.Write(Data);
 		}
 	}
