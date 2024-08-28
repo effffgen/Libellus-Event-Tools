@@ -24,12 +24,15 @@ namespace LibellusLibrary.Event.Types.Frame
 
 	public class DDSTargetType : PmdTargetType
 	{
+		[JsonPropertyOrder(-96)]
+		public uint Field08 { get; set; } // Unknown what this is/does ATM
 		public override void ReadFrame(BinaryReader reader)
 		{
 			TargetType = (PmdTargetTypeID)reader.ReadUInt16();
 			StartFrame = reader.ReadUInt16();
 			Length = reader.ReadUInt16();
 			NameIndex = reader.ReadInt16();
+			Field08 = reader.ReadUInt32();
 			ReadData(reader);
 		}
 		public override void WriteFrame(BinaryWriter writer)
@@ -38,6 +41,7 @@ namespace LibellusLibrary.Event.Types.Frame
 			writer.Write(StartFrame);
 			writer.Write(Length);
 			writer.Write(NameIndex);
+			writer.Write(Field08);
 			WriteData(writer);
 		}
 	}
@@ -101,13 +105,13 @@ namespace LibellusLibrary.Event.Types.Frame
 
 	internal class DDSTarget_Unknown : DDSTargetType
 	{
-		[JsonPropertyOrder(-96)]
+		[JsonPropertyOrder(-95)]
 		[JsonConverter(typeof(ByteArrayToHexArray))]
 		public byte[] Data { get; set; } = Array.Empty<byte>();
 
 		protected override void ReadData(BinaryReader reader)
 		{
-			Data = reader.ReadBytes(0x24);
+			Data = reader.ReadBytes(0x20);
 		}
 
 		protected override void WriteData(BinaryWriter writer)

@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace LibellusLibrary.Event.Types.Frame
 {
-	internal class PmdTarget_Bgm : P3TargetType
+	internal class P3Target_BGM : P3TargetType
 	{
 		[JsonPropertyOrder(-92)]
 		[JsonConverter(typeof(JsonStringEnumConverter))]
