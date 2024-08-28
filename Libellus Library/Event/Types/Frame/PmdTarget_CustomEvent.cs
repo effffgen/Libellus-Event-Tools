@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 namespace LibellusLibrary.Event.Types.Frame
 {
 	// TODO: implement different modes ala UNIT
-	internal class PmdTarget_CustomEvent : PmdTargetType
+	internal class PmdTarget_CustomEvent : P3TargetType
 	{
 		[JsonPropertyOrder(-92)]
 		[JsonConverter(typeof(JsonStringEnumConverter))]

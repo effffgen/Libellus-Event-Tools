@@ -2,14 +2,19 @@
 {
 	public class PmdFrameFactory
 	{
-		public List<PmdTargetType> ReadDataTypes(BinaryReader reader, uint typeTableCount)
+		public List<PmdTargetType> ReadDataTypes(BinaryReader reader, uint typeTableCount, uint version)
 		{
 			List<PmdTargetType> frames = new();
 
 			for (int i = 0; i < typeTableCount; i++)
 			{
 				long start = reader.BaseStream.Position;
-				PmdTargetType dataType = GetFrameType((PmdTargetTypeID)reader.ReadUInt16());
+				PmdTargetType dataType = version switch
+				{
+					9 => GetDDSFrameType((PmdTargetTypeID)reader.ReadUInt16()),
+					10 or 11 or 12 => GetP3FrameType((PmdTargetTypeID)reader.ReadUInt16()),
+					_ => throw new NotImplementedException()
+				};
 				reader.BaseStream.Position = start;
 				dataType.ReadFrame(reader);
 				frames.Add(dataType);
@@ -17,7 +22,8 @@
 			return frames;
 		}
 
-		public static PmdTargetType GetFrameType(PmdTargetTypeID Type) => Type switch
+		// TODO: Rename classes to fit P3Target_X convention
+		public static PmdTargetType GetP3FrameType(PmdTargetTypeID Type) => Type switch
 		{
 			PmdTargetTypeID.UNIT => new PmdTarget_Unit(),
 			PmdTargetTypeID.MESSAGE => new PmdTarget_Message(),
@@ -39,10 +45,15 @@
 			PmdTargetTypeID.HOLYJUMP => new PmdTarget_HolyJump(),
 			PmdTargetTypeID.SCRIPT => new PmdTarget_Script(),
 			PmdTargetTypeID.FOG => new PmdTarget_Fog(),
-			_ => new PmdTarget_Unknown()
+			_ => new P3Target_Unknown()
 		};
 
-		// Names + ID's taken from P4G; earlier games have different strings in their binaries
+		public static PmdTargetType GetDDSFrameType(PmdTargetTypeID Type) => Type switch
+		{
+			_ => new DDSTarget_Unknown()
+		};
+
+		// Names + ID's taken from P4G; earlier games have different names in their binaries
 		public enum PmdTargetTypeID
 		{
 			STAGE = 0,

@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace LibellusLibrary.Event.Types.Frame
 {
-	internal class PmdTarget_Fog : PmdTargetType
+	internal class PmdTarget_Fog : P3TargetType
 	{
 		[JsonPropertyOrder(-92)]
 		public uint Field14 { get; set; }

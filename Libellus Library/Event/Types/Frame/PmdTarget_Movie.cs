@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace LibellusLibrary.Event.Types.Frame
 {
-	internal class PmdTarget_Movie : PmdTargetType
+	internal class PmdTarget_Movie : P3TargetType
 	{
 		[JsonPropertyOrder(-92)]
 		public short MovieIndex { get; set; } // limited 0-180 in editor

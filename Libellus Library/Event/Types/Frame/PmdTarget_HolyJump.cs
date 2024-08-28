@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 namespace LibellusLibrary.Event.Types.Frame
 {
 	// HolyJump is probably short for "Holiday Jump"?
-	internal class PmdTarget_HolyJump : PmdTargetType
+	internal class PmdTarget_HolyJump : P3TargetType
 	{
 		// KYUJITU YAKUSOKU JUMP MENU - likely very roughly means "Weekend Holiday Promise Jump" (used for SL weekend dates)
 		[JsonPropertyOrder(-92)]

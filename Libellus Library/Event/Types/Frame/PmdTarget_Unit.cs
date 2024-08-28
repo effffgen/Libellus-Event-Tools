@@ -5,7 +5,7 @@ namespace LibellusLibrary.Event.Types.Frame
 {
 	// TODO: Refactor this to use a similar Factory/Reader setup (ala the object table) so that
 	// the output of UNIT frametargets don't use type discriminators and are slightly cleaner
-	internal class PmdTarget_Unit : PmdTargetType
+	internal class PmdTarget_Unit : P3TargetType
 	{
 		[JsonPropertyOrder(-92)]
 		[JsonConverter(typeof(JsonStringEnumConverter))]

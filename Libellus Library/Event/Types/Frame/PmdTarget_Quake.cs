@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace LibellusLibrary.Event.Types.Frame
 {
-	internal class PmdTarget_Quake : PmdTargetType
+	internal class PmdTarget_Quake : P3TargetType
 	{
 		[JsonPropertyOrder(-92)]
 		public short Range { get; set; }

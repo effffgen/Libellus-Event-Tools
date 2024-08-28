@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace LibellusLibrary.Event.Types.Frame
 {
-	internal class PmdTarget_Slight : PmdTargetType
+	internal class PmdTarget_Slight : P3TargetType
 	{
 		[JsonPropertyOrder(-92)]
 		public float Field14 { get; set; } // Possibly a seperate length value?

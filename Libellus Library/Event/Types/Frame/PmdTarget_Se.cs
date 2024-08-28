@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace LibellusLibrary.Event.Types.Frame
 {
-	internal class PmdTarget_Se : PmdTargetType
+	internal class PmdTarget_Se : P3TargetType
 	{
 		[JsonPropertyOrder(-92)]
 		public short SoundIndex { get; set; } // limited 0-10000 in editor

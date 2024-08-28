@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 // Original file used spaces as tabs; retain that for better diffs
 namespace LibellusLibrary.Event.Types.Frame
 {
-    internal class PmdTarget_Message : PmdTargetType
+    internal class PmdTarget_Message : P3TargetType
     {
         [JsonPropertyOrder(-92)]
         public byte MessageIndex { get; set; }

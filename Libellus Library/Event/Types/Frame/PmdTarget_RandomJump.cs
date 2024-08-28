@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace LibellusLibrary.Event.Types.Frame
 {
-	internal class PmdTarget_RandomJump : PmdTargetType
+	internal class PmdTarget_RandomJump : P3TargetType
 	{
 
 		[JsonPropertyOrder(-92)]
