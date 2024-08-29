@@ -43,8 +43,8 @@
 			PmdTargetTypeID.CUSTOMEVENT => new PmdTarget_CustomEvent(),
 			PmdTargetTypeID.COUNTJUMP => new PmdTarget_CountJump(),
 			PmdTargetTypeID.HOLYJUMP => new PmdTarget_HolyJump(),
-			PmdTargetTypeID.SCRIPT => new PmdTarget_Script(),
-			PmdTargetTypeID.FOG => new PmdTarget_Fog(),
+			PmdTargetTypeID.SCRIPT => new P4Target_Script(),
+			PmdTargetTypeID.FOG => new P4Target_Fog(),
 			_ => new P3Target_Unknown()
 		};
 

@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 // Original file used spaces as tabs; retain that for better diffs
 namespace LibellusLibrary.Event.Types.Frame
 {
-    internal class PmdTarget_Script : P3TargetType
+    internal class P4Target_Script : P3TargetType
     {
         [JsonPropertyOrder(-92)]
         [JsonConverter(typeof(ByteArrayToHexArray))]
