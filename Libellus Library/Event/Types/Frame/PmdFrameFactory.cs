@@ -52,6 +52,7 @@
 		{
 			PmdTargetTypeID.QUAKE => new DDSTarget_Quake(),
 			PmdTargetTypeID.SLIGHT => new DDSTarget_Slight(),
+			PmdTargetTypeID.RAIN => new DDSTarget_Rain(),
 			_ => new DDSTarget_Unknown()
 		};
 
