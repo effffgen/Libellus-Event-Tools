@@ -7,7 +7,7 @@ namespace LibellusLibrary.Event
 	[JsonConverter(typeof(PmdJsonReader))]
 	public class PolyMovieData
 	{
-		public string MagicCode { get; set; } = String.Empty;
+		public string MagicCode { get; set; } = string.Empty;
 		public uint Version { get; set; }
 
 		public List<PmdDataType> PmdDataTypes { get; set; }

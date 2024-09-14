@@ -103,7 +103,7 @@ namespace LibellusLibrary.Event.Types
 	}
 	internal class Pmd_UnitDef: IReferenceType
 	{
-		public string FileName { get; set; } = String.Empty;
+		public string FileName { get; set; } = string.Empty;
 		public byte[] UnitData = Array.Empty<byte>();
 
 		public int MajorID { get; set; }

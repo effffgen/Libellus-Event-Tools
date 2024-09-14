@@ -108,7 +108,7 @@ namespace LibellusLibrary.Event.Types
 
 	internal class Pmd_EffectDef : IReferenceType
 	{
-		public string FileName { get; set; } = String.Empty;
+		public string FileName { get; set; } = string.Empty;
 		public byte[] EffectData = Array.Empty<byte>();
 
 		public uint Field08 { get; set; }
