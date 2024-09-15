@@ -48,6 +48,7 @@ namespace LibellusLibrary.Event.Types.Frame
             EVT = 0,
             COMMU = 1,
             SYS = 2,
+            EVT2 = 3 // Listed after SYS FLAG in P4G editor strings, but value is assumed due to P4G lacking an event editor to confirm
         }
     }
 }
