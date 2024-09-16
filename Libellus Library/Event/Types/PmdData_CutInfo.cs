@@ -8,7 +8,7 @@ namespace LibellusLibrary.Event.Types
 		public PmdDataType CreateFromVersion(uint version, BinaryReader reader)
 		{
 			return version switch {
-				9 => new PmdData_DDSCutInfo(reader),
+				4 or 9 => new PmdData_DDSCutInfo(reader),
 				10 or 11 or 12 => new PmdData_P3CutInfo(reader),
 				_ => throw new NotImplementedException(),
 			};
@@ -18,7 +18,7 @@ namespace LibellusLibrary.Event.Types
 		{
 			return version switch
 			{
-				9 => new PmdData_DDSCutInfo(),
+				4 or 9 => new PmdData_DDSCutInfo(),
 				10 or 11 or 12 => new PmdData_P3CutInfo(),
 				_ => throw new NotImplementedException(),
 			};

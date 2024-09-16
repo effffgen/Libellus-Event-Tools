@@ -9,6 +9,7 @@ namespace LibellusLibrary.Event.Types
 		{
 			return version switch
 			{
+				4 => new PmdData_SMT3FrameTable(reader, version),
 				9 => new PmdData_DDSFrameTable(reader, version),
 				10 or 11 or 12 => new PmdData_P3FrameTable(reader, version),
 				_ => throw new NotImplementedException()
@@ -19,6 +20,7 @@ namespace LibellusLibrary.Event.Types
 		{
 			return version switch
 			{
+				4 => new PmdData_SMT3FrameTable(),
 				9 => new PmdData_DDSFrameTable(),
 				10 or 11 or 12 => new PmdData_P3FrameTable(),
 				_ => throw new NotImplementedException()
@@ -32,6 +34,37 @@ namespace LibellusLibrary.Event.Types
 			reader.BaseStream.Position = OriginalPos;
 			return frameTbl;
 		}
+	}
+
+	public class PmdData_SMT3FrameTable : PmdDataType
+	{
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+		[JsonConverter(typeof(SMT3FrameReader))]
+		public List<PmdTargetType> Frames { get; set; }
+
+		public PmdData_SMT3FrameTable()
+		{
+			return;
+		}
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+		public PmdData_SMT3FrameTable(BinaryReader reader, uint version)
+		{
+			reader.BaseStream.Position += 0x8;
+			uint count = reader.ReadUInt32();
+			reader.BaseStream.Position = (long)reader.ReadUInt32();
+			PmdFrameFactory factory = new();
+			Frames = factory.ReadDataTypes(reader, count, version);
+		}
+
+		internal override void SaveData(PmdBuilder builder, BinaryWriter writer)
+		{
+			foreach (PmdTargetType frame in Frames)
+			{
+				frame.WriteFrame(writer);
+			}
+		}
+		internal override int GetCount() => Frames.Count;
+		internal override int GetSize() => 0x10;
 	}
 
 	public class PmdData_DDSFrameTable : PmdDataType

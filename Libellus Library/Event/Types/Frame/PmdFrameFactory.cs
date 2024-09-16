@@ -9,10 +9,12 @@
 			for (int i = 0; i < typeTableCount; i++)
 			{
 				long start = reader.BaseStream.Position;
+				PmdTargetTypeID curTargetType = (PmdTargetTypeID)reader.ReadUInt16();
 				PmdTargetType dataType = version switch
 				{
-					9 => GetDDSFrameType((PmdTargetTypeID)reader.ReadUInt16()),
-					10 or 11 or 12 => GetP3FrameType((PmdTargetTypeID)reader.ReadUInt16()),
+					4 => GetSMT3FrameType(curTargetType),
+					9 => GetDDSFrameType(curTargetType),
+					10 or 11 or 12 => GetP3FrameType(curTargetType),
 					_ => throw new NotImplementedException()
 				};
 				reader.BaseStream.Position = start;
@@ -21,6 +23,20 @@
 			}
 			return frames;
 		}
+
+		public static PmdTargetType GetSMT3FrameType(PmdTargetTypeID Type) => Type switch
+		{
+			PmdTargetTypeID.QUAKE => new SMT3Target_Quake(),
+			_ => new SMT3Target_Unknown()
+		};
+
+		public static PmdTargetType GetDDSFrameType(PmdTargetTypeID Type) => Type switch
+		{
+			PmdTargetTypeID.QUAKE => new DDSTarget_Quake(),
+			PmdTargetTypeID.SLIGHT => new DDSTarget_Slight(),
+			PmdTargetTypeID.RAIN => new DDSTarget_Rain(),
+			_ => new DDSTarget_Unknown()
+		};
 
 		// TODO: Rename classes to fit P3Target_X convention
 		public static PmdTargetType GetP3FrameType(PmdTargetTypeID Type) => Type switch
@@ -46,14 +62,6 @@
 			PmdTargetTypeID.SCRIPT => new P4Target_Script(),
 			PmdTargetTypeID.FOG => new P4Target_Fog(),
 			_ => new P3Target_Unknown()
-		};
-
-		public static PmdTargetType GetDDSFrameType(PmdTargetTypeID Type) => Type switch
-		{
-			PmdTargetTypeID.QUAKE => new DDSTarget_Quake(),
-			PmdTargetTypeID.SLIGHT => new DDSTarget_Slight(),
-			PmdTargetTypeID.RAIN => new DDSTarget_Rain(),
-			_ => new DDSTarget_Unknown()
 		};
 
 		// Names + ID's taken from P4G; earlier games have different names in their binaries

@@ -22,6 +22,27 @@ namespace LibellusLibrary.Event.Types.Frame
 		protected virtual void WriteData(BinaryWriter writer) => throw new InvalidOperationException();
 	}
 
+	// Some SMT3 framefuncs don't use the Length param as the length it seems? TODO: Figure that out
+	public class SMT3TargetType : PmdTargetType
+	{
+		public override void ReadFrame(BinaryReader reader)
+		{
+			TargetType = (PmdTargetTypeID)reader.ReadUInt16();
+			StartFrame = reader.ReadUInt16();
+			Length = reader.ReadUInt16();
+			NameIndex = reader.ReadInt16();
+			ReadData(reader);
+		}
+		public override void WriteFrame(BinaryWriter writer)
+		{
+			writer.Write((ushort)TargetType);
+			writer.Write(StartFrame);
+			writer.Write(Length);
+			writer.Write(NameIndex);
+			WriteData(writer);
+		}
+	}
+
 	public class DDSTargetType : PmdTargetType
 	{
 		[JsonPropertyOrder(-96)]
@@ -112,6 +133,23 @@ namespace LibellusLibrary.Event.Types.Frame
 		protected override void ReadData(BinaryReader reader)
 		{
 			Data = reader.ReadBytes(0x20);
+		}
+
+		protected override void WriteData(BinaryWriter writer)
+		{
+			writer.Write(Data);
+		}
+	}
+
+	internal class SMT3Target_Unknown : SMT3TargetType
+	{
+		[JsonPropertyOrder(-96)]
+		[JsonConverter(typeof(ByteArrayToHexArray))]
+		public byte[] Data { get; set; } = Array.Empty<byte>();
+
+		protected override void ReadData(BinaryReader reader)
+		{
+			Data = reader.ReadBytes(8);
 		}
 
 		protected override void WriteData(BinaryWriter writer)
