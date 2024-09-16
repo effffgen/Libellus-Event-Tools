@@ -10,6 +10,8 @@ These files are referred to as PMD (short for Polygon Movie Data or PolyMovieDat
 - 3
   - Primarily used by PM1 files
   - Used in Digital Devil Saga 1&2, Persona 3/FES, Persona 4/Golden
+- 4 (Partial)
+  - Used in Shin Megami Tensei 3: Nocturne
 - 9 (Partial)
   - Used in Digital Devil Saga 1&2
 - 10 (Partial)
