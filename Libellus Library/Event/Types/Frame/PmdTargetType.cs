@@ -107,15 +107,15 @@ namespace LibellusLibrary.Event.Types.Frame
 		}
 	}
 
-	internal class P3Target_Unknown : P3TargetType
+	internal class SMT3Target_Unknown : SMT3TargetType
 	{
-		[JsonPropertyOrder(-92)]
+		[JsonPropertyOrder(-96)]
 		[JsonConverter(typeof(ByteArrayToHexArray))]
 		public byte[] Data { get; set; } = Array.Empty<byte>();
 
 		protected override void ReadData(BinaryReader reader)
 		{
-			Data = reader.ReadBytes(0x28);
+			Data = reader.ReadBytes(8);
 		}
 
 		protected override void WriteData(BinaryWriter writer)
@@ -141,15 +141,15 @@ namespace LibellusLibrary.Event.Types.Frame
 		}
 	}
 
-	internal class SMT3Target_Unknown : SMT3TargetType
+	internal class P3Target_Unknown : P3TargetType
 	{
-		[JsonPropertyOrder(-96)]
+		[JsonPropertyOrder(-92)]
 		[JsonConverter(typeof(ByteArrayToHexArray))]
 		public byte[] Data { get; set; } = Array.Empty<byte>();
 
 		protected override void ReadData(BinaryReader reader)
 		{
-			Data = reader.ReadBytes(8);
+			Data = reader.ReadBytes(0x28);
 		}
 
 		protected override void WriteData(BinaryWriter writer)
