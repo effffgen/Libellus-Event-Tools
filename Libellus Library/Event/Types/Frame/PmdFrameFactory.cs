@@ -57,6 +57,7 @@
 			PmdTargetTypeID.KEYFREE => new PmdTarget_Keyfree(),
 			PmdTargetTypeID.RANDOMJUMP => new PmdTarget_RandomJump(),
 			PmdTargetTypeID.CUSTOMEVENT => new PmdTarget_CustomEvent(),
+			PmdTargetTypeID.COND_ON => new P3Target_CondOn(),
 			PmdTargetTypeID.COUNTJUMP => new PmdTarget_CountJump(),
 			PmdTargetTypeID.HOLYJUMP => new PmdTarget_HolyJump(),
 			PmdTargetTypeID.SCRIPT => new P4Target_Script(),
