@@ -3,6 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace LibellusLibrary.Event.Types.Frame
 {
+	// Cond == Condition
 	internal class P3Target_CondOn : P3TargetType
 	{
 		[JsonPropertyOrder(-92)]
@@ -15,10 +16,10 @@ namespace LibellusLibrary.Event.Types.Frame
 
 		internal enum CondTypeEnum : byte
 		{
-			KAZE = 0, // Sick; likely 風邪 which roughly means "flu"
+			KAZE = 0, // Sick? likely 風邪 which roughly means "flu"
 			KAZEGIMI = 1,
-			HIROU = 2, // Tired; likely 疲労 which roughly means "fatigue"
-			TUUJOU = 3, // Good; likely 通常 which roughly means "normal"
+			HIROU = 2, // Tired? likely 疲労 which roughly means "fatigue"
+			TUUJOU = 3, // Good? likely 通常 which roughly means "normal"
 			KOUTYOU = 4,
 			ZEKKOUTYOU = 5 // Likely 絶好調 which roughly means "in perfect form"
 		}
