@@ -73,12 +73,6 @@ namespace LibellusLibrary.Event.Types.Frame
 	[JsonDerivedType(typeof(ScaleChange), typeDiscriminator: "scl")]
 	public class Unit
 	{
-		public enum OnOffEnum : byte
-		{
-			ON = 0,
-			OFF = 1
-		}
-
 		public enum AccessTypeEnum : byte
 		{
 			DIRECT = 0,
@@ -276,12 +270,6 @@ namespace LibellusLibrary.Event.Types.Frame
 		[JsonPropertyOrder(-77)]
 		[JsonConverter(typeof(ByteArrayToHexArray))]
 		public byte[] Data2 { get; set; } = Array.Empty<byte>();
-
-		public enum LoopModeEnum : byte
-		{
-			REPEAT = 0,
-			END = 1
-		}
 
 		public override void ReadData(BinaryReader reader)
 		{
@@ -635,5 +623,17 @@ namespace LibellusLibrary.Event.Types.Frame
 			writer.Write(Scale);
 			writer.Write(Data);
 		}
+	}
+
+	public enum OnOffEnum : byte
+	{
+		ON = 0,
+		OFF = 1
+	}
+
+	public enum LoopModeEnum : byte
+	{
+		REPEAT = 0,
+		END = 1
 	}
 }

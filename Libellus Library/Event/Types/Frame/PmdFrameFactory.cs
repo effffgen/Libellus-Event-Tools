@@ -61,6 +61,7 @@
 			PmdTargetTypeID.COND_ON => new P3Target_CondOn(),
 			PmdTargetTypeID.COUNTJUMP => new PmdTarget_CountJump(),
 			PmdTargetTypeID.HOLYJUMP => new PmdTarget_HolyJump(),
+			PmdTargetTypeID.FIELDOBJ => new P3Target_FieldObj(),
 			PmdTargetTypeID.PACKMODEL => new PmdTarget_Unit(),
 			PmdTargetTypeID.SCRIPT => new P4Target_Script(),
 			PmdTargetTypeID.FOG => new P4Target_Fog(),
