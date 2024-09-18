@@ -36,7 +36,7 @@ namespace LibellusLibrary.Event.Types.Frame
 			{
 				ObjectModeEnum.DISP => new DisplayFldObj(),
 				ObjectModeEnum.ANIM => new AnimateFieldObj(),
-				_ => throw new InvalidOperationException()
+				_ => new UnknownFldObj()
 			};
 			FieldObjData.ReadData(reader);
 		}

@@ -63,6 +63,7 @@
 			PmdTargetTypeID.HOLYJUMP => new PmdTarget_HolyJump(),
 			PmdTargetTypeID.FIELDOBJ => new P3Target_FieldObj(),
 			PmdTargetTypeID.PACKMODEL => new PmdTarget_Unit(),
+			PmdTargetTypeID.FIELDEFF => new P3Target_FieldEff(),
 			PmdTargetTypeID.SCRIPT => new P4Target_Script(),
 			PmdTargetTypeID.FOG => new P4Target_Fog(),
 			_ => new P3Target_Unknown()
