@@ -54,26 +54,75 @@ namespace LibellusLibrary.Event.Types
 	internal class Pmd_BezierDef
 	{
 		[JsonPropertyOrder(-100)]
-		public uint Field00 { get; set; }
+		public byte Field00 { get; set; }
+		
 		[JsonPropertyOrder(-99)]
-		public float[] Data { get; set; } = new float[75];
+		public byte BezierMax { get; set; }
+		
+		[JsonPropertyOrder(-98)]
+		public ushort Field02 { get; set; }
+
+		// TODO: Can the size be fully determined at run-time without missing any data?
+		[JsonPropertyOrder(-97)]
+		public Pmd_Vector3[][] Data { get; set; } = new Pmd_Vector3[8][];
 		
 		public void ReadBezier(BinaryReader reader)
 		{
-			Field00 = reader.ReadUInt32();
-			for (int i = 0; i < 75; i++)
+			Field00 = reader.ReadByte();
+			BezierMax = reader.ReadByte();
+			Field02 = reader.ReadUInt16();
+			for (int i = 0; i < Data.Length; i++)
 			{
-				Data[i] = reader.ReadSingle();
+				if (i == 0)
+				{
+					Data[i] = new Pmd_Vector3[4];
+				}
+				else
+				{
+					Data[i] = new Pmd_Vector3[3];
+				}
+				for (int v = 0; v < Data[i].Length; v++)
+				{
+					Data[i][v] = new Pmd_Vector3();
+					Data[i][v].X = reader.ReadSingle();
+					Data[i][v].Y = reader.ReadSingle();
+					Data[i][v].Z = reader.ReadSingle();
+				}
 			}
 		}
 
 		public void WriteBezier(BinaryWriter writer)
 		{ 
 			writer.Write(Field00);
-			for (int i = 0; i < 75; i++)
+			writer.Write(BezierMax);
+			writer.Write(Field02);
+			foreach (Pmd_Vector3[] curBez in Data)
 			{
-				writer.Write(Data[i]);
+				foreach (Pmd_Vector3 curCoord in curBez)
+				{
+					writer.Write(curCoord.X);
+					writer.Write(curCoord.Y);
+					writer.Write(curCoord.Z);
+				}
 			}
 		}
 	}
+
+	internal class Pmd_Vector3
+	{
+		public float X { get; set; }
+		public float Y { get; set; }
+		public float Z { get; set; }
+	}
+
+	/*
+	BezierTable is ordered as follows:
+	BezierTable is ordered as follows:
+		All points are type Vector3 (X, Y, Z floats)
+		PIVOT = start of curve
+		EASE IN = curve will "ease in" towards this position
+		EASE OUT = curve will "ease out" towards this position
+		PIVOT_E = end of curve
+	When BezierMax > 1, (EASE IN, EASE OUT, PIVOT_E) points are appended to current bezier curve.
+	 */
 }
