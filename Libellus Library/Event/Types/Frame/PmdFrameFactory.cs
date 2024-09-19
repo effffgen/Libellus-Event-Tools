@@ -41,6 +41,7 @@ namespace LibellusLibrary.Event.Types.Frame
 		{
             PmdTargetTypeID.MESSAGE => new PmdTarget_Message(),
             PmdTargetTypeID.SCRIPT => new PmdTarget_Script(),
+			PmdTargetTypeID.BGM => new PmdTarget_Bgm(),
             _ =>new PmdTarget_Unknown()
 		};
 
