@@ -70,6 +70,7 @@
 			PmdTargetTypeID.FIELDEFF => new P3Target_FieldEff(),
 			PmdTargetTypeID.SCRIPT => new P4Target_Script(),
 			PmdTargetTypeID.FOG => new P4Target_Fog(),
+			PmdTargetTypeID.FLDNOISE => new P4Target_FldNoise(),
 			PmdTargetTypeID.CAMERA_STATE => new P4Target_CameraState(),
 			_ => new P3Target_Unknown()
 		};
