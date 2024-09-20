@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace LibellusLibrary.Event.Types.Frame
 {
-	internal class PmdTarget_Ctlcam : P3TargetType
+	internal class P3Target_Ctlcam : P3TargetType
 	{
 		[JsonPropertyOrder(-92)]
 		public ushort Field14 { get; set; } // Possibly used to define UNIT to parent to (even in MOVE_DIRECT)?

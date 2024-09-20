@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace LibellusLibrary.Event.Types.Frame
 {
-	internal class PmdTarget_CountJump : P3TargetType
+	internal class P3Target_CountJump : P3TargetType
 	{
 		[JsonPropertyOrder(-92)]
 		public sbyte CounterNumber { get; set; } // Limited 0-8 in editor

@@ -3,31 +3,29 @@ using System.Text.Json.Serialization;
 
 namespace LibellusLibrary.Event.Types.Frame
 {
-	internal class P3Target_Wait : P3TargetType
+	internal class P3Target_ComuLvJump : P3TargetType
 	{
 		[JsonPropertyOrder(-92)]
-		[JsonConverter(typeof(JsonStringEnumConverter))]
-		public WaitModeEnum WaitMode { get; set; }
-
+		public short Jump1 { get; set; } // listed with (comuLv x 5Per) in editor; jump to this frame with a chance of SL rank * 5%?
+		
 		[JsonPropertyOrder(-91)]
+		public short Jump2 { get; set; }
+
+		[JsonPropertyOrder(-90)]
 		[JsonConverter(typeof(ByteArrayToHexArray))]
 		public byte[] Data { get; set; } = Array.Empty<byte>();
 
-		internal enum WaitModeEnum : byte
-		{
-			MESSAGE_WAIT = 0, // Pauses event playback until msg window is closed (used for MESSAGE calls set to NO STOP)
-			FADESYNC_WAIT = 1
-		}
-
 		protected override void ReadData(BinaryReader reader)
 		{
-			WaitMode = (WaitModeEnum)reader.ReadByte();
-			Data = reader.ReadBytes(39);
+			Jump1 = reader.ReadInt16();
+			Jump2 = reader.ReadInt16();
+			Data = reader.ReadBytes(36);
 		}
 
 		protected override void WriteData(BinaryWriter writer)
 		{
-			writer.Write((byte)WaitMode);
+			writer.Write(Jump1);
+			writer.Write(Jump2);
 			writer.Write(Data);
 		}
 	}
