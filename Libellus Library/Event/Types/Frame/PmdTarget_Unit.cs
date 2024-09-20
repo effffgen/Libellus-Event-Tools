@@ -3,6 +3,28 @@ using System.Text.Json.Serialization;
 
 namespace LibellusLibrary.Event.Types.Frame
 {
+	internal class DDSTarget_Unit : DDSTargetType
+	{
+		[JsonPropertyOrder(-95)]
+		public uint UnitType { get; set; }
+		
+		[JsonPropertyOrder(-94)]
+		[JsonConverter(typeof(ByteArrayToHexArray))]
+		public byte[] Data { get; set; } = Array.Empty<byte>();
+
+		protected override void ReadData(BinaryReader reader)
+		{
+			UnitType = reader.ReadUInt32();
+			Data = reader.ReadBytes(0x1C);
+		}
+
+		protected override void WriteData(BinaryWriter writer)
+		{
+			writer.Write(UnitType);
+			writer.Write(Data);
+		}
+	}
+
 	internal class P3Target_Unit : P3TargetType, ITargetVarying
 	{
 		[JsonPropertyOrder(-92)]

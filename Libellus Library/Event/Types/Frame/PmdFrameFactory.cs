@@ -33,6 +33,7 @@
 
 		public static PmdTargetType GetDDSFrameType(PmdTargetTypeID Type) => Type switch
 		{
+			PmdTargetTypeID.UNIT => new DDSTarget_Unit(),
 			PmdTargetTypeID.MESSAGE => new DDSTarget_Message(),
 			PmdTargetTypeID.QUAKE => new DDSTarget_Quake(),
 			PmdTargetTypeID.MOVIE => new DDSTarget_Movie(),
