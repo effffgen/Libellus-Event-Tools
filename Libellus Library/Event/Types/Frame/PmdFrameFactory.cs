@@ -34,6 +34,7 @@
 		public static PmdTargetType GetDDSFrameType(PmdTargetTypeID Type) => Type switch
 		{
 			PmdTargetTypeID.QUAKE => new DDSTarget_Quake(),
+			PmdTargetTypeID.MOVIE => new DDSTarget_Movie(),
 			PmdTargetTypeID.SLIGHT => new DDSTarget_Slight(),
 			PmdTargetTypeID.RAIN => new DDSTarget_Rain(),
 			_ => new DDSTarget_Unknown()
@@ -50,7 +51,7 @@
 			PmdTargetTypeID.SLIGHT => new P3Target_Slight(),
 			PmdTargetTypeID.BGM => new P3Target_BGM(),
 			PmdTargetTypeID.PADACT => new PmdTarget_Padact(),
-			PmdTargetTypeID.MOVIE => new PmdTarget_Movie(),
+			PmdTargetTypeID.MOVIE => new P3Target_Movie(),
 			PmdTargetTypeID.CTLCAM => new PmdTarget_Ctlcam(),
 			PmdTargetTypeID.WAIT => new PmdTarget_Wait(),
 			PmdTargetTypeID.CUTIN => new PmdTarget_Cutin(),
