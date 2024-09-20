@@ -6,10 +6,10 @@ namespace LibellusLibrary.Event.Types.Frame
 	internal class P4Target_CameraState : P3TargetType
 	{
 		[JsonPropertyOrder(-92)]
-		public float CameraNear { get; set; } // Assumed, not entirely certain
+		public float CameraNear { get; set; }
 		
 		[JsonPropertyOrder(-91)]
-		public float CameraFar { get; set; } // Assumed, not entirely certain
+		public float CameraFar { get; set; }
 
 		[JsonPropertyOrder(-90)]
 		[JsonConverter(typeof(ByteArrayToHexArray))]
