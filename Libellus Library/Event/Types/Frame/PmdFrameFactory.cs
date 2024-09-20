@@ -58,6 +58,7 @@
 			PmdTargetTypeID.WAIT => new P3Target_Wait(),
 			PmdTargetTypeID.B_UP => new P3Target_Bustup(),
 			PmdTargetTypeID.CUTIN => new P3Target_Cutin(),
+			PmdTargetTypeID.EVENT_EFFECT => new P3Target_EventEffect(),
 			PmdTargetTypeID.JUMP => new P3Target_Jump(),
 			PmdTargetTypeID.KEYFREE => new P3Target_Keyfree(),
 			PmdTargetTypeID.RANDOMJUMP => new P3Target_RandomJump(),
