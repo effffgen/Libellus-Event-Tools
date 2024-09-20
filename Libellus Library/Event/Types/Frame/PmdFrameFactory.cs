@@ -56,6 +56,7 @@
 			PmdTargetTypeID.MOVIE => new P3Target_Movie(),
 			PmdTargetTypeID.CTLCAM => new PmdTarget_Ctlcam(),
 			PmdTargetTypeID.WAIT => new PmdTarget_Wait(),
+			PmdTargetTypeID.B_UP => new P3Target_Bustup(),
 			PmdTargetTypeID.CUTIN => new PmdTarget_Cutin(),
 			PmdTargetTypeID.JUMP => new PmdTarget_Jump(),
 			PmdTargetTypeID.KEYFREE => new PmdTarget_Keyfree(),

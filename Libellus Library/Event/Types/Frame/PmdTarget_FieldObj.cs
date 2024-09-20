@@ -24,15 +24,15 @@ namespace LibellusLibrary.Event.Types.Frame
 		public PmdTargetType GetVariant(BinaryReader reader)
 		{
 			reader.BaseStream.Position += 18;
-			return GetFieldEff((ObjectModeEnum)reader.ReadByte());
+			return GetFieldObj((ObjectModeEnum)reader.ReadByte());
 		}
 
 		public PmdTargetType GetVariant()
 		{
-			return GetFieldEff(ObjectMode);
+			return GetFieldObj(ObjectMode);
 		}
 
-		public static PmdTargetType GetFieldEff(ObjectModeEnum mode) => mode switch
+		public static PmdTargetType GetFieldObj(ObjectModeEnum mode) => mode switch
 		{
 			ObjectModeEnum.DISP => new DisplayFldObj(),
 			ObjectModeEnum.ANIM => new AnimateFieldObj(),
