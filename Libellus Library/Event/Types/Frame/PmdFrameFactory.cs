@@ -33,6 +33,7 @@
 
 		public static PmdTargetType GetDDSFrameType(PmdTargetTypeID Type) => Type switch
 		{
+			PmdTargetTypeID.MESSAGE => new DDSTarget_Message(),
 			PmdTargetTypeID.QUAKE => new DDSTarget_Quake(),
 			PmdTargetTypeID.MOVIE => new DDSTarget_Movie(),
 			PmdTargetTypeID.SLIGHT => new DDSTarget_Slight(),
@@ -44,7 +45,7 @@
 		public static PmdTargetType GetP3FrameType(PmdTargetTypeID Type) => Type switch
 		{
 			PmdTargetTypeID.UNIT => new P3Target_Unit(),
-			PmdTargetTypeID.MESSAGE => new PmdTarget_Message(),
+			PmdTargetTypeID.MESSAGE => new P3Target_Message(),
 			PmdTargetTypeID.SE => new PmdTarget_Se(),
 			PmdTargetTypeID.FADE => new PmdTarget_Fade(),
 			PmdTargetTypeID.QUAKE => new P3Target_Quake(),

@@ -4,7 +4,34 @@ using System.Text.Json.Serialization;
 // Original file used spaces as tabs; retain that for better diffs
 namespace LibellusLibrary.Event.Types.Frame
 {
-    internal class PmdTarget_Message : P3TargetType
+    internal class DDSTarget_Message : DDSTargetType
+    {
+        [JsonPropertyOrder(-95)]
+        public byte MessageIndex { get; set; }
+
+        [JsonPropertyOrder(-94)]
+        public byte SetBranch { get; set; }
+
+        [JsonPropertyOrder(-93)]
+        [JsonConverter(typeof(ByteArrayToHexArray))]
+        public byte[] Data { get; set; } = Array.Empty<byte>();
+
+        protected override void ReadData(BinaryReader reader)
+        {
+            MessageIndex = reader.ReadByte();
+            SetBranch = reader.ReadByte();
+            Data = reader.ReadBytes(0x1E);
+        }
+
+        protected override void WriteData(BinaryWriter writer)
+        {
+            writer.Write(MessageIndex);
+            writer.Write(SetBranch);
+            writer.Write(Data);
+        }
+    }
+
+    internal class P3Target_Message : P3TargetType
     {
         [JsonPropertyOrder(-92)]
         public byte MessageIndex { get; set; }
@@ -75,6 +102,5 @@ namespace LibellusLibrary.Event.Types.Frame
             writer.Write((byte)MessageDisplayMode);
             writer.Write(Data);
         }
-
     }
 }
