@@ -36,9 +36,9 @@
 			PmdTargetTypeID.UNIT => new DDSTarget_Unit(),
 			PmdTargetTypeID.MESSAGE => new DDSTarget_Message(),
 			PmdTargetTypeID.QUAKE => new DDSTarget_Quake(),
-			PmdTargetTypeID.MOVIE => new DDSTarget_Movie(),
 			PmdTargetTypeID.SLIGHT => new DDSTarget_Slight(),
 			PmdTargetTypeID.RAIN => new DDSTarget_Rain(),
+			PmdTargetTypeID.MOVIE => new DDSTarget_Movie(),
 			_ => new DDSTarget_Unknown()
 		};
 
