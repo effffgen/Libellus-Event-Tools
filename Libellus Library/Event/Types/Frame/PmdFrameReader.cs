@@ -3,24 +3,15 @@ using System.Text.Json.Serialization;
 
 namespace LibellusLibrary.Event.Types.Frame
 {
-	// TODO: Everything happening here is very bad and very not DRY. Fix this plz!!!
 	internal class SMT3FrameReader : P3FrameReader
 	{
+		// TODO: Do SMT3/v4 framefuncs have variants?
 		public override List<PmdTargetType>? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
 		{
 			List<PmdTargetType> frames = new();
 
 			reader.Read();
-			List<PmdTargetType> abstractTypes = new();
-
-			Utf8JsonReader abstractReader = reader;
-
-			while (abstractReader.TokenType != JsonTokenType.EndArray)
-			{
-				PmdTargetType abstractType = JsonSerializer.Deserialize<PmdTargetType>(ref abstractReader, options)!;
-				abstractTypes.Add(abstractType);
-				abstractReader.Read();
-			}
+			List<PmdTargetType> abstractTypes = ReadAbstractTargets(reader, options);
 
 			foreach (PmdTargetType abstractType in abstractTypes)
 			{
@@ -33,6 +24,7 @@ namespace LibellusLibrary.Event.Types.Frame
 		}
 	}
 
+	// TODO: Do DDS/v9 framefuncs have variants?
 	internal class DDSFrameReader : P3FrameReader
 	{
 		public override List<PmdTargetType>? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
@@ -40,17 +32,8 @@ namespace LibellusLibrary.Event.Types.Frame
 			List<PmdTargetType> frames = new();
 
 			reader.Read();
-			List<PmdTargetType> abstractTypes = new();
-
-			Utf8JsonReader abstractReader = reader;
-
-			while (abstractReader.TokenType != JsonTokenType.EndArray)
-			{
-				PmdTargetType abstractType = JsonSerializer.Deserialize<PmdTargetType>(ref abstractReader, options)!;
-				abstractTypes.Add(abstractType);
-				abstractReader.Read();
-			}
-
+			List<PmdTargetType> abstractTypes = ReadAbstractTargets(reader, options);
+			
 			foreach (PmdTargetType abstractType in abstractTypes)
 			{
 				Type trueDataType = PmdFrameFactory.GetDDSFrameType(abstractType.TargetType).GetType();
@@ -69,16 +52,7 @@ namespace LibellusLibrary.Event.Types.Frame
 			List<PmdTargetType> frames = new();
 
 			reader.Read();
-			List<PmdTargetType> abstractTypes = new();
-
-			Utf8JsonReader abstractReader = reader;
-
-			while (abstractReader.TokenType != JsonTokenType.EndArray)
-			{
-				PmdTargetType abstractType = JsonSerializer.Deserialize<PmdTargetType>(ref abstractReader, options)!;
-				abstractTypes.Add(abstractType);
-				abstractReader.Read();
-			}
+			List<PmdTargetType> abstractTypes = ReadAbstractTargets(reader, options);
 
 			foreach (PmdTargetType abstractType in abstractTypes)
 			{
@@ -104,6 +78,18 @@ namespace LibellusLibrary.Event.Types.Frame
 			}
 			writer.WriteEndArray();
 
+		}
+
+		public static List<PmdTargetType> ReadAbstractTargets(Utf8JsonReader abstractReader, JsonSerializerOptions options)
+		{
+			List<PmdTargetType> abstractTypes = new();
+			while (abstractReader.TokenType != JsonTokenType.EndArray)
+			{
+				PmdTargetType abstractType = JsonSerializer.Deserialize<PmdTargetType>(ref abstractReader, options)!;
+				abstractTypes.Add(abstractType);
+				abstractReader.Read();
+			}
+			return abstractTypes;
 		}
 	}
 }
