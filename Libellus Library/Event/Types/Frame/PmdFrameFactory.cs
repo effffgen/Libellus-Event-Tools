@@ -70,6 +70,7 @@
 			PmdTargetTypeID.FIELDOBJ => new P3Target_FieldObj(),
 			PmdTargetTypeID.PACKMODEL => new P3Target_Unit(),
 			PmdTargetTypeID.FIELDEFF => new P3Target_FieldEff(),
+			PmdTargetTypeID.SPUSE => new P3Target_SpuSe(),
 			PmdTargetTypeID.SCRIPT => new P4Target_Script(),
 			PmdTargetTypeID.FOG => new P4Target_Fog(),
 			PmdTargetTypeID.FLDNOISE => new P4Target_FldNoise(),
