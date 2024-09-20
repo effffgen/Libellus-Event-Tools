@@ -235,10 +235,13 @@ namespace LibellusLibrary.Event.Types.Frame
 		public short NEXT_MOTNO { get; set; } // Limited 0-304 in editor, also read only as 0-1023?
 
 		[JsonPropertyOrder(-83)]
+		public ushort Field26 { get; set; }
+
+		[JsonPropertyOrder(-82)]
 		[JsonConverter(typeof(JsonStringEnumConverter))]
 		public AgeruModeEnum Type { get; set; }
 
-		[JsonPropertyOrder(-82)]
+		[JsonPropertyOrder(-81)]
 		[JsonConverter(typeof(ByteArrayToHexArray))]
 		public byte[] Data { get; set; } = Array.Empty<byte>();
 
@@ -259,8 +262,9 @@ namespace LibellusLibrary.Event.Types.Frame
 			AITE_ResourceType = reader.ReadByte();
 			AITE_YOROKOBI_MOTNO = reader.ReadInt16();
 			NEXT_MOTNO = reader.ReadInt16();
+			Field26 = reader.ReadUInt16();
 			Type = (AgeruModeEnum)reader.ReadByte();
-			Data = reader.ReadBytes(21);
+			Data = reader.ReadBytes(19);
 		}
 
 		protected override void WriteData(BinaryWriter writer)
@@ -274,6 +278,7 @@ namespace LibellusLibrary.Event.Types.Frame
 			writer.Write(AITE_ResourceType);
 			writer.Write(AITE_YOROKOBI_MOTNO);
 			writer.Write(NEXT_MOTNO);
+			writer.Write(Field26);
 			writer.Write((byte)Type);
 			writer.Write(Data);
 		}
