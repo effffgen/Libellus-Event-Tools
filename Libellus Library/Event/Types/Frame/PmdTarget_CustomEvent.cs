@@ -18,8 +18,8 @@ namespace LibellusLibrary.Event.Types.Frame
 			HOLYHOGO = 3,
 			HANDENWA = 4,
 			UWAKI_HAK = 5,
-			MORAU_PRE = 6,
-			AGERU_PRE = 7,
+			MORAU_PRE = 6, // Likely 貰う PRE which roughly means "Receive Present"?
+			AGERU_PRE = 7, // Likely 上げる PRE which roughly means "Give Present"?
 			HIDUKEMES = 8,
 			CARDEFF = 9,
 			GAMEOVER = 10,
@@ -41,7 +41,11 @@ namespace LibellusLibrary.Event.Types.Frame
 
 		public static PmdTargetType GetCustomEvent(EventModeEnum mode) => mode switch
 		{
+			EventModeEnum.HIRU_SASO or EventModeEnum.HOLYHOGO or EventModeEnum.HANDENWA or EventModeEnum.UWAKI_HAK => new HiruSaso(),
 			EventModeEnum.PARA_UPDW => new StatChange(),
+			EventModeEnum.MORAU_PRE => new MorauPre(),
+			EventModeEnum.AGERU_PRE => new AgeruPre(),
+			EventModeEnum.CARDEFF => new CardEff(),
 			_ => new UnknownEvent()
 		};
 	}
@@ -61,6 +65,36 @@ namespace LibellusLibrary.Event.Types.Frame
 		protected override void WriteData(BinaryWriter writer)
 		{
 			writer.Write((uint)EventMode);
+			writer.Write(Data);
+		}
+	}
+
+	// Possibly moves protagonist via a bezier curve?
+	internal class HiruSaso : P3Target_CustomEvent
+	{
+		[JsonPropertyOrder(-91)]
+		public byte ProtagResourceIndex { get; set; } // SHUZINKOU (likely 主人公 roughly meaning protagonist) RESID in editor
+
+		[JsonPropertyOrder(-90)]
+		public byte ProtagResourceType { get; set; }
+		
+		[JsonPropertyOrder(-89)]
+		[JsonConverter(typeof(ByteArrayToHexArray))]
+		public byte[] Data { get; set; } = Array.Empty<byte>();
+
+		protected override void ReadData(BinaryReader reader)
+		{
+			EventMode = (EventModeEnum)reader.ReadUInt32();
+			ProtagResourceIndex = reader.ReadByte();
+			ProtagResourceType = reader.ReadByte();
+			Data = reader.ReadBytes(34);
+		}
+
+		protected override void WriteData(BinaryWriter writer)
+		{
+			writer.Write((uint)EventMode);
+			writer.Write(ProtagResourceIndex);
+			writer.Write(ProtagResourceType);
 			writer.Write(Data);
 		}
 	}
@@ -146,6 +180,143 @@ namespace LibellusLibrary.Event.Types.Frame
 			writer.Write(TenPercentValue);
 			writer.Write(TargetResourceIndex);
 			writer.Write(TargetResourceType);
+			writer.Write(Data);
+		}
+	}
+
+	internal class MorauPre : P3Target_CustomEvent
+	{
+		[JsonPropertyOrder(-91)]
+		public short MORAWANAI_JUMPFRAME { get; set; } // Limited 0-30000 in editor
+
+		[JsonPropertyOrder(-90)]
+		[JsonConverter(typeof(ByteArrayToHexArray))]
+		public byte[] Data { get; set; } = Array.Empty<byte>();
+
+		protected override void ReadData(BinaryReader reader)
+		{
+			EventMode = (EventModeEnum)reader.ReadUInt32();
+			MORAWANAI_JUMPFRAME = reader.ReadInt16();
+			Data = reader.ReadBytes(34);
+		}
+
+		protected override void WriteData(BinaryWriter writer)
+		{
+			writer.Write((uint)EventMode);
+			writer.Write(MORAWANAI_JUMPFRAME);
+			writer.Write(Data);
+		}
+	}
+
+	internal class AgeruPre : P3Target_CustomEvent
+	{
+		[JsonPropertyOrder(-91)]
+		public short AGENAI_JUMP { get; set; } // Likely あげない which roughly means "Don't Give" and limited 0-30000 in editor
+
+		[JsonPropertyOrder(-90)]
+		public short SHOU_YOROKOBI_JUMP { get; set; } // Likely 小_喜び which roughly means "Small Joy" and limited 0-30000 in editor
+
+		[JsonPropertyOrder(-89)]
+		public short TYUU_YOROKOBI_JUMP { get; set; } // Likely 中_喜び which roughly means "Medium Joy" and limited 0-30000 in editor
+
+		[JsonPropertyOrder(-88)]
+		public short DAI_YOROKOBI_JUMP { get; set; } // Likely 大_喜び which roughly means "Large Joy" and limited 0-30000 in editor
+
+		[JsonPropertyOrder(-87)]
+		public byte AITE_ResourceIndex { get; set; }
+
+		[JsonPropertyOrder(-86)]
+		public byte AITE_ResourceType { get; set; }
+
+		[JsonPropertyOrder(-85)]
+		public short AITE_YOROKOBI_MOTNO { get; set; } // Limited 0-304 in editor, also read only as 0-1023?
+
+		[JsonPropertyOrder(-84)]
+		public short NEXT_MOTNO { get; set; } // Limited 0-304 in editor, also read only as 0-1023?
+
+		[JsonPropertyOrder(-83)]
+		[JsonConverter(typeof(JsonStringEnumConverter))]
+		public AgeruModeEnum Type { get; set; }
+
+		[JsonPropertyOrder(-82)]
+		[JsonConverter(typeof(ByteArrayToHexArray))]
+		public byte[] Data { get; set; } = Array.Empty<byte>();
+
+		internal enum AgeruModeEnum : byte
+		{
+			NORMAL = 0,
+			CHRISTMAS = 1
+		}
+
+		protected override void ReadData(BinaryReader reader)
+		{
+			EventMode = (EventModeEnum)reader.ReadUInt32();
+			AGENAI_JUMP = reader.ReadInt16();
+			SHOU_YOROKOBI_JUMP = reader.ReadInt16();
+			TYUU_YOROKOBI_JUMP = reader.ReadInt16();
+			DAI_YOROKOBI_JUMP = reader.ReadInt16();
+			AITE_ResourceIndex = reader.ReadByte();
+			AITE_ResourceType = reader.ReadByte();
+			AITE_YOROKOBI_MOTNO = reader.ReadInt16();
+			NEXT_MOTNO = reader.ReadInt16();
+			Type = (AgeruModeEnum)reader.ReadByte();
+			Data = reader.ReadBytes(21);
+		}
+
+		protected override void WriteData(BinaryWriter writer)
+		{
+			writer.Write((uint)EventMode);
+			writer.Write(AGENAI_JUMP);
+			writer.Write(SHOU_YOROKOBI_JUMP);
+			writer.Write(TYUU_YOROKOBI_JUMP);
+			writer.Write(DAI_YOROKOBI_JUMP);
+			writer.Write(AITE_ResourceIndex);
+			writer.Write(AITE_ResourceType);
+			writer.Write(AITE_YOROKOBI_MOTNO);
+			writer.Write(NEXT_MOTNO);
+			writer.Write((byte)Type);
+			writer.Write(Data);
+		}
+	}
+
+	internal class CardEff : P3Target_CustomEvent
+	{
+		[JsonPropertyOrder(-91)]
+		public byte ProtagResourceIndex { get; set; } // SHUZINKOU (likely 主人公 roughly meaning protagonist) RESID in editor
+
+		[JsonPropertyOrder(-90)]
+		public byte ProtagResourceType { get; set; }
+		
+		[JsonPropertyOrder(-89)]
+		public sbyte SocialLinkID { get; set; }
+
+		[JsonPropertyOrder(-88)]
+		[JsonConverter(typeof(ByteArrayToHexArray))]
+		public byte[] Data { get; set; } = Array.Empty<byte>();
+
+		internal enum CardTypeEnum : byte
+		{
+			KAIKIN = 0,
+			LVUP = 1,
+			REVERSE = 2,
+			HAMETU = 3
+		}
+
+		protected override void ReadData(BinaryReader reader)
+		{
+			EventMode = (EventModeEnum)reader.ReadUInt32();
+			ProtagResourceIndex = reader.ReadByte();
+			ProtagResourceType = reader.ReadByte();
+			SocialLinkID = reader.ReadSByte();
+			Data = reader.ReadBytes(33);
+		}
+
+		protected override void WriteData(BinaryWriter writer)
+		{
+			writer.Write((uint)EventMode);
+			writer.Write(ProtagResourceIndex);
+			writer.Write(ProtagResourceType);
+			writer.Write(SocialLinkID);
 			writer.Write(Data);
 		}
 	}
