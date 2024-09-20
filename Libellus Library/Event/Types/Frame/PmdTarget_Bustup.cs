@@ -8,8 +8,14 @@ namespace LibellusLibrary.Event.Types.Frame
 		[JsonPropertyOrder(-92)]
 		[JsonConverter(typeof(JsonStringEnumConverter))]
 		public BupControlEnum BustupControlMode { get; set; } // Read as byte in editor but stored in file as uint
+		
+		[JsonPropertyOrder(-91)]
+		public byte EditorGroup { get; set; }
+		
+		[JsonPropertyOrder(-90)]
+		public ushort Field16 { get; set; }
 
-		internal enum BupControlEnum : uint
+		internal enum BupControlEnum : byte
 		{
 			LOAD = 0,
 			FADEOUT = 1, // Stores no actual data?
@@ -20,7 +26,7 @@ namespace LibellusLibrary.Event.Types.Frame
 		public PmdTargetType GetVariant(BinaryReader reader)
 		{
 			reader.BaseStream.Position += 18;
-			return GetBustup((BupControlEnum)reader.ReadUInt32());
+			return GetBustup((BupControlEnum)reader.ReadByte());
 		}
 
 		public PmdTargetType GetVariant()
@@ -38,47 +44,53 @@ namespace LibellusLibrary.Event.Types.Frame
 
 	internal class UnknownBustup : P3Target_Bustup
 	{
-		[JsonPropertyOrder(-91)]
+		[JsonPropertyOrder(-89)]
 		[JsonConverter(typeof(ByteArrayToHexArray))]
 		public byte[] Data { get; set; } = Array.Empty<byte>();
 
 		protected override void ReadData(BinaryReader reader)
 		{
-			BustupControlMode = (BupControlEnum)reader.ReadUInt32();
+			BustupControlMode = (BupControlEnum)reader.ReadByte();
+			EditorGroup = reader.ReadByte();
+			Field16 = reader.ReadUInt16();
 			Data = reader.ReadBytes(36);
 		}
 
 		protected override void WriteData(BinaryWriter writer)
 		{
-			writer.Write((uint)BustupControlMode);
+			writer.Write((byte)BustupControlMode);
+			writer.Write(EditorGroup);
+			writer.Write(Field16);
 			writer.Write(Data);
 		}
 	}
 
 	internal class LoadBustup : P3Target_Bustup
 	{
-		[JsonPropertyOrder(-91)]
+		[JsonPropertyOrder(-89)]
 		public short X { get; set; } // Limited -1024-1024 in editor
 
-		[JsonPropertyOrder(-90)]
+		[JsonPropertyOrder(-88)]
 		public short Y { get; set; } // Limited -1024-1024 in editor
 
-		[JsonPropertyOrder(-89)]
+		[JsonPropertyOrder(-87)]
 		public short BustupIndex { get; set; } // limited 0-100 in editor
 
-		[JsonPropertyOrder(-88)]
+		[JsonPropertyOrder(-86)]
 		public short FUKU { get; set; } // limited 0x0-0xF in editor
 
-		[JsonPropertyOrder(-87)]
+		[JsonPropertyOrder(-85)]
 		public short HYOUJOU { get; set; } // limited 0-100 in editor
 
-		[JsonPropertyOrder(-86)]
+		[JsonPropertyOrder(-84)]
 		[JsonConverter(typeof(ByteArrayToHexArray))]
 		public byte[] Data { get; set; } = Array.Empty<byte>();
 
 		protected override void ReadData(BinaryReader reader)
 		{
-			BustupControlMode = (BupControlEnum)reader.ReadUInt32();
+			BustupControlMode = (BupControlEnum)reader.ReadByte();
+			EditorGroup = reader.ReadByte();
+			Field16 = reader.ReadUInt16();
 			X = reader.ReadInt16();
 			Y = reader.ReadInt16();
 			BustupIndex = reader.ReadInt16();
@@ -89,7 +101,9 @@ namespace LibellusLibrary.Event.Types.Frame
 
 		protected override void WriteData(BinaryWriter writer)
 		{
-			writer.Write((uint)BustupControlMode);
+			writer.Write((byte)BustupControlMode);
+			writer.Write(EditorGroup);
+			writer.Write(Field16);
 			writer.Write(X);
 			writer.Write(Y);
 			writer.Write(BustupIndex);
@@ -101,31 +115,28 @@ namespace LibellusLibrary.Event.Types.Frame
 
 	internal class UnknownToggleBustup : P3Target_Bustup
 	{
-		[JsonPropertyOrder(-91)]
-		[JsonConverter(typeof(JsonStringEnumConverter))]
-		public OffOnEnum ToggleState { get; set; }
+		[JsonPropertyOrder(-89)]
+		public byte ToggleValue { get; set; } // if 0 == OFF, else ON
 
-		[JsonPropertyOrder(-90)]
+		[JsonPropertyOrder(-88)]
 		[JsonConverter(typeof(ByteArrayToHexArray))]
 		public byte[] Data { get; set; } = Array.Empty<byte>();
 
-		internal enum OffOnEnum : byte
-		{
-			OFF = 0,
-			ON = 1
-		}
-
 		protected override void ReadData(BinaryReader reader)
 		{
-			BustupControlMode = (BupControlEnum)reader.ReadUInt32();
-			ToggleState = (OffOnEnum)reader.ReadByte();
+			BustupControlMode = (BupControlEnum)reader.ReadByte();
+			EditorGroup = reader.ReadByte();
+			Field16 = reader.ReadUInt16();
+			ToggleValue = reader.ReadByte();
 			Data = reader.ReadBytes(35);
 		}
 
 		protected override void WriteData(BinaryWriter writer)
 		{
-			writer.Write((uint)BustupControlMode);
-			writer.Write((byte)ToggleState);
+			writer.Write((byte)BustupControlMode);
+			writer.Write(EditorGroup);
+			writer.Write(Field16);
+			writer.Write(ToggleValue);
 			writer.Write(Data);
 		}
 	}
