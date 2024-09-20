@@ -13,7 +13,7 @@ namespace LibellusLibrary.Event.Types
 		{
 			return version switch
 			{
-				12 => new PmdData_BezierTable(),
+				10 or 11 or 12 => new PmdData_BezierTable(),
 				_ => new PmdData_RawData(),
 			};
 		}

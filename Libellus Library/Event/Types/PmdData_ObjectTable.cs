@@ -14,7 +14,7 @@ namespace LibellusLibrary.Event.Types
 		{
 			return version switch
 			{
-				12 => new PmdData_ObjectTable(),
+				10 or 11 or 12 => new PmdData_ObjectTable(),
 				_ => new PmdData_RawData(),
 			};
 		}
