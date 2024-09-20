@@ -83,6 +83,11 @@ namespace LibellusLibrary.Event.Types.Frame
 			foreach (PmdTargetType abstractType in abstractTypes)
 			{
 				Type trueDataType = PmdFrameFactory.GetP3FrameType(abstractType.TargetType).GetType();
+				if (typeof(ITargetVarying).IsAssignableFrom(trueDataType))
+				{
+					Utf8JsonReader variantReader = reader;
+					trueDataType = ((ITargetVarying)JsonSerializer.Deserialize(ref variantReader, trueDataType, options)!).GetVariant().GetType();
+				}
 				frames.Add((PmdTargetType)JsonSerializer.Deserialize(ref reader, trueDataType, options)!);
 				reader.Read();
 			}

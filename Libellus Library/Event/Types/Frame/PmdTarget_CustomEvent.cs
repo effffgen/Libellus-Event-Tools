@@ -3,24 +3,18 @@ using System.Text.Json.Serialization;
 
 namespace LibellusLibrary.Event.Types.Frame
 {
-	// TODO: implement different modes ala UNIT
-	internal class P3Target_CustomEvent : P3TargetType
+	internal class P3Target_CustomEvent : P3TargetType, ITargetVarying
 	{
 		[JsonPropertyOrder(-92)]
 		[JsonConverter(typeof(JsonStringEnumConverter))]
 		public EventModeEnum EventMode { get; set; }
-
-#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable
-		[JsonPropertyOrder(-91)]
-		public EventParam EventData { get; set; }
-#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
 		// PERU == Persona?
 		internal enum EventModeEnum : uint
 		{
 			HIRU_SASO = 0, // Likely means roughly "Invited at noon"
 			BASHO2SAS = 1,
-			PARA_UPDW = 2,
+			PARA_UPDW = 2, // Change player stats
 			HOLYHOGO = 3,
 			HANDENWA = 4,
 			UWAKI_HAK = 5,
@@ -34,84 +28,76 @@ namespace LibellusLibrary.Event.Types.Frame
 			PERUKOE = 13,
 		}
 
+		public PmdTargetType GetVariant(BinaryReader reader)
+		{
+			reader.BaseStream.Position += 18;
+			return GetCustomEvent((EventModeEnum)reader.ReadUInt32());
+		}
+
+		public PmdTargetType GetVariant()
+		{
+			return GetCustomEvent(EventMode);
+		}
+
+		public static PmdTargetType GetCustomEvent(EventModeEnum mode) => mode switch
+		{
+			EventModeEnum.PARA_UPDW => new StatChange(),
+			_ => new UnknownEvent()
+		};
+	}
+
+	internal class UnknownEvent : P3Target_CustomEvent
+	{
+		[JsonPropertyOrder(-91)]
+		[JsonConverter(typeof(ByteArrayToHexArray))]
+		public byte[] Data { get; set; } = Array.Empty<byte>();
+
 		protected override void ReadData(BinaryReader reader)
 		{
 			EventMode = (EventModeEnum)reader.ReadUInt32();
-			EventData = EventMode switch
-			{
-				EventModeEnum.PARA_UPDW => new StatChange(),
-				// EventModeEnum.GAMEOVER => new GameOver(),
-				_ => new UnknownEvent()
-			};
-			EventData.ReadData(reader);
+			Data = reader.ReadBytes(36);
 		}
 
 		protected override void WriteData(BinaryWriter writer)
 		{
 			writer.Write((uint)EventMode);
-			EventData.WriteData(writer);
-		}
-	}
-	
-	[JsonDerivedType(typeof(UnknownEvent), typeDiscriminator: "unkev")]
-	[JsonDerivedType(typeof(StatChange), typeDiscriminator: "stch")]
-	// [JsonDerivedType(typeof(GameOver), typeDiscriminator: "gamov")]
-	public class EventParam
-	{
-		public virtual void ReadData(BinaryReader reader) => throw new InvalidOperationException();
-		public virtual void WriteData(BinaryWriter writer) => throw new InvalidOperationException();
-	}
-
-	public class UnknownEvent : EventParam
-	{
-		[JsonPropertyOrder(-90)]
-		[JsonConverter(typeof(ByteArrayToHexArray))]
-		public byte[] Data { get; set; } = Array.Empty<byte>();
-
-		public override void ReadData(BinaryReader reader)
-		{
-			Data = reader.ReadBytes(36);
-		}
-
-		public override void WriteData(BinaryWriter writer)
-		{
 			writer.Write(Data);
 		}
 	}
 
-	public class StatChange : EventParam
+	internal class StatChange : P3Target_CustomEvent
 	{
-		[JsonPropertyOrder(-90)]
+		[JsonPropertyOrder(-91)]
 		[JsonConverter(typeof(JsonStringEnumConverter))]
 		public ChangeTypeEnum ChangeType { get; set; }
 
-		[JsonPropertyOrder(-89)]
+		[JsonPropertyOrder(-90)]
 		[JsonConverter(typeof(JsonStringEnumConverter))]
 		public ChangeStatEnum ChangeStat { get; set; }
 
-		[JsonPropertyOrder(-88)]
+		[JsonPropertyOrder(-89)]
 		public ushort Field1A { get; set; }
 
 		// Percentage chances for X increase?
-		[JsonPropertyOrder(-87)]
+		[JsonPropertyOrder(-88)]
 		public sbyte FourtyPercentValue { get; set; }
 
-		[JsonPropertyOrder(-86)]
+		[JsonPropertyOrder(-87)]
 		public sbyte ThirtyPercentValue { get; set; }
 
-		[JsonPropertyOrder(-85)]
+		[JsonPropertyOrder(-86)]
 		public sbyte TwentyPercentValue { get; set; }
 
-		[JsonPropertyOrder(-84)]
+		[JsonPropertyOrder(-85)]
 		public sbyte TenPercentValue { get; set; }
 
+		[JsonPropertyOrder(-84)]
+		public byte TargetResourceIndex { get; set; }
+
 		[JsonPropertyOrder(-83)]
-		public byte ResourceIndex { get; set; }
+		public byte TargetResourceType { get; set; }
 
 		[JsonPropertyOrder(-82)]
-		public byte ResourceType { get; set; }
-
-		[JsonPropertyOrder(-81)]
 		[JsonConverter(typeof(ByteArrayToHexArray))]
 		public byte[] Data { get; set; } = Array.Empty<byte>();
 
@@ -133,8 +119,9 @@ namespace LibellusLibrary.Event.Types.Frame
 			UN_PER = 7 // Likely 運 roughly meaning Persona Luck
 		}
 
-		public override void ReadData(BinaryReader reader)
+		protected override void ReadData(BinaryReader reader)
 		{
+			EventMode = (EventModeEnum)reader.ReadUInt32();
 			ChangeType = (ChangeTypeEnum)reader.ReadByte();
 			ChangeStat = (ChangeStatEnum)reader.ReadByte();
 			Field1A = reader.ReadUInt16();
@@ -142,13 +129,14 @@ namespace LibellusLibrary.Event.Types.Frame
 			ThirtyPercentValue = reader.ReadSByte();
 			TwentyPercentValue = reader.ReadSByte();
 			TenPercentValue = reader.ReadSByte();
-			ResourceIndex = reader.ReadByte();
-			ResourceType = reader.ReadByte();
+			TargetResourceIndex = reader.ReadByte();
+			TargetResourceType = reader.ReadByte();
 			Data = reader.ReadBytes(26);
 		}
 
-		public override void WriteData(BinaryWriter writer)
+		protected override void WriteData(BinaryWriter writer)
 		{
+			writer.Write((uint)EventMode);
 			writer.Write((byte)ChangeType);
 			writer.Write((byte)ChangeStat);
 			writer.Write(Field1A);
@@ -156,8 +144,8 @@ namespace LibellusLibrary.Event.Types.Frame
 			writer.Write(ThirtyPercentValue);
 			writer.Write(TwentyPercentValue);
 			writer.Write(TenPercentValue);
-			writer.Write(ResourceIndex);
-			writer.Write(ResourceType);
+			writer.Write(TargetResourceIndex);
+			writer.Write(TargetResourceType);
 			writer.Write(Data);
 		}
 	}

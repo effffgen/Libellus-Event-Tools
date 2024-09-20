@@ -17,6 +17,7 @@
 					10 or 11 or 12 => GetP3FrameType(curTargetType),
 					_ => throw new NotImplementedException()
 				};
+				if (dataType is ITargetVarying varyingDataType) { dataType = varyingDataType.GetVariant(reader); }
 				reader.BaseStream.Position = start;
 				dataType.ReadFrame(reader);
 				frames.Add(dataType);
@@ -41,7 +42,7 @@
 		// TODO: Rename classes to fit P3Target_X convention
 		public static PmdTargetType GetP3FrameType(PmdTargetTypeID Type) => Type switch
 		{
-			PmdTargetTypeID.UNIT => new PmdTarget_Unit(),
+			PmdTargetTypeID.UNIT => new P3Target_Unit(),
 			PmdTargetTypeID.MESSAGE => new PmdTarget_Message(),
 			PmdTargetTypeID.SE => new PmdTarget_Se(),
 			PmdTargetTypeID.FADE => new PmdTarget_Fade(),
@@ -62,7 +63,7 @@
 			PmdTargetTypeID.COUNTJUMP => new PmdTarget_CountJump(),
 			PmdTargetTypeID.HOLYJUMP => new PmdTarget_HolyJump(),
 			PmdTargetTypeID.FIELDOBJ => new P3Target_FieldObj(),
-			PmdTargetTypeID.PACKMODEL => new PmdTarget_Unit(),
+			PmdTargetTypeID.PACKMODEL => new P3Target_Unit(),
 			PmdTargetTypeID.FIELDEFF => new P3Target_FieldEff(),
 			PmdTargetTypeID.SCRIPT => new P4Target_Script(),
 			PmdTargetTypeID.FOG => new P4Target_Fog(),

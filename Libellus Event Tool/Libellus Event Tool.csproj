@@ -11,7 +11,7 @@
     <FileVersion>2.1.0</FileVersion>
     <SignAssembly>False</SignAssembly>
 
-      <TargetFramework>net7.0</TargetFramework>
+      <TargetFramework>net6.0</TargetFramework>
 
   </PropertyGroup>
 

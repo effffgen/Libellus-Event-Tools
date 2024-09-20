@@ -116,13 +116,12 @@ namespace LibellusLibrary.Event.Types
 	}
 
 	/*
-	BezierTable is ordered as follows:
-	BezierTable is ordered as follows:
-		All points are type Vector3 (X, Y, Z floats)
-		PIVOT = start of curve
-		EASE IN = curve will "ease in" towards this position
-		EASE OUT = curve will "ease out" towards this position
-		PIVOT_E = end of curve
-	When BezierMax > 1, (EASE IN, EASE OUT, PIVOT_E) points are appended to current bezier curve.
-	 */
+		BezierTable is ordered as follows:
+			All points are type Vector3 (X, Y, Z floats)
+			PIVOT = start of curve
+			EASE IN = curve will "ease in" towards this position
+			EASE OUT = curve will "ease out" towards this position
+			PIVOT_E = end of curve
+		When BezierMax > 1, (EASE IN, EASE OUT, PIVOT_E) points are appended to current bezier curve.
+	*/
 }
