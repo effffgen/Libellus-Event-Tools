@@ -51,9 +51,9 @@ namespace LibellusEventTool
 					PolyMovieData pmd = await PolyMovieData.LoadPmd(file);
 					pmd.SavePmd($"{file}.PM{pmd.MagicCode[3]}");
 				}
-				else if (Directory.Exists(file) && _recurse)
+				else if (Directory.Exists(file))
 				{
-					await ConvertPaths(Directory.GetFiles(file, "*", SearchOption.AllDirectories));
+					await ConvertPaths(Directory.GetFiles(file, "*", _recurse ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly));
 				}
 			}
 		}
