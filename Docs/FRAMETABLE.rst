@@ -41,6 +41,18 @@ TODO.
 
 ----
 
+QUAKE (7)
+---------
+Shakes the screen for the amount of frames as specified in the base "Length" value. Used to visually simulate earthquakes as the name implies.
+
++----------------+------------+-----------------------------------------------------------------------+
+| Name           | Data Type  | Description                                                           |
++================+============+=======================================================================+
+| Range          | Short      | Intensity of effect.                                                  |
++----------------+------------+-----------------------------------------------------------------------+
+
+----
+
 PADACT (28)
 -----------
 Sets controller rumble properties, such as strength, duration and intervals.
