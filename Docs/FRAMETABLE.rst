@@ -1,5 +1,7 @@
 .. contents::
 
+----
+
 FrameTable Targets List
 =======================
 
@@ -36,6 +38,8 @@ TODO: Figure out what Field08 does and document it.
 V10-12 (P3/P4) Extensions
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 TODO.
+
+----
 
 PADACT (28)
 -----------
