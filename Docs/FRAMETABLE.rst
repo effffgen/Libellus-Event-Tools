@@ -1,3 +1,11 @@
+=========
+FrameTable Documentation
+=========
+
+The FrameTable is a table containing a list of "Targets" (aka functions) to be executed during the frames of an event. This file documents and lists relevant info corresponding to the Targets and any info specific to the table itself.
+
+*Please note that this file is currently very much a work in progress, and as such is very incomplete and will be missing information.*
+
 .. contents::
 
 ----
