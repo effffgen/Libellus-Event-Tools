@@ -16,19 +16,27 @@ namespace LibellusEventTool
 			Console.WriteLine($"Welcome to LEET!\nLibellus Event Editing Tool: v{version}\nNow with better syntax!\n");
 
 			_recurse = args.Contains("-r", StringComparer.OrdinalIgnoreCase);
-			int numberPaths = _recurse ? args.Length - 1 : args.Length;
+			bool noConfirmation = args.Contains("-no-confirm", StringComparer.OrdinalIgnoreCase);
+			int numberPaths = args.ToList().FindAll(value => !value.StartsWith('-')).Count;
 			if (numberPaths < 1)
 			{
 				Console.ForegroundColor = ConsoleColor.Yellow;
 				Console.WriteLine("Not enough args!");
 				Console.ResetColor();
-				Console.WriteLine("Press any button to exit.");
-				Console.ReadKey();
+				if (!noConfirmation)
+				{
+					Console.WriteLine("Press any button to exit.");
+					Console.ReadKey();
+				}
+
 				return;
 			}
 			await ConvertPaths(args);
-			Console.WriteLine("Press Any Button To Exit.");
-			Console.ReadKey();
+			if (!noConfirmation)
+			{
+				Console.WriteLine("Press Any Button To Exit.");
+				Console.ReadKey();
+			}
 		}
 
 		private static async Task ConvertPaths(string[] paths)
