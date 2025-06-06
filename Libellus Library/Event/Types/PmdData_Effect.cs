@@ -55,7 +55,20 @@ namespace LibellusLibrary.Event.Types
 			reader.BaseStream.Position = (long)reader.ReadUInt32();
 			long EffectStart = reader.FTell();
 			int effSizeRemainder = typeFactory.GetEffectsLength(reader);
-			for(int i = 0; i < count; i++)
+			// If a PM1 defines that we have an EPL but it doesn't actually store the data for one
+			// in a way that would cause us to read data out of bounds of the file, skip reading it entirely
+			// TODO: Figure out a better way of handling this that retains 1:1 accuracy with
+			// the original file(s) without causing LEET to crash?
+			if (EffectStart >= reader.BaseStream.Length && effSizeRemainder == 0 && count >= 1)
+			{
+				Console.ForegroundColor = ConsoleColor.Yellow;
+				Console.WriteLine("PMD defined EPL file(s), but has stored no valid EPL data!");
+				Console.WriteLine("EPL(s) will be skipped to avoid an out-of-bounds crash!");
+				Console.ResetColor();
+				reader.BaseStream.Position = OriginalPos;
+				return this;
+			}
+			for (int i = 0; i < count; i++)
 			{
 				// Initialize Pmd_EffectDef object
 				reader.FSeek(EffectStart + i * 0x10);
@@ -64,10 +77,14 @@ namespace LibellusLibrary.Event.Types
 				int offset = reader.ReadInt32();
 				Effect.Field08 = reader.ReadUInt32();
 				Effect.Field0C = reader.ReadUInt32();
-				// Calculate Effect.EffectData size
+				// Calculate Effect.EffectData size; We track how much of the total
+				// EPL data we've extracted in effSizeRemainder to determine the last EPL's size
 				int eplSize = effSizeRemainder;
 				if (i < (int)count - 1)
 				{
+					// Get offset for next EPL and subtract to get
+					// current EPL's file size; they're always stored directly
+					// after another so this is a reliable way to determine size
 					reader.FSeek(EffectStart + ((i + 1) * 0x10) + 4);
 					eplSize = reader.ReadInt32() - offset;
 					effSizeRemainder -= eplSize;
