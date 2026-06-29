@@ -1,4 +1,4 @@
-﻿using System.Text.Json;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace LibellusLibrary.Event.Types.Frame
@@ -61,6 +61,14 @@ namespace LibellusLibrary.Event.Types.Frame
 				{
 					Utf8JsonReader variantReader = reader;
 					trueDataType = ((ITargetVarying)JsonSerializer.Deserialize(ref variantReader, trueDataType, options)!).GetVariant().GetType();
+					// TODO: Something cleaner than this
+					if (trueDataType == typeof(KUBI)) {
+						Utf8JsonReader kubiReader = reader;
+						KUBI kubiData = (KUBI)JsonSerializer.Deserialize(ref kubiReader, typeof(KUBI), options)!;
+						frames.Add((PmdTargetType)JsonSerializer.Deserialize(ref reader, kubiData.GetVariant().GetType(), options)!);
+						reader.Read();
+						continue;
+					}
 				}
 				frames.Add((PmdTargetType)JsonSerializer.Deserialize(ref reader, trueDataType, options)!);
 				reader.Read();
