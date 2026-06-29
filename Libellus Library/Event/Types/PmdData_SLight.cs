@@ -95,7 +95,7 @@ namespace LibellusLibrary.Event.Types
 			AmbientRed = reader.ReadSingle();
 			AmbientGreen = reader.ReadSingle();
 			AmbientBlue = reader.ReadSingle();
-			Field2C = reader.ReadUInt32();
+			Field2C = reader.ReadSingle();
 		}
 
 		public void WriteSLight(BinaryWriter writer)
