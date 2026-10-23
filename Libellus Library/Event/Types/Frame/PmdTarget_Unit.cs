@@ -1,4 +1,4 @@
-﻿using LibellusLibrary.JSON;
+using LibellusLibrary.JSON;
 using System.Text.Json.Serialization;
 
 namespace LibellusLibrary.Event.Types.Frame
@@ -54,12 +54,20 @@ namespace LibellusLibrary.Event.Types.Frame
 
 		public PmdTargetType GetVariant(BinaryReader reader)
 		{
+			long start = reader.BaseStream.Position;
 			reader.BaseStream.Position += 18;
-			return GetUnit((UnitTypeEnum)reader.ReadUInt32());
+			UnitTypeEnum unitType = (UnitTypeEnum)reader.ReadUInt32();
+			// TODO: Maybe make GetVariant a static function at least when given a binary reader...?
+			if (unitType == UnitTypeEnum.KUBI) {
+				reader.BaseStream.Position = start;
+				return (new KUBI()).GetVariant(reader);
+			}
+			return GetUnit(unitType);
 		}
 
 		public PmdTargetType GetVariant()
 		{
+			if (UnitType == UnitTypeEnum.KUBI) { return new KUBI(); }
 			return GetUnit(UnitType);
 		}
 
@@ -71,7 +79,6 @@ namespace LibellusLibrary.Event.Types.Frame
 			UnitTypeEnum.POS_CHANGE => new ChangePosition(),
 			UnitTypeEnum.ROT_CHANGE => new ChangeRotation(),
 			UnitTypeEnum.ICON_DISP => new DisplayIcon(),
-			UnitTypeEnum.KUBI => new RotateHead(),
 			UnitTypeEnum.MODEL_ATTACH => new ModelAttach(),
 			UnitTypeEnum.ALPHA_CHANGE => new AlphaChange(),
 			UnitTypeEnum.SHADOW_ONOFF => new ShadowToggle(),
@@ -439,8 +446,8 @@ namespace LibellusLibrary.Event.Types.Frame
 			writer.Write(Data);
 		}
 	}
-
-	internal class RotateHead : P3Target_Unit
+	
+	internal class KUBI : P3Target_Unit, ITargetVarying
 	{
 		[JsonPropertyOrder(-91)]
 		[JsonConverter(typeof(JsonStringEnumConverter))]
@@ -449,10 +456,49 @@ namespace LibellusLibrary.Event.Types.Frame
 		[JsonPropertyOrder(-90)]
 		[JsonConverter(typeof(JsonStringEnumConverter))]
 		public KubiSpeedEnum KubiSpeed { get; set; }
-
+		
 		[JsonPropertyOrder(-89)]
 		public ushort Field1A { get; set; }
+		
+		public enum KubiModeEnum : byte
+		{
+			MOVE = 0,
+			RESET = 1,
+			PRE_NOD = 2, // Assumed from leftover P4(G) event editor strings
+			PRE_REFUSE = 3, // Assumed from leftover P4(G) event editor strings
+			PRE_LOOKAT = 4, // Assumed from leftover P4(G) event editor strings
+		}
+		
+		public enum KubiSpeedEnum : byte
+		{
+			NORMAL = 0,
+			FAST = 1,
+			SLOW = 2, // Assumed from leftover P4(G) event editor strings
+		}
+		
+		public PmdTargetType GetVariant(BinaryReader reader)
+		{
+			reader.BaseStream.Position += 18 + 4;
+			return GetKubi((KubiModeEnum)reader.ReadByte());
+		}
 
+		public PmdTargetType GetVariant()
+		{
+			return GetKubi(KubiMode);
+		}
+
+		public static PmdTargetType GetKubi(KubiModeEnum mode) => mode switch
+		{
+			// TODO: Implement PRE_NOD and PRE_REFUSE (and also identify if that's actually what they are?)
+			// KubiModeEnum.PRE_NOD => ,
+			// KubiModeEnum.PRE_REFUSE => ,
+			KubiModeEnum.PRE_LOOKAT => new HeadLookAt(),
+			_ => new HeadRotate()
+		};
+	}
+
+	internal class HeadRotate : KUBI
+	{
 		[JsonPropertyOrder(-88)]
 		public float KubiPitch { get; set; }
 
@@ -462,18 +508,6 @@ namespace LibellusLibrary.Event.Types.Frame
 		[JsonPropertyOrder(-86)]
 		[JsonConverter(typeof(ByteArrayToHexArray))]
 		public byte[] Data { get; set; } = Array.Empty<byte>();
-
-		public enum KubiModeEnum : byte
-		{
-			MOVE = 0,
-			RESET = 1,
-		}
-
-		public enum KubiSpeedEnum : byte
-		{
-			NORMAL = 0,
-			FAST = 1,
-		}
 
 		protected override void ReadData(BinaryReader reader)
 		{
@@ -494,6 +528,41 @@ namespace LibellusLibrary.Event.Types.Frame
 			writer.Write(Field1A);
 			writer.Write(KubiPitch);
 			writer.Write(KubiYaw);
+			writer.Write(Data);
+		}
+	}
+
+	internal class HeadLookAt : KUBI
+	{		
+		[JsonPropertyOrder(-88)]
+		public byte TargetResourceIndex { get; set; }
+
+		[JsonPropertyOrder(-87)]
+		public byte TargetResourceType { get; set; }
+
+		[JsonPropertyOrder(-86)]
+		[JsonConverter(typeof(ByteArrayToHexArray))]
+		public byte[] Data { get; set; } = Array.Empty<byte>();
+
+		protected override void ReadData(BinaryReader reader)
+		{
+			UnitType = (UnitTypeEnum)reader.ReadUInt32();
+			KubiMode = (KubiModeEnum)reader.ReadByte();
+			KubiSpeed = (KubiSpeedEnum)reader.ReadByte();
+			Field1A = reader.ReadUInt16();
+			TargetResourceIndex = reader.ReadByte();
+			TargetResourceType = reader.ReadByte();
+			Data = reader.ReadBytes(30);
+		}
+
+		protected override void WriteData(BinaryWriter writer)
+		{
+			writer.Write((uint)UnitType);
+			writer.Write((byte)KubiMode);
+			writer.Write((byte)KubiSpeed);
+			writer.Write(Field1A);
+			writer.Write(TargetResourceIndex);
+			writer.Write(TargetResourceType);
 			writer.Write(Data);
 		}
 	}

@@ -43,9 +43,45 @@ V9 (DDS1&2) Extensions
 
 TODO: Figure out what Field08 does and document it.
 
-V10-12 (P3/P4) Extensions
-^^^^^^^^^^^^^^^^^^^^^^^^^
-TODO.
+V10 & V11 (Unused only), V12 (P3/P4) Extensions
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
++----------------+--------------+------------------------------------------------------------------------------+
+| Name           | Data Type    | Description                                                                  |
++================+==============+==============================================================================+
+| ResourceID     | Byte         | Identifies which loaded resource target should apply to.                     |
++----------------+--------------+------------------------------------------------------------------------------+
+| ResourceType   | Byte         | Identifies what type of resource target should apply to (IE: A loaded model.)|
+|                |              |                                                                              |
+|                |              | TODO: More examples of uses + data values                                    |
++----------------+--------------+------------------------------------------------------------------------------+
+| Field0A        | Short        | Unknown.                                                                     |
++----------------+--------------+------------------------------------------------------------------------------+
+
+Following these are the `Flags` 'struct', which are used to determine if the Target's execution will be conditional and if so what will allow the execution.
+
++----------------+--------------+------------------------------------------------------------------------------+
+| FlagNumber     | UShort       | Which flag to check                                                          |
++----------------+--------------+------------------------------------------------------------------------------+
+| CompareValue   | UShort       | Value that flag or stored SEL option should be equal to.                     |
++----------------+--------------+------------------------------------------------------------------------------+
+| FlagType       | Enum (UShort)| Determines what type of flags are used or if comparision should happen at all|
+|                |              |                                                                              |
+|                |              | Values:                                                                      |
+|                |              |                                                                              |
+|                |              | 0. DISABLE                                                                   |
+|                |              | 1. LOCAL                                                                     |
+|                |              | 2. GLOABAL                                                                   |
++----------------+--------------+------------------------------------------------------------------------------+
+| GlobalFlagType | Enum (UShort)| Determines which offset to use when comparing against "GLOBAL" bitflags.     |
+|                |              |                                                                              |
+|                |              | Values:                                                                      |
+|                |              |                                                                              |
+|                |              | 0. EVT                                                                       |
+|                |              | 1. COMMU                                                                     |
+|                |              | 2. SYS                                                                       |
+|                |              | 3. EVT2 (P4(G? TODO: Figure this out) Only)                                  |
++----------------+--------------+------------------------------------------------------------------------------+
+TODO: Clean up and better document what does what (ie what does Field0A do, how can these be used etc.,) show "structs" like Flags better (ideally seperate lines but still clearly part of the same "object")
 
 ----
 
